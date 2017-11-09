@@ -6,7 +6,7 @@ public class Homework {
     private Deadline deadline;
     private String subject, description, howToSend;
     private boolean isRegular;
-    private int expectedScore, actualScore;
+    private int expectedScore, actualScore = 0;
 
     public Homework(String year, String month, String day,
                     String hour, String minute, String subject,
@@ -21,6 +21,10 @@ public class Homework {
 
     public void setActualScore(int score) {
         actualScore = score;
+    }
+
+    public boolean isAccepted() {
+        return actualScore >= expectedScore;
     }
 
     public void checkDeadline() {
