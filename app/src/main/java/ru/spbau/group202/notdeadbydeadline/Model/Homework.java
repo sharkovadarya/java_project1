@@ -1,5 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
+import java.time.format.DateTimeFormatter;
+
 public class Homework {
     private Deadline deadline;
     private String subject, description, howToSend;
@@ -26,4 +28,18 @@ public class Homework {
             // TODO move to old h/ws
         }*/
     }
+
+    public Deadline getDeadline() {
+        return deadline;
+    }
+
+    public String getFormattedDeadline() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
+        return deadline.getDeadlineDate().format(formatter);
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
 }
