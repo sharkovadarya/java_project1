@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Private utility method.
+     */
     private void outputCurrentDate() {
         LocalDateTime currentDate = LocalDateTime.now();
 
