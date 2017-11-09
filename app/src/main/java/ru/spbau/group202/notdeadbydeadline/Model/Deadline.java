@@ -11,6 +11,10 @@ public class Deadline {
                 Integer.parseInt(day), Integer.parseInt(hour), Integer.parseInt(minute));
     }
 
+    public LocalDateTime getDeadlineDate() {
+        return deadline;
+    }
+
     public boolean hasPassed() {
         return LocalDateTime.now().compareTo(deadline) > 0;
     }

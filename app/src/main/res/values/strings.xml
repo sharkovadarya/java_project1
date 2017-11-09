@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Not Dead By Deadline</string>
-    <string name="scheduleHeader">Расписание</string>
+    <string name="deadlineHeader">Deadlines</string>
 </resources>
