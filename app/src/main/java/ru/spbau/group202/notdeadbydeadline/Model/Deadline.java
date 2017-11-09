@@ -14,11 +14,7 @@ public class Deadline {
     public boolean hasPassed() {
         return LocalDateTime.now().compareTo(deadline) > 0;
     }
-
-    /**
-     * Created by darya on 08.11.17.
-     */
-
+    
     public static class Controller {
     }
 }
