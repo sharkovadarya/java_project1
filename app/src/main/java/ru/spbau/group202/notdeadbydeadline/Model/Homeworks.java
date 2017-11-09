@@ -6,12 +6,12 @@ public class Homeworks {
 
     private ArrayList<Homework> homeworks = new ArrayList<>();
 
-    // TODO rewrite the method according to the new constructor
-    /*public void addHomework(String year, String month, String day,
-                            String hour, String minute,
-                            String subject) {
-        homeworks.add(new Homework(year, month, day, hour, minute, subject));
-    }*/
+    public void addHomework(String year, String month, String day,
+                            String hour, String minute, String subject,
+                            boolean isRegular, String description, String howToSend, int expectedScore) {
+        homeworks.add(new Homework(year, month, day, hour, minute, subject,
+                isRegular, description, howToSend, expectedScore));
+    }
 
     // TODO this is unnecessary tbh
     public ArrayList<String> getDeadlines() {
