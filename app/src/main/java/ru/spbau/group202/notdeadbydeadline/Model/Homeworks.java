@@ -18,22 +18,14 @@ public class Homeworks {
                 isRegular, description, howToSend, expectedScore));
     }
 
-    // TODO this is unnecessary tbh
-    public ArrayList<String> getDeadlines() {
-        ArrayList<String> deadlines = new ArrayList<>();
+    public ArrayList<String> getFormattedHomeworks() {
+        ArrayList<String> formattedHomeworks = new ArrayList<>();
 
         for (Homework homework : homeworks) {
-            String deadline = homework.getFormattedDeadline();
-            deadlines.add(homework.getSubject() + ": " + deadline);
+            formattedHomeworks.add(homework.getFormattedHomework());
         }
 
-        return deadlines;
-    }
-
-    public void iterateWithConsumer(Consumer<Homework> c) {
-        for (Homework homework : homeworks) {
-            c.accept(homework);
-        }
+        return formattedHomeworks;
     }
 
 

@@ -40,6 +40,22 @@ public class Homework {
         return deadline.deadline.format(formatter);
     }
 
+    public String getFormattedHomework() {
+
+        StringBuilder outputValue = new StringBuilder(subject);
+
+        outputValue.append("\n");
+        outputValue.append(getDescription());
+        outputValue.append("\n");
+        outputValue.append(getFormattedDeadline());
+        outputValue.append("\n");
+        outputValue.append(getHowToSend());
+        outputValue.append("\n Expected score: ");
+        outputValue.append(getExpectedScore());
+
+        return outputValue.toString();
+    }
+
     public String getSubject() {
         return subject;
     }
