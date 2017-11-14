@@ -5,10 +5,7 @@ import ru.spbau.group202.notdeadbydeadline.Model.Homeworks;
 import ru.spbau.group202.notdeadbydeadline.UI.AddHomeworkActivity;
 
 public class AddHomeworkManager {
-
-    // TODO make Homeworks a singleton so the following will be unnecessary
     private Homeworks homeworks;
-
     private String subject;
     private String description;
     private int year;
@@ -62,9 +59,6 @@ public class AddHomeworkManager {
 
         // don't mind this line, it's for debug
         int abs = 80;
-
-
-
     }
 
 }
