@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Homework {
@@ -8,10 +9,11 @@ public class Homework {
     private boolean isRegular;
     private int expectedScore, actualScore = 0;
 
-    public Homework(String year, String month, String day,
-                    String hour, String minute, String subject,
-                    boolean isRegular, String description, String howToSend, int expectedScore) {
-        deadline = new Deadline(year, month, day, hour, minute);
+    public Homework(int year, int month, int day,
+                    int hour, int minute, String subject,
+                    boolean isRegular, String description,
+                    String howToSend, int expectedScore) {
+        deadline = new Deadline(LocalDateTime.of(year, month, day, hour, minute));
         this.subject = subject;
         this.isRegular = isRegular;
         this.description = description;

@@ -6,9 +6,10 @@ public class Homeworks {
 
     private ArrayList<Homework> homeworks = new ArrayList<>();
 
-    public void addHomework(String year, String month, String day,
-                            String hour, String minute, String subject,
-                            boolean isRegular, String description, String howToSend, int expectedScore) {
+    public void addHomework(int year, int month, int day,
+                            int hour, int minute, String subject,
+                            boolean isRegular, String description,
+                            String howToSend, int expectedScore) {
         homeworks.add(new Homework(year, month, day, hour, minute, subject,
                 isRegular, description, howToSend, expectedScore));
     }

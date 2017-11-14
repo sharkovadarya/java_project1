@@ -82,9 +82,11 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         String description = cursor.getString(10);
         String howToSend = cursor.getString(11);
 
-        Homework hw = new Homework(year, month, day, hour, minute, subject,
+        /*Homework hw = new Homework(year, month, day, hour, minute, subject,
                 isRegular, description, howToSend, expectedScore);
         hw.setActualScore(actualScore);
-        return hw;
+        return hw;*/
+
+        return null;
     }
 }
