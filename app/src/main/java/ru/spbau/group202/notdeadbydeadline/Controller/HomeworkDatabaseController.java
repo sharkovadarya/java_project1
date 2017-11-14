@@ -23,11 +23,30 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_DAY = "DAY";
     private static final String COLUMN_NAME_HOUR = "HOUR";
     private static final String COLUMN_NAME_MINUTE = "MINUTE";
-    private static final String COLUMN_NAME_IS_REGULAR = "REGULAR";
+    private static final String COLUMN_NAME_IS_REGULAR = "IS_REGULAR";
     private static final String COLUMN_NAME_EXPECTED_SCORE = "EXPECTED_SCORE";
     private static final String COLUMN_NAME_ACTUAL_SCORE = "ACTUAL_SCORE";
     private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
     private static final String COLUMN_NAME_HOW_TO_SEND = "HOW_TO_SEND";
+
+    private Homework getHomeworkByCursor(@NotNull Cursor cursor) {
+        String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
+        int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
+        int month = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MONTH));
+        int day = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY));
+        int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
+        int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
+        boolean isRegular = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_REGULAR)) == 1;
+        int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
+        int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
+        String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
+        String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
+
+        Homework homework = new Homework(year, month, day, hour, minute, subject,
+                isRegular, description, howToSend, expectedScore);
+        homework.setActualScore(actualScore);
+        return homework;
+    }
 
     public HomeworkDatabaseController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -76,33 +95,14 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public Homework getHomeworkByCursor(@NotNull Cursor cursor) {
-        String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
-        int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
-        int month = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MONTH));
-        int day = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY));
-        int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
-        int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
-        boolean isRegular = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_REGULAR)) == 1;
-        int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
-        int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
-        String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
-        String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
-
-        Homework homework = new Homework(year, month, day, hour, minute, subject,
-                isRegular, description, howToSend, expectedScore);
-        homework.setActualScore(actualScore);
-        return homework;
-    }
-
     public ArrayList<Homework> getActualHomeworks() {
         ArrayList<Homework> homeworks = new ArrayList<>();
-        try(SQLiteDatabase database = this.getReadableDatabase();
-            Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)){
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     Homework homework = getHomeworkByCursor(cursor);
-                    if(homework.hasPassed()){
+                    if (homework.hasPassed()) {
                         homeworks.add(homework);
                     }
                 } while (cursor.moveToNext());
@@ -117,11 +117,31 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 " WHERE " + COLUMN_NAME_SUBJECT + "=" + subject;
         ArrayList<Homework> homeworks = new ArrayList<>();
 
-        try(SQLiteDatabase database = this.getReadableDatabase();
-            Cursor cursor = database.rawQuery(query, null)){
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     homeworks.add(getHomeworkByCursor(cursor));
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return homeworks;
+    }
+
+    public ArrayList<Homework> getHomeworksByDay(int year, int month, int day) {
+        String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_YEAR + "=? " +
+                "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(year),
+                String.valueOf(month), String.valueOf(day)};
+        ArrayList<Homework> homeworks = new ArrayList<>();
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, selectionArgs)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Homework homework = getHomeworkByCursor(cursor);
+                    homeworks.add(homework);
                 } while (cursor.moveToNext());
             }
         }

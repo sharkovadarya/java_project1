@@ -53,12 +53,8 @@ public class AddHomeworkManager {
     }
 
     public void addNewHomework() {
-
-        homeworks.addHomework(year, month, day, hour, minutes,
-                subject, false, description, howToSend, expectedScore);
-
-        // don't mind this line, it's for debug
-        int abs = 80;
+        homeworks.addHomework(year, month, day, hour, minutes, subject,
+                false, description, howToSend, expectedScore);
     }
 
 }

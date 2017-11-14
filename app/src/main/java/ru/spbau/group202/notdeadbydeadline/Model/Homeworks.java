@@ -8,7 +8,11 @@ import java.util.function.Function;
 
 public class Homeworks {
 
-    private ArrayList<Homework> homeworks = new ArrayList<>();
+    private ArrayList<Homework> homeworks;
+
+    public Homeworks(ArrayList<Homework> homeworks) {
+        this.homeworks = homeworks;
+    }
 
     public void addHomework(int year, int month, int day,
                             int hour, int minute, String subject,
@@ -18,16 +22,7 @@ public class Homeworks {
                 isRegular, description, howToSend, expectedScore));
     }
 
-    public ArrayList<String> getFormattedHomeworks() {
-        ArrayList<String> formattedHomeworks = new ArrayList<>();
-
-        for (Homework homework : homeworks) {
-            formattedHomeworks.add(homework.getFormattedHomework());
-        }
-
-        return formattedHomeworks;
+    public void addHomework(Homework homework) {
+        homeworks.add(homework);
     }
-
-
-
 }
