@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 
 public class HomeworkDatabaseController extends SQLiteOpenHelper {
-    //TODO add constants for columns' names
     private static final String DATABASE_NAME = "Homeworks";
     private static final int DATABASE_VERSION = 1;
     private static final String COLUMN_NAME_ID = "ID";
@@ -35,7 +34,6 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d("Database", "onCreate database");
-        //TODO use constants
         db.execSQL("CREATE TABLE " + DATABASE_NAME + " (" +
                 COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NAME_SUBJECT + " TEXT, " +
@@ -61,19 +59,16 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, homework.getSubject());
-            //TODO decide about returning deadline
-            /*
-            values.put("YEAR", );
-            values.put("MONTH", );
-            values.put("DAY", );
-            values.put("HOUR", );
-            values.put("MINUTE", );
-            values.put("IS_REGULAR", );
-            values.put("EXPECTED_SCORE",);
-            values.put("ACTUAL_SCORE", );
-            values.put("DESCRIPTION", );
-            values.put("HOW_TO_SEND",);
-            */
+            values.put(COLUMN_NAME_YEAR, homework.getYear());
+            values.put(COLUMN_NAME_MONTH, homework.getMonth());
+            values.put(COLUMN_NAME_DAY, );
+            values.put(COLUMN_NAME_HOUR, );
+            values.put(COLUMN_NAME_MINUTE, );
+            values.put(COLUMN_NAME_IS_REGULAR, );
+            values.put(COLUMN_NAME_EXPECTED_SCORE,);
+            values.put(COLUMN_NAME_ACTUAL_SCORE, );
+            values.put(COLUMN_NAME_DESCRIPTION, );
+            values.put(COLUMN_NAME_HOW_TO_SEND,);
             long rowId = database.insert("Homeworks", null, values);
             Log.d("Database", "inserted row number " + rowId);
         }
@@ -93,7 +88,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
 
         Homework homework = new Homework(year, month, day, hour, minute, subject,
-                                         isRegular, description, howToSend, expectedScore);
+                isRegular, description, howToSend, expectedScore);
         homework.setActualScore(actualScore);
         return homework;
     }

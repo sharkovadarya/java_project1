@@ -64,6 +64,26 @@ public class Homework {
         return actualScore;
     }
 
+    public int getYear() {
+        return deadline.deadline.getYear();
+    }
+
+    public int getMonth() {
+        return deadline.deadline.getMonthValue();
+    }
+
+    public int getDay() {
+        return deadline.deadline.getDayOfMonth();
+    }
+
+    public int getHour() {
+        return deadline.deadline.getHour();
+    }
+
+    public int getMinute() {
+        return deadline.deadline.getMinute();
+    }
+
     private class Deadline {
         private LocalDateTime deadline;
 
