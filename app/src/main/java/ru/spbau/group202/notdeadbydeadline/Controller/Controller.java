@@ -12,4 +12,8 @@ public class Controller {
     private static Homeworks homeworks = new Homeworks();
 
     public static AddHomeworkManager addHomeworkManager = new AddHomeworkManager(homeworks);
+
+    public static Homeworks getHomeworks() {
+        return homeworks;
+    }
 }

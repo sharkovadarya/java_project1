@@ -8,9 +8,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
+import ru.spbau.group202.notdeadbydeadline.Model.Homework;
+import ru.spbau.group202.notdeadbydeadline.Model.Homeworks;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class HomeworkActivity extends AppCompatActivity {
+
+
+    ArrayList<String> outputValues = new ArrayList<>();
+    private void putStringToOutputValues(String outputValue) {
+        outputValues.add(outputValue);
+    }
+
+    public void outputHomeworks() {
+
+        Homeworks homeworks = Controller.getHomeworks();
+
+        homeworks.iterateWithConsumer(new Consumer<Homework>() {
+            @Override
+            public void accept(Homework homework) {
+                StringBuilder outputValue = new StringBuilder(homework.getSubject());
+
+                outputValue.append("\n");
+                outputValue.append(homework.getDescription());
+                outputValue.append("\n");
+                outputValue.append(homework.getFormattedDeadline());
+                outputValue.append("\n");
+                outputValue.append(homework.getHowToSend());
+                outputValue.append("\n Expected score: ");
+                outputValue.append(homework.getExpectedScore());
+
+                putStringToOutputValues(outputValue.toString());
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +65,7 @@ public class HomeworkActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Homework");

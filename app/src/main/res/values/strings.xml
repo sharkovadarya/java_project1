@@ -24,6 +24,9 @@
     <string name="set_time">Set due date time</string>
     <string name="description">Description</string>
     <string name="expected_score">Expected Score</string>
+    <string name="is_regular">Regular</string>
+    <string name="finish_button">Add</string>
+    <string name="submit_way">How to submit</string>
 
 
 </resources>

@@ -1,12 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
-import android.app.DatePickerDialog;
-import android.database.ContentObservable;
 import android.support.v4.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
-import android.icu.util.Calendar;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,19 +13,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class AddHomeworkActivity extends AppCompatActivity {
-    private DatePicker datePicker;
-    private Calendar calendar;
 
     public void getSubject() {
+
         // TODO fetch subjects array from a list of subjects which will be fetched from Schedule
         String[] source = new String[]{"Algebra", "Discrete mathematics",
                 "Algorithms", "Functional programming",
@@ -50,13 +42,10 @@ public class AddHomeworkActivity extends AppCompatActivity {
             }
         });
 
-        final String[] subject = new String[1];
-
         actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Controller.addHomeworkManager.storeSubject((actv.getText().toString()));
-                subject[0] = actv.getText().toString();
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -68,8 +57,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     public void getDescription() {
@@ -97,6 +84,37 @@ public class AddHomeworkActivity extends AppCompatActivity {
         });
     }
 
+    public void getHowToSend() {
+        final EditText editText = findViewById(R.id.submitWayEditText);
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("TAG", "Done pressed");
+                }
+                return false;
+            }
+        });
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                Controller.addHomeworkManager.storeHowToSend(editText.getText().toString());
+
+                View view1 = getCurrentFocus();
+                if (view1 != null) {
+                    InputMethodManager inputManager =
+                            (InputMethodManager) getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(view1.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+                return false;
+            }
+        });
+    }
+
     public void setTime(View view) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "timePicker");
@@ -107,6 +125,10 @@ public class AddHomeworkActivity extends AppCompatActivity {
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /*public void getRegularity() {
+        CheckBox checkBox = findViewById(R.id.isRegularCheckBox);
+
+    }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +142,17 @@ public class AddHomeworkActivity extends AppCompatActivity {
         getSubject();
         getDescription();
         getExpectedScore();
+        getHowToSend();
+
+        Button addHomeworkButton = findViewById(R.id.finishButton);
+        addHomeworkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Controller.addHomeworkManager.addNewHomework();
+                finish();
+            }
+        });
     }
 
 

@@ -5,27 +5,27 @@
     build-mode="COLD"
     density="420dpi"
     format="10"
-    ir-eligibility="FIELD_TYPE_CHANGE"
+    ir-eligibility="CLASS_ADDED"
     plugin-version="3.0.0"
-    timestamp="1510663639393"
+    timestamp="1510678662974"
     token="-4740977083520810803"
     verifier="COLD_SWAP_REQUESTED" >
 
     <task
         name="javac"
-        duration="161" />
+        duration="179" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="23" />
+        duration="30" />
     <task
         name="verifier"
-        duration="3" />
+        duration="9" />
 
     <artifact
-        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
+        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
         type="SPLIT" />
     <artifact
         location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
@@ -34,19 +34,19 @@
         location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
         type="SPLIT" />
     <artifact
-        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
+        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
         type="SPLIT" />
     <artifact
         location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_5.apk"
         type="SPLIT" />
     <artifact
-        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
-        type="SPLIT" />
-    <artifact
         location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_6.apk"
         type="SPLIT" />
     <artifact
-        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
+        location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
         type="SPLIT" />
     <artifact
         location="/home/darya/AndroidStudioProjects/java_project1/app/build/outputs/apk/debug/app-debug.apk"
@@ -95,11 +95,11 @@
     </build>
     <build
         build-mode="COLD"
-        ir-eligibility="FIELD_TYPE_CHANGE"
-        timestamp="1510663639393"
+        ir-eligibility="CLASS_ADDED"
+        timestamp="1510678662974"
         verifier="COLD_SWAP_REQUESTED" >
         <artifact
-            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
+            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
             type="SPLIT" />
         <artifact
             location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_1.apk"
@@ -108,19 +108,19 @@
             location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_4.apk"
             type="SPLIT" />
         <artifact
-            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_3.apk"
+            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
             type="SPLIT" />
         <artifact
             location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_5.apk"
             type="SPLIT" />
         <artifact
-            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
-            type="SPLIT" />
-        <artifact
             location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_6.apk"
             type="SPLIT" />
         <artifact
-            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_7.apk"
+            location="/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/split-apk/debug/slices/slice_9.apk"
             type="SPLIT" />
         <artifact
             location="/home/darya/AndroidStudioProjects/java_project1/app/build/outputs/apk/debug/app-debug.apk"

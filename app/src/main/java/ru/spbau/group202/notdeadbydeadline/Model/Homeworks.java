@@ -1,6 +1,10 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Homeworks {
 
@@ -25,6 +29,13 @@ public class Homeworks {
 
         return deadlines;
     }
+
+    public void iterateWithConsumer(Consumer<Homework> c) {
+        for (Homework homework : homeworks) {
+            c.accept(homework);
+        }
+    }
+
 
 
 }

@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Tue Nov 14 15:47:20 MSK 2017
+#Tue Nov 14 19:57:45 MSK 2017
 210.set=ANDROID_RESOURCE
 14.set=ANDROID_RESOURCE
 180.file=/home/darya/AndroidStudioProjects/java_project1/app/build/intermediates/res/debug/resources-debug.ap_/res/drawable-anydpi-v21/design_ic_visibility.xml
