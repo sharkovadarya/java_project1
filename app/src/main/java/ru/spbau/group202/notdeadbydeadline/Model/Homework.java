@@ -35,17 +35,45 @@ public class Homework {
         }*/
     }
 
-    public Deadline getDeadline() {
-        return deadline;
-    }
-
     public String getFormattedDeadline() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
-        return deadline.getDeadlineDate().format(formatter);
+        return deadline.deadline.format(formatter);
     }
 
     public String getSubject() {
         return subject;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isRegular() {
+        return isRegular;
+    }
+
+    public String getHowToSend() {
+        return howToSend;
+    }
+
+    public int getExpectedScore() {
+        return expectedScore;
+    }
+
+    public int getActualScore() {
+        return actualScore;
+    }
+
+    private class Deadline {
+        private LocalDateTime deadline;
+
+        public Deadline(LocalDateTime deadline) {
+            this.deadline = deadline;
+        }
+
+        public boolean hasPassed() {
+            return LocalDateTime.now().compareTo(deadline) > 0;
+        }
+
+    }
 }

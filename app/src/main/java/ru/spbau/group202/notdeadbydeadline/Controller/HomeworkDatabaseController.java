@@ -13,7 +13,20 @@ import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 
 public class HomeworkDatabaseController extends SQLiteOpenHelper {
     //TODO add constants for columns' names
+    private static final String DATABASE_NAME = "Homeworks";
     private static final int DATABASE_VERSION = 1;
+    private static final String COLUMN_NAME_ID = "ID";
+    private static final String COLUMN_NAME_SUBJECT = "SUBJECT";
+    private static final String COLUMN_NAME_YEAR = "YEAR";
+    private static final String COLUMN_NAME_MONTH = "MONTH";
+    private static final String COLUMN_NAME_DAY = "DAY";
+    private static final String COLUMN_NAME_HOUR = "HOUR";
+    private static final String COLUMN_NAME_MINUTE = "MINUTE";
+    private static final String COLUMN_NAME_IS_REGULAR = "REGULAR";
+    private static final String COLUMN_NAME_EXPECTED_SCORE = "EXPECTED_SCORE";
+    private static final String COLUMN_NAME_ACTUAL_SCORE = "ACTUAL_SCORE";
+    private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
+    private static final String COLUMN_NAME_HOW_TO_SEND = "HOW_TO_SEND";
 
     public HomeworkDatabaseController(Context context, String databaseName) {
         super(context, databaseName, null, DATABASE_VERSION);
@@ -23,70 +36,65 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d("Database", "onCreate database");
         //TODO use constants
-        db.execSQL("CREATE TABLE " + "Homeworks" + " (" +
-                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "SUBJECT TEXT, " +
-                "YEAR INTEGER, " +
-                "MONTH INTEGER, " +
-                "DAY INTEGER, " +
-                "HOUR INTEGER, " +
-                "MINUTE INTEGER, " +
-                "IS_REGULAR INTEGER, " +
-                "EXPECTED_SCORE INTEGER, " +
-                "ACTUAL_SCORE INTEGER, " +
-                "DESCRIPTION TEXT, " +
-                "HOW_TO_SEND TEXT" + ");");
+        db.execSQL("CREATE TABLE " + DATABASE_NAME + " (" +
+                COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME_SUBJECT + " TEXT, " +
+                COLUMN_NAME_YEAR + " INTEGER, " +
+                COLUMN_NAME_MONTH + " INTEGER, " +
+                COLUMN_NAME_DAY + " INTEGER, " +
+                COLUMN_NAME_HOUR + " INTEGER, " +
+                COLUMN_NAME_MINUTE + " INTEGER, " +
+                COLUMN_NAME_IS_REGULAR + " INTEGER, " +
+                COLUMN_NAME_EXPECTED_SCORE + " INTEGER, " +
+                COLUMN_NAME_ACTUAL_SCORE + " INTEGER, " +
+                COLUMN_NAME_DESCRIPTION + " TEXT, " +
+                COLUMN_NAME_HOW_TO_SEND + " TEXT" + ");");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldDATABASE_VERSION, int newDATABASE_VERSION) {
-        db.execSQL("DROP TABLE IF EXISTS " + "Homeworks");
+        db.execSQL("DROP TABLE IF EXISTS " + DATABASE_NAME);
         onCreate(db);
     }
 
-    public void addHomework(Homework hw) {
+    public void addHomework(Homework homework) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
-            ContentValues cv = new ContentValues();
-            cv.put("SUBJECT", hw.getSubject());
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_SUBJECT, homework.getSubject());
             //TODO decide about returning deadline
             /*
-            Deadline deadline = hw.getDeadline();
-            cv.put("YEAR", );
-            cv.put("MONTH", );
-            cv.put("DAY", );
-            cv.put("HOUR", );
-            cv.put("MINUTE", );
-            cv.put("IS_REGULAR", );
-            cv.put("EXPECTED_SCORE",);
-            cv.put("ACTUAL_SCORE", );
-            cv.put("DESCRIPTION", );
-            cv.put("HOW_TO_SEND",);
+            values.put("YEAR", );
+            values.put("MONTH", );
+            values.put("DAY", );
+            values.put("HOUR", );
+            values.put("MINUTE", );
+            values.put("IS_REGULAR", );
+            values.put("EXPECTED_SCORE",);
+            values.put("ACTUAL_SCORE", );
+            values.put("DESCRIPTION", );
+            values.put("HOW_TO_SEND",);
             */
-            long rowId = database.insert("Homeworks", null, cv);
+            long rowId = database.insert("Homeworks", null, values);
             Log.d("Database", "inserted row number " + rowId);
         }
     }
 
     public Homework getHomeworkByCursor(@NotNull Cursor cursor) {
-        cursor.moveToFirst();
-        int ID = cursor.getInt(cursor.getColumnIndex("ID"));
-        String subject = cursor.getString(1);
-        int year = cursor.getInt(2);
-        int month = cursor.getInt(3);
-        int day = cursor.getInt(4);
-        int hour = cursor.getInt(5);
-        int minute = cursor.getInt(6);
-        boolean isRegular = cursor.getInt(7) == 1;
-        int expectedScore = cursor.getInt(8);
-        int actualScore = cursor.getInt(9);
-        String description = cursor.getString(10);
-        String howToSend = cursor.getString(11);
+        String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
+        int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
+        int month = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MONTH));
+        int day = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY));
+        int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
+        int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
+        boolean isRegular = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_REGULAR)) == 1;
+        int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
+        int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
+        String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
+        String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
 
-        /*Homework hw = new Homework(year, month, day, hour, minute, subject,
-                isRegular, description, howToSend, expectedScore);
-        hw.setActualScore(actualScore);
-        return hw;*/
-
-        return null;
+        Homework homework = new Homework(year, month, day, hour, minute, subject,
+                                         isRegular, description, howToSend, expectedScore);
+        homework.setActualScore(actualScore);
+        return homework;
     }
 }
