@@ -9,6 +9,8 @@ import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 
 public class HomeworkDatabaseController extends SQLiteOpenHelper {
@@ -27,8 +29,8 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
     private static final String COLUMN_NAME_HOW_TO_SEND = "HOW_TO_SEND";
 
-    public HomeworkDatabaseController(Context context, String databaseName) {
-        super(context, databaseName, null, DATABASE_VERSION);
+    public HomeworkDatabaseController(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -61,15 +63,15 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             values.put(COLUMN_NAME_SUBJECT, homework.getSubject());
             values.put(COLUMN_NAME_YEAR, homework.getYear());
             values.put(COLUMN_NAME_MONTH, homework.getMonth());
-            values.put(COLUMN_NAME_DAY, );
-            values.put(COLUMN_NAME_HOUR, );
-            values.put(COLUMN_NAME_MINUTE, );
-            values.put(COLUMN_NAME_IS_REGULAR, );
-            values.put(COLUMN_NAME_EXPECTED_SCORE,);
-            values.put(COLUMN_NAME_ACTUAL_SCORE, );
-            values.put(COLUMN_NAME_DESCRIPTION, );
-            values.put(COLUMN_NAME_HOW_TO_SEND,);
-            long rowId = database.insert("Homeworks", null, values);
+            values.put(COLUMN_NAME_DAY, homework.getDay());
+            values.put(COLUMN_NAME_HOUR, homework.getHour());
+            values.put(COLUMN_NAME_MINUTE, homework.getMinute());
+            values.put(COLUMN_NAME_IS_REGULAR, homework.isRegular() ? 1 : 0);
+            values.put(COLUMN_NAME_EXPECTED_SCORE, homework.getExpectedScore());
+            values.put(COLUMN_NAME_ACTUAL_SCORE, homework.getActualScore());
+            values.put(COLUMN_NAME_DESCRIPTION, homework.getDescription());
+            values.put(COLUMN_NAME_HOW_TO_SEND, homework.getHowToSend());
+            long rowId = database.insert(DATABASE_NAME, null, values);
             Log.d("Database", "inserted row number " + rowId);
         }
     }
@@ -91,5 +93,39 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 isRegular, description, howToSend, expectedScore);
         homework.setActualScore(actualScore);
         return homework;
+    }
+
+    public ArrayList<Homework> getActualHomeworks() {
+        ArrayList<Homework> homeworks = new ArrayList<>();
+        try(SQLiteDatabase database = this.getReadableDatabase();
+            Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)){
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Homework homework = getHomeworkByCursor(cursor);
+                    if(homework.hasPassed()){
+                        homeworks.add(homework);
+                    }
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return homeworks;
+    }
+
+    public ArrayList<Homework> getHomeworksBySubject(String subject) {
+        String query = "SELECT * FROM " + DATABASE_NAME +
+                " WHERE " + COLUMN_NAME_SUBJECT + "=" + subject;
+        ArrayList<Homework> homeworks = new ArrayList<>();
+
+        try(SQLiteDatabase database = this.getReadableDatabase();
+            Cursor cursor = database.rawQuery(query, null)){
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    homeworks.add(getHomeworkByCursor(cursor));
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return homeworks;
     }
 }

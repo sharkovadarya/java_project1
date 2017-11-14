@@ -84,6 +84,10 @@ public class Homework {
         return deadline.deadline.getMinute();
     }
 
+    public boolean hasPassed() {
+        return deadline.hasPassed();
+    }
+
     private class Deadline {
         private LocalDateTime deadline;
 

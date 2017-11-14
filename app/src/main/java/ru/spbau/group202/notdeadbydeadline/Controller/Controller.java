@@ -11,6 +11,8 @@ public class Controller {
     // then there will be no point in statics?
     private static Homeworks homeworks = new Homeworks();
 
+    private HomeworkDatabaseController homeworkDatabase;
+
     public static AddHomeworkManager addHomeworkManager = new AddHomeworkManager(homeworks);
 
     public static Homeworks getHomeworks() {
