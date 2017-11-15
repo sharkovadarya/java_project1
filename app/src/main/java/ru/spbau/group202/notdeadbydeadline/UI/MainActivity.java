@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import java.time.LocalDateTime;
 
+import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 import ru.spbau.group202.notdeadbydeadline.R;
 
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Controller.createDatabases(this);
 
         outputCurrentDate();
     }

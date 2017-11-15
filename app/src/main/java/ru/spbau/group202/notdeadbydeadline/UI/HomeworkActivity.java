@@ -30,63 +30,29 @@ public class HomeworkActivity extends AppCompatActivity {
     // TODO that's not how it's supposed to be
     ArrayList<String> subjects = new ArrayList<>();
 
-    private void debuggingThrashMethod() {
-        subjects.add("Java");
-        subjects.add("Algebra");
-        subjects.add("Algorithms");
-        subjects.add("Functional Programming");
-        subjects.add("Discrete Mathematics");
-    }
-
     public void displaySubjects() {
-        debuggingThrashMethod();
+        subjects = Controller.getSubjectList();
 
-        ListView lv = (ListView) findViewById(R.id.subjectListView);
+        final ListView lv = (ListView) findViewById(R.id.subjectListView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.custom_textview_for_bigger_listview, subjects);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getApplicationContext(), DisplayHomeworkActivity.class);
+                intent.putExtra("SUBJECT_NAME", (String) lv.getItemAtPosition(position));
+                startActivity(intent);
             }
         });
     }
 
-    /*public void addButtons() {
-
-        // TODO Literally not how it's supposed to be
-        debuggingThrashMethod();
-
-        LinearLayout linearLayout = findViewById(R.id.homeworkActivityLinearLayout);
-        // TODO do I need to? It's already set in XML
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        for (int i = 0; i < subjects.size(); ++i) {
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-
-            LinearLayout.LayoutParams layoutParams =
-                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-            //layoutParams.setMargins(30, 20 + i);
-
-            Button button = new Button(this);
-            //Button button = new Button(this, null, R.style.Widget_AppCompat_Button_Colored);
-
-            String subject = subjects.get(i);
-            button.setText(subject);
-            button.setId(i);
-            row.addView(button);
-
-            linearLayout.addView(row);
-        }
 
 
-
-    }*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        displaySubjects();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +66,7 @@ public class HomeworkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddHomeworkActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
