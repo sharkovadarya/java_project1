@@ -2,6 +2,8 @@ package ru.spbau.group202.notdeadbydeadline.Model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Homework {
     private Deadline deadline;
@@ -35,25 +37,35 @@ public class Homework {
         }*/
     }
 
+    public ArrayList<String> getDeadlineDetails() {
+        ArrayList<String> deadlineDetails = new ArrayList<>();
+        deadlineDetails.add(getSubject());
+        deadlineDetails.add(getFormattedDeadline());
+
+        return deadlineDetails;
+    }
+
     public String getFormattedDeadline() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
         return deadline.deadline.format(formatter);
     }
 
+    public ArrayList<String> getHomeworkDetails() {
+        ArrayList<String> homeworkDetails = new ArrayList<>();
+
+        homeworkDetails.add(getDescription());
+        homeworkDetails.add(getFormattedDeadline());
+        homeworkDetails.add(getHowToSend());
+        homeworkDetails.add(Integer.toString(getExpectedScore()));
+
+        return homeworkDetails;
+    }
+
     public String getFormattedHomework() {
 
-        StringBuilder outputValue = new StringBuilder(subject);
+        String output = "Description: " + getDescription() + "\nDeadline: " + getFormattedDeadline() + "\nSubmit as: " + getHowToSend() + "\nExpected score: " + getExpectedScore();
 
-        outputValue.append("\n");
-        outputValue.append(getDescription());
-        outputValue.append("\n");
-        outputValue.append(getFormattedDeadline());
-        outputValue.append("\n");
-        outputValue.append(getHowToSend());
-        outputValue.append("\n Expected score: ");
-        outputValue.append(getExpectedScore());
-
-        return outputValue.toString();
+        return output;
     }
 
     public String getSubject() {
