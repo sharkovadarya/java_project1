@@ -1,9 +1,14 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.icu.util.Calendar;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,15 +18,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class AddHomeworkActivity extends AppCompatActivity {
 
-    private Controller controller;
+    private static HomeworkFieldsAccumulator hfa = new HomeworkFieldsAccumulator();
 
     public void getSubject() {
 
@@ -48,7 +55,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                controller.addHomeworkManager.storeSubject((actv.getText().toString()));
+                hfa.storeSubject((actv.getText().toString()));
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -68,7 +75,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                controller.addHomeworkManager.storeDescription(editText.getText().toString());
+                hfa.storeDescription(editText.getText().toString());
                 return false; // TODO because we didn't consume any action?
             }
         });
@@ -80,7 +87,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                controller.addHomeworkManager.storeExpectedSCore(
+                hfa.storeExpectedSCore(
                         Integer.parseInt(editText.getText().toString()));
                 return false;
             }
@@ -103,7 +110,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                controller.addHomeworkManager.storeHowToSend(editText.getText().toString());
+                hfa.storeHowToSend(editText.getText().toString());
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -120,7 +127,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
     public void setTime(View view) {
         TimePickerFragment timePickerFragment = new TimePickerFragment();
-        timePickerFragment.setController(controller);
         //DialogFragment newFragment = new TimePickerFragment();
 
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
@@ -128,7 +134,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
     public void setDate(View view) {
         DatePickerFragment datePickerFragment = new DatePickerFragment();
-        datePickerFragment.setController(controller);
 
         datePickerFragment.show(getSupportFragmentManager(), "datePicker");
     }
@@ -147,8 +152,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add h/w entry");
         }
 
-        controller = new Controller(this);
-
         getSubject();
         getDescription();
         getExpectedScore();
@@ -159,10 +162,103 @@ public class AddHomeworkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                controller.addHomeworkManager.addNewHomework();
+                hfa.addNewHomework();
                 finish();
             }
         });
+    }
+
+    private static class HomeworkFieldsAccumulator {
+        private String subject;
+        private String description;
+        private int year;
+        private int month;
+        private int day;
+        private int hour;
+        private int minutes;
+        private int expectedScore;
+        private boolean isRegular;
+        private String howToSend;
+
+        public void storeSubject(String subject) {
+            this.subject = subject;
+        }
+
+        public void storeDescription(String description) {
+            this.description = description;
+        }
+
+        public void storeExpectedSCore(int expectedScore) {
+            this.expectedScore = expectedScore;
+        }
+
+        public void storeDate(int year, int month, int day) {
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+
+        public void storeTime(int hour, int minutes) {
+            this.hour = hour;
+            this.minutes = minutes;
+        }
+
+    /*public void storeRegularity(boolean isRegular) {
+        this.isRegular = isRegular;
+    }*/
+
+        public void storeHowToSend(String howToSend) {
+            this.howToSend = howToSend;
+        }
+
+        public void addNewHomework() {
+            Controller.addHomework(year, month, day, hour, minutes,
+                                   subject, false, description,
+                                   howToSend, expectedScore);
+        }
+
+
+
+    }
+
+    public static class TimePickerFragment extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            hfa.storeTime(hourOfDay, minute);
+        }
+    }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            hfa.storeDate(year, month, day);
+        }
     }
 
 
