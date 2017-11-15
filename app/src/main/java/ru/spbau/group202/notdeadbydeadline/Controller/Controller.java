@@ -18,6 +18,7 @@ public class Controller {
 
         for (Homework homework : homeworks) {
             formattedHomeworks.add(homework.getHomeworkDetails());
+            formattedHomeworks.add(homework.getHomeworkDetails());
         }
 
         return formattedHomeworks;

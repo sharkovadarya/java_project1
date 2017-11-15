@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -17,9 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
@@ -47,6 +52,29 @@ public class MainActivity extends AppCompatActivity
         TextView tv = findViewById(R.id.currentDate);
         tv.setText(date);
         tv.setFocusable(false);
+    }
+
+    private void outputDeadlines() {
+        ArrayList<ArrayList<String>> deadlinesDetails = Controller.getFormattedActualDeadlines();
+
+        ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
+        for (ArrayList<String> deadlineDetails : deadlinesDetails) {
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(deadlineDetails.get(0));
+
+            stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
+                    0, stringBuilder.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(" ");
+            stringBuilder.append(deadlineDetails.get(1));
+
+            formattedDeadlines.add(stringBuilder);
+        }
+
+        ListView lv = findViewById(R.id.deadlinesList);
+        ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
+                R.layout.custom_homework_listview_entry,
+                formattedDeadlines);
+        lv.setAdapter(adapter);
     }
 
     @Override
@@ -77,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         Controller.createDatabases(this);
 
         outputCurrentDate();
+        outputDeadlines();
     }
 
     @Override
