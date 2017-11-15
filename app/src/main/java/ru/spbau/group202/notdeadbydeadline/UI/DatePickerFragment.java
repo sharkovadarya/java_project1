@@ -2,6 +2,7 @@ package ru.spbau.group202.notdeadbydeadline.UI;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.database.ContentObservable;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -11,6 +12,12 @@ import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
+
+    Controller controller;
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -25,6 +32,6 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        Controller.addHomeworkManager.storeDate(year, month, day);
+        controller.addHomeworkManager.storeDate(year, month, day);
     }
 }

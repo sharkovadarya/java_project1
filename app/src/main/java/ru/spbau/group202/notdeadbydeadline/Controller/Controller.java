@@ -2,13 +2,10 @@ package ru.spbau.group202.notdeadbydeadline.Controller;
 
 import android.content.Context;
 
-import java.lang.ref.WeakReference;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 import ru.spbau.group202.notdeadbydeadline.Model.Homeworks;
-import ru.spbau.group202.notdeadbydeadline.UI.AddHomeworkActivity;
 
 public class Controller {
     static private HomeworkDatabaseController homeworkDatabase;
