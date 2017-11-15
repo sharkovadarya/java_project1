@@ -28,6 +28,7 @@
     <string name="finish_button">Add</string>
     <string name="submit_way">How to submit</string>
     <string name="title_activity_display_homework">DisplayHomeworkActivity</string>
+    <string name="title_activity_study_materials">StudyMaterialsActivity</string>
 
 
 </resources>

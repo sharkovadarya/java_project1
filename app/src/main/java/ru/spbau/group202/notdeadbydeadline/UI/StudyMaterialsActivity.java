@@ -1,13 +1,8 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.text.SpannableString;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,42 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import java.time.LocalDateTime;
-
-import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
-import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 import ru.spbau.group202.notdeadbydeadline.R;
 
-public class MainActivity extends AppCompatActivity
+public class StudyMaterialsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private void outputCurrentDate() {
-        LocalDateTime currentDate = LocalDateTime.now();
-
-        StringBuilder dateStringBuilder =
-                new StringBuilder(Integer.toString(currentDate.getDayOfMonth()));
-        dateStringBuilder.append("\n");
-        dateStringBuilder.append(currentDate.getMonth());
-        dateStringBuilder.append("\n");
-        int pos = dateStringBuilder.length();
-        dateStringBuilder.append(currentDate.getDayOfWeek());
-        String dateString = dateStringBuilder.toString();
-
-        SpannableString date = new SpannableString(dateString);
-        date.setSpan(new RelativeSizeSpan(3f), 0, 2, 0);
-        date.setSpan(new StyleSpan(Typeface.ITALIC), pos, dateString.length(), 0);
-
-        TextView tv = findViewById(R.id.currentDate);
-        tv.setText(date);
-        tv.setFocusable(false);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_study_materials);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -73,10 +42,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        Controller.createDatabases(this);
-
-        outputCurrentDate();
     }
 
     @Override
@@ -92,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.study_materials, menu);
         return true;
     }
 
@@ -117,19 +82,19 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_deadlines) {
-            Intent intent = new Intent(this, DeadlinesActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_homework) {
-            Intent intent = new Intent(this, HomeworkActivity.class);
-            startActivity(intent);
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_schedule) {
+        } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_studymaterials) {
-            Intent intent = new Intent(this, StudyMaterialsActivity.class);
-            startActivity(intent);
-        } 
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -114,11 +114,12 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
 
     public ArrayList<Homework> getHomeworksBySubject(@NotNull String subject) {
         String query = "SELECT * FROM " + DATABASE_NAME +
-                " WHERE " + COLUMN_NAME_SUBJECT + "=" + "'" + subject + "'";
+                " WHERE " + COLUMN_NAME_SUBJECT + "=" + "?";
         ArrayList<Homework> homeworks = new ArrayList<>();
+        String[] selectionArgs = new String[]{String.valueOf(subject)};
 
         try (SQLiteDatabase database = this.getReadableDatabase();
-             Cursor cursor = database.rawQuery(query, null)) {
+             Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     homeworks.add(getHomeworkByCursor(cursor));

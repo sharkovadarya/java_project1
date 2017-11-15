@@ -55,6 +55,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.spbau.group202.notdeadbydeadline.UI.HomeworkActivity" />
         </activity>
+        <activity
+            android:name=".UI.StudyMaterialsActivity"
+            android:label="@string/title_activity_study_materials"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
