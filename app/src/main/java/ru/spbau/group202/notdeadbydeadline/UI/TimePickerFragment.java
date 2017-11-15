@@ -13,6 +13,12 @@ import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 public class TimePickerFragment extends DialogFragment
                                 implements TimePickerDialog.OnTimeSetListener {
 
+    Controller controller;
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time as the default values for the picker
@@ -26,6 +32,6 @@ public class TimePickerFragment extends DialogFragment
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Controller.addHomeworkManager.storeTime(hourOfDay, minute);
+        controller.addHomeworkManager.storeTime(hourOfDay, minute);
     }
 }

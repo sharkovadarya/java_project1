@@ -29,25 +29,6 @@ public class HomeworkActivity extends AppCompatActivity {
 
     public void outputHomeworks() {
 
-        Homeworks homeworks = Controller.getHomeworks();
-
-        homeworks.iterateWithConsumer(new Consumer<Homework>() {
-            @Override
-            public void accept(Homework homework) {
-                StringBuilder outputValue = new StringBuilder(homework.getSubject());
-
-                outputValue.append("\n");
-                outputValue.append(homework.getDescription());
-                outputValue.append("\n");
-                outputValue.append(homework.getFormattedDeadline());
-                outputValue.append("\n");
-                outputValue.append(homework.getHowToSend());
-                outputValue.append("\n Expected score: ");
-                outputValue.append(homework.getExpectedScore());
-
-                putStringToOutputValues(outputValue.toString());
-            }
-        });
     }
 
     @Override

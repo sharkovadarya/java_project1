@@ -21,6 +21,8 @@ import ru.spbau.group202.notdeadbydeadline.R;
 
 public class AddHomeworkActivity extends AppCompatActivity {
 
+    private Controller controller;
+
     public void getSubject() {
 
         // TODO fetch subjects array from a list of subjects which will be fetched from Schedule
@@ -46,7 +48,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Controller.addHomeworkManager.storeSubject((actv.getText().toString()));
+                controller.addHomeworkManager.storeSubject((actv.getText().toString()));
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -66,7 +68,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Controller.addHomeworkManager.storeDescription(editText.getText().toString());
+                controller.addHomeworkManager.storeDescription(editText.getText().toString());
                 return false; // TODO because we didn't consume any action?
             }
         });
@@ -78,7 +80,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Controller.addHomeworkManager.storeExpectedSCore(
+                controller.addHomeworkManager.storeExpectedSCore(
                         Integer.parseInt(editText.getText().toString()));
                 return false;
             }
@@ -101,7 +103,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Controller.addHomeworkManager.storeHowToSend(editText.getText().toString());
+                controller.addHomeworkManager.storeHowToSend(editText.getText().toString());
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -117,13 +119,18 @@ public class AddHomeworkActivity extends AppCompatActivity {
     }
 
     public void setTime(View view) {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
+        TimePickerFragment timePickerFragment = new TimePickerFragment();
+        timePickerFragment.setController(controller);
+        //DialogFragment newFragment = new TimePickerFragment();
+
+        timePickerFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     public void setDate(View view) {
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "datePicker");
+        DatePickerFragment datePickerFragment = new DatePickerFragment();
+        datePickerFragment.setController(controller);
+
+        datePickerFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
     /*public void getRegularity() {
@@ -140,6 +147,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add h/w entry");
         }
 
+        controller = new Controller(this);
+
         getSubject();
         getDescription();
         getExpectedScore();
@@ -150,7 +159,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Controller.addHomeworkManager.addNewHomework();
+                controller.addHomeworkManager.addNewHomework();
                 finish();
             }
         });
