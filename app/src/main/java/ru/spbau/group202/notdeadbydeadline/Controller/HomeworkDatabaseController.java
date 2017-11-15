@@ -49,7 +49,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     }
 
     public HomeworkDatabaseController(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
