@@ -13,7 +13,7 @@ public class Controller {
     private static SubjectDatabaseController subjectDatabase;
     private static Set<String> subjectList;
 
-    private static ArrayList<ArrayList<String>> getFormattedHomeworks(ArrayList<Homework> homeworks) {
+    private static ArrayList<ArrayList<String>> getHomeworksList(ArrayList<Homework> homeworks) {
         ArrayList<ArrayList<String>> formattedHomeworks = new ArrayList<>();
 
         for (Homework homework : homeworks) {
@@ -23,7 +23,7 @@ public class Controller {
         return formattedHomeworks;
     }
 
-    private static ArrayList<ArrayList<String>> getFormattedDeadlines(ArrayList<Homework> homeworks) {
+    private static ArrayList<ArrayList<String>> getDeadlinesList(ArrayList<Homework> homeworks) {
         ArrayList<ArrayList<String>> formattedDeadlines = new ArrayList<>();
 
         for (Homework homework : homeworks) {
@@ -33,20 +33,36 @@ public class Controller {
         return formattedDeadlines;
     }
 
-    public static ArrayList<ArrayList<String>> getFormattedActualDeadlines() {
-        return getFormattedDeadlines(homeworkDatabase.getActualHomeworks());
+    public static ArrayList<ArrayList<String>> getActualDeadlines() {
+        return getDeadlinesList(homeworkDatabase.getActualHomeworks());
     }
 
-    public static ArrayList<ArrayList<String>> getFormattedActualHomeworks() {
-        return getFormattedHomeworks(homeworkDatabase.getActualHomeworks());
+    public static ArrayList<ArrayList<String>> getActualHomeworks() {
+        return getHomeworksList(homeworkDatabase.getActualHomeworks());
     }
 
-    public static ArrayList<ArrayList<String>> getFormattedHomeworksBySubject(String subject) {
-        return getFormattedHomeworks(homeworkDatabase.getHomeworksBySubject(subject));
+    public static ArrayList<ArrayList<String>> getHomeworksBySubject(String subject) {
+        return getHomeworksList(homeworkDatabase.getHomeworksBySubject(subject));
     }
 
-    public static ArrayList<ArrayList<String>> getFormattedHomeworksByDay(int year, int month, int day) {
-        return getFormattedHomeworks(homeworkDatabase.getHomeworksByDay(year, month, day));
+    public static ArrayList<ArrayList<String>> getHomeworksByDay(int year, int month, int day) {
+        return getHomeworksList(homeworkDatabase.getHomeworksByDay(year, month, day));
+    }
+
+    public static ArrayList<ArrayList<String>> getDeadlinesByDay(int year, int month, int day) {
+        return getDeadlinesList(homeworkDatabase.getHomeworksByDay(year, month, day));
+    }
+
+    public static ArrayList<ArrayList<String>> getDeadlinesBetweenDates(int year1, int month1, int day1,
+                                                                       int year2, int month2, int day2) {
+        return getDeadlinesList(homeworkDatabase.getHomeworksBetweenDates(year1, month1, day1,
+                year2, month2, day2));
+    }
+
+    public static ArrayList<ArrayList<String>> getHomeworksBetweenDates(int year1, int month1, int day1,
+                                                                        int year2, int month2, int day2) {
+        return getHomeworksList(homeworkDatabase.getHomeworksBetweenDates(year1, month1, day1,
+                year2, month2, day2));
     }
 
     public static ArrayList<String> getSubjectList() {

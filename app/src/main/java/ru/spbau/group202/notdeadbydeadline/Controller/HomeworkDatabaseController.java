@@ -149,4 +149,22 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
 
         return homeworks;
     }
+
+    public ArrayList<Homework> getHomeworksBetweenDates(int year1, int month1, int day1,
+                                                        int year2, int month2, int day2) {
+        ArrayList<Homework> homeworks = new ArrayList<>();
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Homework homework = getHomeworkByCursor(cursor);
+                    if (homework.isBetween(year1, month1, day1, year2, month2, day2)) {
+                        homeworks.add(homework);
+                    }
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return homeworks;
+    }
 }

@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -114,6 +115,12 @@ public class Homework {
 
     public boolean hasPassed() {
         return deadline.hasPassed();
+    }
+
+    public boolean isBetween(int year1, int month1, int day1,
+                             int year2, int month2, int day2) {
+        return LocalDate.of(year1, month1, day1).isAfter(deadline.deadline.toLocalDate()) &&
+                LocalDate.of(year2, month2, day2).isBefore(deadline.deadline.toLocalDate());
     }
 
     private class Deadline {
