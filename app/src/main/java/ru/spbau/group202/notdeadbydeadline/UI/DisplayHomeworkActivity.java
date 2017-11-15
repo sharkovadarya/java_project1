@@ -1,11 +1,12 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -15,16 +16,50 @@ import java.util.ArrayList;
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 
+import static android.graphics.Typeface.BOLD;
+
 public class DisplayHomeworkActivity extends AppCompatActivity {
 
 
     public void outputHomeworks(String subject) {
-        ArrayList<String> formattedHomeworks =
+        ArrayList<ArrayList<String>> formattedHomeworksDetails =
                 Controller.getFormattedHomeworksBySubject(subject);
+        // local utility variables
+        String deadlinesField = "\nDeadlines: ";
+        String descriptionFiled = "\nDescription: ";
+        String submitField = "\nSubmit: ";
+        String expectedScoreField = "\nExpected Score: ";
+
+        ArrayList<SpannableStringBuilder> formattedHomeworks = new ArrayList<>();
+        for (ArrayList<String> homeworkDetails : formattedHomeworksDetails) {
+
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(descriptionFiled);
+            stringBuilder.setSpan(new StyleSpan(BOLD),
+                    0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(homeworkDetails.get(0));
+            stringBuilder.append(deadlinesField);
+            stringBuilder.setSpan(new StyleSpan(BOLD),
+                    stringBuilder.length() - deadlinesField.length(),
+                    stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(homeworkDetails.get(1));
+            stringBuilder.append(submitField);
+            stringBuilder.setSpan(new StyleSpan(BOLD),
+                    stringBuilder.length() - submitField.length(),
+                    stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(homeworkDetails.get(2));
+            stringBuilder.append(expectedScoreField);
+            stringBuilder.setSpan(new StyleSpan(BOLD),
+                    stringBuilder.length() - expectedScoreField.length(),
+                    stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(homeworkDetails.get(3));
+
+            formattedHomeworks.add(stringBuilder);
+        }
 
         ListView homeworksListView = findViewById(R.id.homeworksListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, formattedHomeworks);
+        ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
+                R.layout.custom_homework_listview_entry,
+                formattedHomeworks);
         homeworksListView.setAdapter(adapter);
     }
 
@@ -38,8 +73,7 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String subject = getIntent().getStringExtra("SUBJECT_NAME");
-        TextView subjectNameHeader = findViewById(R.id.displayHomeworksHeader);
-        subjectNameHeader.setText(subject);
+        setTitle(subject);
 
         outputHomeworks(subject);
     }

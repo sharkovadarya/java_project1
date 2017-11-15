@@ -181,11 +181,11 @@ public class AddHomeworkActivity extends AppCompatActivity {
         private String howToSend;
 
         public void storeSubject(String subject) {
-            this.subject = subject;
+            this.subject = subject == null ? "" : subject;
         }
 
         public void storeDescription(String description) {
-            this.description = description;
+            this.description = description == null ? "" : description;
         }
 
         public void storeExpectedSCore(int expectedScore) {
@@ -208,7 +208,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
     }*/
 
         public void storeHowToSend(String howToSend) {
-            this.howToSend = howToSend;
+            this.howToSend = howToSend == null ? "" : howToSend;
         }
 
         public void addNewHomework() {
@@ -216,9 +216,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
                                    subject, false, description,
                                    howToSend, expectedScore);
         }
-
-
-
     }
 
     public static class TimePickerFragment extends DialogFragment
