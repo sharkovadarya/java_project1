@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
-import ru.spbau.group202.notdeadbydeadline.Model.Homeworks;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class HomeworkActivity extends AppCompatActivity {

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Homework {
     private Deadline deadline;
@@ -46,7 +45,7 @@ public class Homework {
         return deadlineDetails;
     }
 
-    public String getFormattedDeadline() {
+    private String getFormattedDeadline() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
         return deadline.deadline.format(formatter);
     }
@@ -63,10 +62,7 @@ public class Homework {
     }
 
     public String getFormattedHomework() {
-
-        String output = "Description: " + getDescription() + "\nDeadline: " + getFormattedDeadline() + "\nSubmit as: " + getHowToSend() + "\nExpected score: " + getExpectedScore();
-
-        return output;
+        return "Description: " + getDescription() + "\nDeadline: " + getFormattedDeadline() + "\nSubmit as: " + getHowToSend() + "\nExpected score: " + getExpectedScore();
     }
 
     public String getSubject() {
@@ -126,11 +122,11 @@ public class Homework {
     private class Deadline {
         private LocalDateTime deadline;
 
-        public Deadline(LocalDateTime deadline) {
+        private Deadline(LocalDateTime deadline) {
             this.deadline = deadline;
         }
 
-        public boolean hasPassed() {
+        private boolean hasPassed() {
             return LocalDateTime.now().compareTo(deadline) > 0;
         }
 
