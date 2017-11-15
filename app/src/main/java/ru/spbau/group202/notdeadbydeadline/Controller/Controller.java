@@ -3,6 +3,8 @@ package ru.spbau.group202.notdeadbydeadline.Controller;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 
@@ -45,15 +47,24 @@ public class Controller {
         return getFormattedHomeworks(homeworkDatabase.getHomeworksByDay(year, month, day));
     }
 
+    public static ArrayList<String> getSubjectList() {
+        Set<String> subjectList = new LinkedHashSet<>();
+
+        for (Homework homework : homeworkDatabase.getActualHomeworks()) {
+            subjectList.add(homework.getSubject());
+        }
+        return new ArrayList<String>(subjectList);
+    }
+
     public static void addHomework(int year, int month, int day, int hour, int minutes,
-                            String subject, boolean isRegular, String description,
-                            String howToSend,  int expectedScore) {
+                                   String subject, boolean isRegular, String description,
+                                   String howToSend, int expectedScore) {
         Homework newHomework = new Homework(year, month, day, hour, minutes, subject, isRegular,
                 description, howToSend, expectedScore);
         homeworkDatabase.addHomework(newHomework);
     }
 
-    public static void createHomeworkDatabase(Context context){
+    public static void createDatabases(Context context) {
         homeworkDatabase = new HomeworkDatabaseController(context);
     }
 }
