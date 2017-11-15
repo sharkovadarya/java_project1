@@ -9,11 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.MainActivity2">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".UI.MainActivity"
             android:label="@string/title_activity_main"
@@ -45,6 +40,15 @@
         <activity
             android:name=".UI.AddHomeworkActivity"
             android:label="@string/title_activity_addHomework"
+            android:parentActivityName=".UI.HomeworkActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.spbau.group202.notdeadbydeadline.UI.HomeworkActivity" />
+        </activity>
+        <activity
+            android:name=".UI.DisplayHomeworkActivity"
+            android:label="@string/title_activity_display_homework"
             android:parentActivityName=".UI.HomeworkActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

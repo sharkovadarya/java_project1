@@ -27,6 +27,7 @@
     <string name="is_regular">Regular</string>
     <string name="finish_button">Add</string>
     <string name="submit_way">How to submit</string>
+    <string name="title_activity_display_homework">DisplayHomeworkActivity</string>
 
 
 </resources>
