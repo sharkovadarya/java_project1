@@ -29,6 +29,7 @@
     <string name="submit_way">How to submit</string>
     <string name="title_activity_display_homework">DisplayHomeworkActivity</string>
     <string name="title_activity_study_materials">StudyMaterialsActivity</string>
+    <string name="title_activity_deadline">DeadlineActivity</string>
 
 
 </resources>

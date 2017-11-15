@@ -3,7 +3,6 @@ package ru.spbau.group202.notdeadbydeadline.UI;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.database.ContentObservable;
 import android.icu.util.Calendar;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
@@ -32,6 +31,7 @@ import ru.spbau.group202.notdeadbydeadline.R;
 public class AddHomeworkActivity extends AppCompatActivity {
 
     private static HomeworkFieldsAccumulator hfa = new HomeworkFieldsAccumulator();
+    private final ArrayList<String> source = Controller.getSubjectList();
 
     public void getSubject() {
 
@@ -41,14 +41,18 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 "Algorithms", "Functional programming",
                 "Calculus"};*/
 
-        ArrayList<String> source = Controller.getSubjectList();
-
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
         actv.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, source));
 
         actv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (!source.contains(actv.getText().toString())) {
+                    source.add(actv.getText().toString());
+                }
+                hfa.storeSubject((actv.getText().toString()));
+
+
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
                         || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     Log.e("TAG", "Done pressed");
@@ -61,6 +65,13 @@ public class AddHomeworkActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 hfa.storeSubject((actv.getText().toString()));
+                if (!source.contains(actv.getText().toString())) {
+                    source.add(actv.getText().toString());
+                }
+
+                if (!source.contains(actv.getText().toString())) {
+                    source.add(actv.getText().toString());
+                }
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -92,8 +103,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                hfa.storeExpectedSCore(
-                        Integer.parseInt(editText.getText().toString()));
+                hfa.storeExpectedScore(
+                        Double.parseDouble(editText.getText().toString()));
                 return false;
             }
         });
@@ -116,6 +127,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 hfa.storeHowToSend(editText.getText().toString());
+
+
 
                 View view1 = getCurrentFocus();
                 if (view1 != null) {
@@ -166,7 +179,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
         addHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 hfa.addNewHomework();
                 finish();
             }
@@ -181,7 +193,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         private int day;
         private int hour;
         private int minutes;
-        private int expectedScore;
+        private double expectedScore;
         private boolean isRegular;
         private String howToSend;
 
@@ -193,7 +205,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
             this.description = description == null ? "" : description;
         }
 
-        public void storeExpectedSCore(int expectedScore) {
+        public void storeExpectedScore(double expectedScore) {
             this.expectedScore = expectedScore;
         }
 

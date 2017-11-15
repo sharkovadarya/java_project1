@@ -1,6 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
 import android.content.Intent;
+import android.database.ContentObservable;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +25,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
@@ -54,7 +57,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void outputDeadlines() {
-        ArrayList<ArrayList<String>> deadlinesDetails = Controller.getFormattedActualDeadlines();
+        ArrayList<ArrayList<String>> deadlinesDetails =
+                Controller.getDeadlinesByDay(LocalDateTime.now().getYear(),
+                                             LocalDateTime.now().getMonthValue(),
+                                             LocalDateTime.now().getDayOfMonth());
+
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 1);
+        LocalDateTime ldt = LocalDateTime.ofInstant(c.toInstant(), ZoneId.systemDefault());
+        deadlinesDetails.addAll(Controller.getDeadlinesByDay(ldt.getYear(),
+                ldt.getMonthValue(), ldt.getDayOfMonth()));
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
         for (ArrayList<String> deadlineDetails : deadlinesDetails) {
@@ -138,20 +150,25 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_deadlines) {
             Intent intent = new Intent(this, DeadlinesActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         } else if (id == R.id.nav_homework) {
-            Intent intent = new Intent(this, HomeworkActivity2.class);
-            startActivity(intent);
+            Intent intent = new Intent(this, HomeworkActivity.class);
+            startActivityForResult(intent, 1);
 
         } else if (id == R.id.nav_schedule) {
 
         } else if (id == R.id.nav_studymaterials) {
             Intent intent = new Intent(this, StudyMaterialsActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         } 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        outputDeadlines();
     }
 }

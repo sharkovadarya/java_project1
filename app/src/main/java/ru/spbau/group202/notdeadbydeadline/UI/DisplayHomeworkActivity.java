@@ -23,7 +23,7 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
 
     public void outputHomeworks(String subject) {
         ArrayList<ArrayList<String>> formattedHomeworksDetails =
-                Controller.getFormattedHomeworksBySubject(subject);
+                Controller.getHomeworksBySubject(subject);
         // local utility variables
         String deadlinesField = "\nDeadlines: ";
         String descriptionFiled = "\nDescription: ";

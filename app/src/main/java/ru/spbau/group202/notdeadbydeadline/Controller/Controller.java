@@ -78,7 +78,7 @@ public class Controller {
 
     public static void addHomework(int year, int month, int day, int hour, int minutes,
                                    String subject, boolean isRegular, String description,
-                                   String howToSend, int expectedScore) {
+                                   String howToSend, double expectedScore) {
         Homework newHomework = new Homework(year, month, day, hour, minutes, subject, isRegular,
                 description, howToSend, expectedScore);
         homeworkDatabase.addHomework(newHomework);

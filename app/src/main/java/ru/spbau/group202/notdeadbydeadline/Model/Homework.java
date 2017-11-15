@@ -4,18 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Homework {
     private Deadline deadline;
     private String subject, description, howToSend;
     private boolean isRegular;
-    private int expectedScore, actualScore = 0;
+    private double expectedScore;
+    private double actualScore = 0;
 
     public Homework(int year, int month, int day,
                     int hour, int minute, String subject,
                     boolean isRegular, String description,
-                    String howToSend, int expectedScore) {
+                    String howToSend, double expectedScore) {
         deadline = new Deadline(LocalDateTime.of(year, month, day, hour, minute));
         this.subject = subject;
         this.isRegular = isRegular;
@@ -24,7 +24,7 @@ public class Homework {
         this.expectedScore = expectedScore;
     }
 
-    public void setActualScore(int score) {
+    public void setActualScore(double score) {
         actualScore = score;
     }
 
@@ -57,7 +57,7 @@ public class Homework {
         homeworkDetails.add(getDescription());
         homeworkDetails.add(getFormattedDeadline());
         homeworkDetails.add(getHowToSend());
-        homeworkDetails.add(Integer.toString(getExpectedScore()));
+        homeworkDetails.add(Double.toString(getExpectedScore()));
 
         return homeworkDetails;
     }
@@ -85,11 +85,11 @@ public class Homework {
         return howToSend;
     }
 
-    public int getExpectedScore() {
+    public double getExpectedScore() {
         return expectedScore;
     }
 
-    public int getActualScore() {
+    public double getActualScore() {
         return actualScore;
     }
 
