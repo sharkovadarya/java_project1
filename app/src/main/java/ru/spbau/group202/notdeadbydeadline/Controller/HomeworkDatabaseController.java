@@ -48,7 +48,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         return homework;
     }
 
-    public HomeworkDatabaseController(Context context) {
+    public HomeworkDatabaseController(@NotNull Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -76,7 +76,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addHomework(Homework homework) {
+    public void addHomework(@NotNull Homework homework) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, homework.getSubject());
@@ -112,9 +112,9 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         return homeworks;
     }
 
-    public ArrayList<Homework> getHomeworksBySubject(String subject) {
+    public ArrayList<Homework> getHomeworksBySubject(@NotNull String subject) {
         String query = "SELECT * FROM " + DATABASE_NAME +
-                " WHERE " + COLUMN_NAME_SUBJECT + "=" + subject;
+                " WHERE " + COLUMN_NAME_SUBJECT + "=" + "'" + subject + "'";
         ArrayList<Homework> homeworks = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();

@@ -10,6 +10,8 @@ import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 
 public class Controller {
     private static HomeworkDatabaseController homeworkDatabase;
+    private static SubjectDatabaseController subjectDatabase;
+    private static Set<String> subjectList;
 
     private static ArrayList<String> getFormattedHomeworks(ArrayList<Homework> homeworks) {
         ArrayList<String> formattedHomeworks = new ArrayList<>();
@@ -53,6 +55,7 @@ public class Controller {
         for (Homework homework : homeworkDatabase.getActualHomeworks()) {
             subjectList.add(homework.getSubject());
         }
+
         return new ArrayList<String>(subjectList);
     }
 
@@ -62,9 +65,16 @@ public class Controller {
         Homework newHomework = new Homework(year, month, day, hour, minutes, subject, isRegular,
                 description, howToSend, expectedScore);
         homeworkDatabase.addHomework(newHomework);
+
+        if(subjectList.add(subject)){
+            subjectDatabase.addSubject(subject);
+        }
     }
 
     public static void createDatabases(Context context) {
         homeworkDatabase = new HomeworkDatabaseController(context);
+        subjectDatabase = new SubjectDatabaseController(context);
+        subjectList = new LinkedHashSet<>();
+        subjectList.addAll(subjectDatabase.getAllSubjects());
     }
 }
