@@ -73,7 +73,7 @@ public class Controller {
             subjectList.add(homework.getSubject());
         }
 
-        return new ArrayList<String>(subjectList);
+        return new ArrayList<>(subjectList);
     }
 
     public static void addHomework(int year, int month, int day, int hour, int minutes,

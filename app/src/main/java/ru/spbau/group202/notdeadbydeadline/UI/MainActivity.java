@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         deadlinesDetails.addAll(Controller.getDeadlinesByDay(ldt.getYear(),
                 ldt.getMonthValue(), ldt.getDayOfMonth()));
 
+
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
         for (ArrayList<String> deadlineDetails : deadlinesDetails) {
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder(deadlineDetails.get(0));

@@ -20,24 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UI.DeadlinesActivity"
-            android:label="@string/title_activity_deadlines"
-            android:parentActivityName=".UI.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
-        </activity>
-        <activity
-            android:name=".UI.HomeworkActivity"
-            android:label="@string/title_activity_homework"
-            android:parentActivityName=".UI.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
-        </activity>
-        <activity
             android:name=".UI.AddHomeworkActivity"
             android:label="@string/title_activity_addHomework"
             android:parentActivityName=".UI.HomeworkActivity"
@@ -58,7 +40,31 @@
         <activity
             android:name=".UI.StudyMaterialsActivity"
             android:label="@string/title_activity_study_materials"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UI.DeadlinesActivity"
+            android:label="@string/title_activity_deadline"
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
+        </activity>
+        <activity
+            android:name=".UI.HomeworkActivity"
+            android:label="@string/title_activity_homework"
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

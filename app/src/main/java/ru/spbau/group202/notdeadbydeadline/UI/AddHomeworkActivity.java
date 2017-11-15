@@ -35,11 +35,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
     public void getSubject() {
 
-        // TODO fetch subjects array from a list of subjects which will be fetched from Schedule
-        // TODO you aren't allowed to touch Schedule here. You will get a list from Controller.
-        /*String[] source = new String[]{"Algebra", "Discrete mathematics",
-                "Algorithms", "Functional programming",
-                "Calculus"};*/
+        final ArrayList<String> source = Controller.getSubjectList();
 
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
         actv.setAdapter(new ArrayAdapter<>(this,
