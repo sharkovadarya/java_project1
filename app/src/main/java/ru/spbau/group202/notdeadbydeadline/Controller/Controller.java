@@ -13,7 +13,7 @@ public class Controller {
     private static SubjectDatabaseController subjectDatabase;
     private static Set<String> subjectList;
 
-    private static ArrayList<ArrayList<String>> getFormattedHomeworks(ArrayList<Homework> homeworks) {
+    private static ArrayList<ArrayList<String>> getHomeworkDetails(ArrayList<Homework> homeworks) {
         ArrayList<ArrayList<String>> formattedHomeworks = new ArrayList<>();
 
         for (Homework homework : homeworks) {
@@ -39,15 +39,15 @@ public class Controller {
     }
 
     public static ArrayList<ArrayList<String>> getFormattedActualHomeworks() {
-        return getFormattedHomeworks(homeworkDatabase.getActualHomeworks());
+        return getHomeworkDetails(homeworkDatabase.getActualHomeworks());
     }
 
     public static ArrayList<ArrayList<String>> getFormattedHomeworksBySubject(String subject) {
-        return getFormattedHomeworks(homeworkDatabase.getHomeworksBySubject(subject));
+        return getHomeworkDetails(homeworkDatabase.getHomeworksBySubject(subject));
     }
 
     public static ArrayList<ArrayList<String>> getFormattedHomeworksByDay(int year, int month, int day) {
-        return getFormattedHomeworks(homeworkDatabase.getHomeworksByDay(year, month, day));
+        return getHomeworkDetails(homeworkDatabase.getHomeworksByDay(year, month, day));
     }
 
     public static ArrayList<String> getSubjectList() {
@@ -58,6 +58,12 @@ public class Controller {
         }
 
         return new ArrayList<String>(subjectList);
+    }
+
+    public static ArrayList<ArrayList<String>>
+                    getDeadlinesDetailsByDates(int year1, int month1, int day1,
+                                               int year2, int month2, int day2) {
+        return null;
     }
 
     public static void addHomework(int year, int month, int day, int hour, int minutes,

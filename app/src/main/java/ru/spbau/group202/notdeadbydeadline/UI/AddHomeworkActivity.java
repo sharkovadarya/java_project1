@@ -3,6 +3,7 @@ package ru.spbau.group202.notdeadbydeadline.UI;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.database.ContentObservable;
 import android.icu.util.Calendar;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
@@ -23,6 +24,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.util.ArrayList;
+
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 
@@ -34,9 +37,11 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         // TODO fetch subjects array from a list of subjects which will be fetched from Schedule
         // TODO you aren't allowed to touch Schedule here. You will get a list from Controller.
-        String[] source = new String[]{"Algebra", "Discrete mathematics",
+        /*String[] source = new String[]{"Algebra", "Discrete mathematics",
                 "Algorithms", "Functional programming",
-                "Calculus"};
+                "Calculus"};*/
+
+        ArrayList<String> source = Controller.getSubjectList();
 
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
         actv.setAdapter(new ArrayAdapter<>(this,
