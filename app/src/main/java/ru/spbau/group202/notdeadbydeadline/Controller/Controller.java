@@ -35,4 +35,8 @@ public class Controller {
                 description, howToSend, expectedScore);
         homeworkDatabase.addHomework(newHomework);
     }
+
+    static public void createHomeworkDatabase(Context context){
+        homeworkDatabase = new HomeworkDatabaseController(context);
+    }
 }
