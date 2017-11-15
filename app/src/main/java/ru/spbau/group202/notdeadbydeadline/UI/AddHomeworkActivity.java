@@ -3,7 +3,6 @@ package ru.spbau.group202.notdeadbydeadline.UI;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.database.ContentObservable;
 import android.icu.util.Calendar;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
@@ -34,13 +33,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
     private static HomeworkFieldsAccumulator hfa = new HomeworkFieldsAccumulator();
 
     public void getSubject() {
-
-        // TODO fetch subjects array from a list of subjects which will be fetched from Schedule
-        // TODO you aren't allowed to touch Schedule here. You will get a list from Controller.
-        /*String[] source = new String[]{"Algebra", "Discrete mathematics",
-                "Algorithms", "Functional programming",
-                "Calculus"};*/
-
         ArrayList<String> source = Controller.getSubjectList();
 
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);

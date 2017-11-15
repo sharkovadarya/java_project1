@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void outputDeadlines() {
-        ArrayList<ArrayList<String>> deadlinesDetails = Controller.getFormattedActualDeadlines();
+        ArrayList<ArrayList<String>> deadlinesDetails = Controller.getActualDeadlines();
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
         for (ArrayList<String> deadlineDetails : deadlinesDetails) {

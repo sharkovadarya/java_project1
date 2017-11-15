@@ -3,25 +3,16 @@ package ru.spbau.group202.notdeadbydeadline.UI;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
-import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class HomeworkActivity extends AppCompatActivity {
