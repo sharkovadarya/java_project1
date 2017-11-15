@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
-import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class MainActivity extends AppCompatActivity
@@ -83,15 +82,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -150,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, DeadlinesActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_homework) {
-            Intent intent = new Intent(this, HomeworkActivity.class);
+            Intent intent = new Intent(this, HomeworkActivity2.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_schedule) {
