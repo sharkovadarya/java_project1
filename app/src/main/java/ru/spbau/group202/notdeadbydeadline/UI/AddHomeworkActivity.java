@@ -251,8 +251,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         }
 
         public boolean isValidHomework() {
-            return isValidDate(year, month, day) && isValidString(subject)
-                    && isValidString(description) && isValidString(howToSend);
+            return isValidDate(year, month, day) && isValidString(subject);
         }
 
     }
