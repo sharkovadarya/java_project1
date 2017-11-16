@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,7 +29,7 @@ public class ScheduleActivity extends AppCompatActivity
         subjects.add("2. Calculus");
         subjects.add("3. Android Project");
         subjects.add("4. Android Project");
-        final ListView lv = (ListView) findViewById(R.id.Schedule);
+        final ListView lv = (ListView) findViewById(R.id.scheduleListView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.custom_homework_listview_entry, subjects);
         lv.setAdapter(adapter);
@@ -100,18 +101,22 @@ public class ScheduleActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_main) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_deadlines) {
+            Intent intent = new Intent(this, DeadlinesActivity.class);
+            startActivityForResult(intent, 1);
+        } else if (id == R.id.nav_homework) {
+            Intent intent = new Intent(this, HomeworkActivity.class);
+            startActivityForResult(intent, 1);
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_schedule) {
+            Intent intent = new Intent(this, ScheduleActivity.class);
+            startActivityForResult(intent, 1);
+        } else if (id == R.id.nav_studymaterials) {
+            Intent intent = new Intent(this, StudyMaterialsActivity.class);
+            startActivityForResult(intent, 1);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

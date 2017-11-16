@@ -71,6 +71,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".UI.ScheduleActivity"
+            android:label="@string/title_activity_schedule"
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
