@@ -33,7 +33,8 @@ import ru.spbau.group202.notdeadbydeadline.R;
 public class AddHomeworkActivity extends AppCompatActivity {
 
     private static HomeworkFieldsAccumulator hfa = new HomeworkFieldsAccumulator();
-    private final ArrayList<String> source = Controller.getSubjectList();
+    private static boolean isSetTime = false;
+    private static boolean isSetDate = false;
 
     public void getSubject() {
 
@@ -179,7 +180,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!hfa.isValidHomework()) {
                     Toast.makeText(getApplicationContext(),
-                            "Fill all the fields and input correct date", Toast.LENGTH_LONG).show();
+                            "Fill 'subject' and input correct date", Toast.LENGTH_LONG).show();
                 } else {
                     hfa.addNewHomework();
                     finish();
@@ -233,25 +234,21 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         public void addNewHomework() {
 
+            if (description == null) {
+                description = " ";
+            }
+
+            if (howToSend == null) {
+                howToSend = " ";
+            }
+
             Controller.addHomework(year, month, day, hour, minutes,
                                    subject, false, description,
                                    howToSend, expectedScore);
         }
 
-        private boolean isValidString(String string) {
-            return string != null;
-        }
-
-        private boolean isValidDate(int year, int month, int day) {
-            return year >= LocalDateTime.now().getYear()
-                   && month >= LocalDateTime.now().getMonthValue()
-                   && month <= 12 // literally how did this not happen
-                   && day >= LocalDateTime.now().getDayOfMonth()
-                   && day <= 31;
-        }
-
         public boolean isValidHomework() {
-            return isValidDate(year, month, day) && isValidString(subject);
+            return subject != null && isSetDate && isSetTime;
         }
 
     }
@@ -272,6 +269,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            isSetTime = true;
             hfa.storeTime(hourOfDay, minute);
         }
     }
@@ -292,6 +290,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
+            isSetDate = true;
             hfa.storeDate(year, month, day);
         }
     }
