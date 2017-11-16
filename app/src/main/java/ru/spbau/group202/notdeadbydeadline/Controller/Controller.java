@@ -70,8 +70,8 @@ public class Controller {
     public static ArrayList<String> getSubjectList() {
         Set<String> subjectList = new LinkedHashSet<>();
 
-        for (Homework homework : homeworkDatabase.getActualHomeworks()) {
-            subjectList.add(homework.getSubject());
+        for (String subject : Controller.subjectList) {
+            subjectList.add(subject);
         }
 
         return new ArrayList<>(subjectList);
