@@ -22,7 +22,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
@@ -175,8 +177,13 @@ public class AddHomeworkActivity extends AppCompatActivity {
         addHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hfa.addNewHomework();
-                finish();
+                if (!hfa.isValidHomework()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Fill all the fields and input correct date", Toast.LENGTH_LONG).show();
+                } else {
+                    hfa.addNewHomework();
+                    finish();
+                }
             }
         });
     }
@@ -207,7 +214,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         public void storeDate(int year, int month, int day) {
             this.year = year;
-            this.month = month;
+            this.month = month + 1; // because in Calendar months start with 0
             this.day = day;
         }
 
@@ -225,10 +232,29 @@ public class AddHomeworkActivity extends AppCompatActivity {
         }
 
         public void addNewHomework() {
+
             Controller.addHomework(year, month, day, hour, minutes,
                                    subject, false, description,
                                    howToSend, expectedScore);
         }
+
+        private boolean isValidString(String string) {
+            return string != null;
+        }
+
+        private boolean isValidDate(int year, int month, int day) {
+            return year >= LocalDateTime.now().getYear()
+                   && month >= LocalDateTime.now().getMonthValue()
+                   && month <= 12 // literally how did this not happen
+                   && day >= LocalDateTime.now().getDayOfMonth()
+                   && day <= 31;
+        }
+
+        public boolean isValidHomework() {
+            return isValidDate(year, month, day) && isValidString(subject)
+                    && isValidString(description) && isValidString(howToSend);
+        }
+
     }
 
     public static class TimePickerFragment extends DialogFragment
