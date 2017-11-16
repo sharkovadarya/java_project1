@@ -12,6 +12,7 @@
         <activity
             android:name=".UI.MainActivity"
             android:label="@string/title_activity_main"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +23,7 @@
         <activity
             android:name=".UI.AddHomeworkActivity"
             android:label="@string/title_activity_addHomework"
+            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.HomeworkActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -31,6 +33,7 @@
         <activity
             android:name=".UI.DisplayHomeworkActivity"
             android:label="@string/title_activity_display_homework"
+            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.HomeworkActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -40,10 +43,12 @@
         <activity
             android:name=".UI.StudyMaterialsActivity"
             android:label="@string/title_activity_study_materials"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UI.DeadlinesActivity"
             android:label="@string/title_activity_deadline"
+            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -53,6 +58,7 @@
         <activity
             android:name=".UI.HomeworkActivity"
             android:label="@string/title_activity_homework"
+            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

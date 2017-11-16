@@ -117,7 +117,11 @@ public class HomeworkActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_deadlines) {
+
+        if (id == R.id.nav_main) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_deadlines) {
             Intent intent = new Intent(this, DeadlinesActivity.class);
             startActivityForResult(intent, 1);
         } else if (id == R.id.nav_homework) {

@@ -84,7 +84,10 @@ public class StudyMaterialsActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_deadlines) {
+        if (id == R.id.nav_main) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_deadlines) {
             Intent intent = new Intent(this, DeadlinesActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_homework) {

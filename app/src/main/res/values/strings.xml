@@ -31,6 +31,7 @@
     <string name="title_activity_study_materials">StudyMaterialsActivity</string>
     <string name="title_activity_deadline">DeadlineActivity</string>
     <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="mainScreen">Home</string>
 
 
 </resources>
