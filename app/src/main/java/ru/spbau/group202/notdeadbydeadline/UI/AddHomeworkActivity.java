@@ -189,7 +189,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         });
     }
 
-    private static class HomeworkFieldsAccumulator {
+    public static class HomeworkFieldsAccumulator {
         private String subject;
         private String description;
         private int year;
