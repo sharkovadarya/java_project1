@@ -32,7 +32,7 @@ import ru.spbau.group202.notdeadbydeadline.R;
 
 public class AddHomeworkActivity extends AppCompatActivity {
 
-    private static HomeworkFieldsAccumulator hfa = new HomeworkFieldsAccumulator();
+    public static HomeworkFieldsAccumulator hfa = new HomeworkFieldsAccumulator();
     private static boolean isSetTime = false;
     private static boolean isSetDate = false;
 
