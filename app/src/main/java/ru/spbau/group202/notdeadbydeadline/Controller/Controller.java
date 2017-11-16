@@ -18,8 +18,6 @@ public class Controller {
 
         for (Homework homework : homeworks) {
             formattedHomeworks.add(homework.getHomeworkDetails());
-            // TODO why was the second line here???
-            // formattedHomeworks.add(homework.getHomeworkDetails());
         }
 
         return formattedHomeworks;
