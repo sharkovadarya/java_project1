@@ -44,7 +44,21 @@
             android:name=".UI.StudyMaterialsActivity"
             android:label="@string/title_activity_study_materials"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
+    </activity>
+        <activity
+            android:name=".UI.ScheduleActivity"
+            android:label="@string/title_activity_schedule"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
+    </activity>
+
         <activity
             android:name=".UI.DeadlinesActivity"
             android:label="@string/title_activity_deadline"
