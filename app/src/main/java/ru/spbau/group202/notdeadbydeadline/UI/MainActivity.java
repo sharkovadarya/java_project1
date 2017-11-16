@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
             formattedDeadlines.add(stringBuilder);
         }
 
-        ListView lv = findViewById(R.id.deadlinesList);
+        ListView lv = findViewById(R.id.deadlinesList2);
         ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
                 R.layout.custom_homework_listview_entry,
                 formattedDeadlines);
