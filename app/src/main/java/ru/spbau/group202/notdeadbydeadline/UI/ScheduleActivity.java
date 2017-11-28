@@ -60,6 +60,7 @@ public class ScheduleActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        setTitle("Schedule");
         displaySchedule();
     }
 

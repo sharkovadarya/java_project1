@@ -132,6 +132,7 @@ public class DeadlinesActivity extends AppCompatActivity
         } else if (id == R.id.nav_schedule) {
             Intent intent = new Intent(this, ScheduleActivity.class);
             startActivityForResult(intent, 1);
+
         } else if (id == R.id.nav_studymaterials) {
             Intent intent = new Intent(this, StudyMaterialsActivity.class);
             startActivityForResult(intent, 1);

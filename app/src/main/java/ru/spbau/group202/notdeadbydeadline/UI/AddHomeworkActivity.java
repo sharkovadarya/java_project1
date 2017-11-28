@@ -183,6 +183,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
                             "Fill 'subject' and input correct date", Toast.LENGTH_LONG).show();
                 } else {
                     hfa.addNewHomework();
+                    hfa.clear();
                     finish();
                 }
             }
@@ -249,6 +250,20 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         public boolean isValidHomework() {
             return subject != null && isSetDate && isSetTime;
+        }
+
+        public void clear() {
+            subject = null;
+            description = null;
+            howToSend = null;
+            expectedScore = 0;
+            year = 0;
+            month= 0;
+            day = 0;
+            hour = 0;
+            minutes = 0;
+            isSetTime = false;
+            isSetDate = false;
         }
 
     }
