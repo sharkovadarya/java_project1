@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Homework {
+public class Homework implements DetailedEntry{
     private Deadline deadline;
     private String subject, description, howToSend;
     private boolean isRegular;
@@ -38,32 +38,19 @@ public class Homework {
         }*/
     }
 
-    public ArrayList<String> getDeadlineDetails() {
-        ArrayList<String> deadlineDetails = new ArrayList<>();
-        deadlineDetails.add(getSubject());
-        deadlineDetails.add(getFormattedDeadline());
-
-        return deadlineDetails;
-    }
-
-    private String getFormattedDeadline() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
-        return deadline.deadline.format(formatter);
-    }
-
-    public ArrayList<String> getHomeworkDetails() {
+    public ArrayList<String> getDetails() {
         ArrayList<String> homeworkDetails = new ArrayList<>();
 
         homeworkDetails.add(getDescription());
-        homeworkDetails.add(getFormattedDeadline());
+        homeworkDetails.add(deadline.getFormattedDeadline());
         homeworkDetails.add(getHowToSend());
         homeworkDetails.add(Double.toString(getExpectedScore()));
 
         return homeworkDetails;
     }
 
-    public String getFormattedHomework() {
-        return "Description: " + getDescription() + "\nDeadline: " + getFormattedDeadline() + "\nSubmit as: " + getHowToSend() + "\nExpected score: " + getExpectedScore();
+    public Deadline getDeadline() {
+        return deadline;
     }
 
     public String getSubject() {
@@ -120,7 +107,7 @@ public class Homework {
                 LocalDate.of(year2, month2, day2).isBefore(deadline.deadline.toLocalDate());
     }
 
-    private class Deadline {
+    public class Deadline implements DetailedEntry{
         private LocalDateTime deadline;
 
         private Deadline(LocalDateTime deadline) {
@@ -129,6 +116,19 @@ public class Homework {
 
         private boolean hasPassed() {
             return LocalDateTime.now().compareTo(deadline) > 0;
+        }
+
+        private String getFormattedDeadline() {
+            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
+            return deadline.format(pattern);
+        }
+
+        public ArrayList<String> getDetails() {
+            ArrayList<String> deadlineDetails = new ArrayList<>();
+            deadlineDetails.add(getSubject());
+            deadlineDetails.add(getFormattedDeadline());
+
+            return deadlineDetails;
         }
 
     }

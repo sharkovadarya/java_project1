@@ -29,25 +29,6 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
     private static final String COLUMN_NAME_HOW_TO_SEND = "HOW_TO_SEND";
 
-    private Homework getHomeworkByCursor(@NotNull Cursor cursor) {
-        String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
-        int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
-        int month = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MONTH));
-        int day = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY));
-        int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
-        int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
-        boolean isRegular = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_REGULAR)) == 1;
-        int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
-        int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
-        String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
-        String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
-
-        Homework homework = new Homework(year, month, day, hour, minute, subject,
-                isRegular, description, howToSend, expectedScore);
-        homework.setActualScore(actualScore);
-        return homework;
-    }
-
     public HomeworkDatabaseController(@NotNull Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -74,6 +55,26 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldDATABASE_VERSION, int newDATABASE_VERSION) {
         db.execSQL("DROP TABLE IF EXISTS " + DATABASE_NAME);
         onCreate(db);
+    }
+
+
+    private Homework getHomeworkByCursor(@NotNull Cursor cursor) {
+        String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
+        int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
+        int month = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MONTH));
+        int day = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY));
+        int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
+        int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
+        boolean isRegular = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_REGULAR)) == 1;
+        int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
+        int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
+        String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
+        String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
+
+        Homework homework = new Homework(year, month, day, hour, minute, subject,
+                isRegular, description, howToSend, expectedScore);
+        homework.setActualScore(actualScore);
+        return homework;
     }
 
     public void addHomework(@NotNull Homework homework) {
