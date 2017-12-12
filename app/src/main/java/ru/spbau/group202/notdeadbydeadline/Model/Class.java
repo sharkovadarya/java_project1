@@ -1,17 +1,14 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Class implements DetailedEntry{
+public class Class implements DetailedEntry {
     private String subject, auditorium, teacher;
-    private int dayOfWeek, hour, minute;
+    private int dayOfWeek, hour, minute, id;
     private boolean isOnEvenWeeks;
 
     public Class(String subject, int dayOfWeek, int hour, int minute, boolean isOnEvenWeeks,
-          String auditorium, String teacher){
+                 String auditorium, String teacher, int id) {
         this.subject = subject;
         this.dayOfWeek = dayOfWeek;
         this.hour = hour;
@@ -19,13 +16,13 @@ public class Class implements DetailedEntry{
         this.isOnEvenWeeks = isOnEvenWeeks;
         this.auditorium = auditorium;
         this.teacher = teacher;
+        this.id = id;
     }
 
     public ArrayList<String> getDetails() {
         ArrayList<String> classDetails = new ArrayList<>();
         classDetails.add(subject);
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("hh:mm");
-        classDetails.
+        return classDetails;
     }
 
     public int getHour() {
@@ -54,5 +51,9 @@ public class Class implements DetailedEntry{
 
     public boolean isOnEvenWeeks() {
         return isOnEvenWeeks;
+    }
+
+    public int getId() {
+        return id;
     }
 }

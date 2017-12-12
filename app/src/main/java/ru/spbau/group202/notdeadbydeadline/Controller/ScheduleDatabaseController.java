@@ -34,7 +34,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d("Database", "onCreate database");
         db.execSQL("CREATE TABLE " + DATABASE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_NAME_SUBJECT + " TEXT, " +
                 COLUMN_NAME_DAY_OF_WEEK + " INTEGER, " +
                 COLUMN_NAME_HOUR + " INTEGER, " +
@@ -51,6 +51,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     }
 
     private Class getScheduleEntryByCursor(@NotNull Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int dayOfWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY_OF_WEEK));
         int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
@@ -60,12 +61,13 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         String teacher = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TEACHER));
 
         return new Class(subject, dayOfWeek, hour, minute,
-                isOnEvenWeek, auditorium, teacher);
+                isOnEvenWeek, auditorium, teacher, id);
     }
 
     public void addScheduleEntry(@NotNull Class scheduleEntry) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_ID, scheduleEntry.getId());
             values.put(COLUMN_NAME_SUBJECT, scheduleEntry.getSubject());
             values.put(COLUMN_NAME_DAY_OF_WEEK, scheduleEntry.getDayOfWeek());
             values.put(COLUMN_NAME_HOUR, scheduleEntry.getHour());
