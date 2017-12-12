@@ -3,7 +3,6 @@ package ru.spbau.group202.notdeadbydeadline.UI;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.icu.util.Calendar;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.time.LocalDateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+
 import java.util.ArrayList;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
@@ -87,13 +88,14 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public void getDescription() {
         final EditText editText = findViewById(R.id.getDescriptionEditText);
 
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 hfa.storeDescription(editText.getText().toString());
-                return false; // TODO because we didn't consume any action?
+                return false;
             }
-        });
+        });*/
+        hfa.storeDescription(editText.getText().toString());
     }
 
     public void getExpectedScore() {
@@ -126,7 +128,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 hfa.storeHowToSend(editText.getText().toString());
-
 
 
                 View view1 = getCurrentFocus();
@@ -178,6 +179,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
         addHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                getDescription();
+
                 if (!hfa.isValidHomework()) {
                     Toast.makeText(getApplicationContext(),
                             "Fill 'subject' and input correct date", Toast.LENGTH_LONG).show();
@@ -216,7 +220,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         public void storeDate(int year, int month, int day) {
             this.year = year;
-            this.month = month + 1; // because in Calendar months start with 0
+            this.month = month;
             this.day = day;
         }
 
@@ -244,8 +248,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
             }
 
             Controller.addHomework(year, month, day, hour, minutes,
-                                   subject, false, description,
-                                   howToSend, expectedScore);
+                    subject, false, description,
+                    howToSend, expectedScore);
         }
 
         public boolean isValidHomework() {
@@ -274,9 +278,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
+            LocalTime localTime = new LocalTime();
+            int hour = localTime.getHourOfDay();
+            int minute = localTime.getMinuteOfHour();
 
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
@@ -295,10 +299,10 @@ public class AddHomeworkActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+            LocalDate localDate = new LocalDate();
+            int year = localDate.getYear();
+            int month = localDate.getMonthOfYear() - 1;
+            int day = localDate.getDayOfMonth();
 
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year, month, day);
@@ -306,7 +310,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             isSetDate = true;
-            hfa.storeDate(year, month, day);
+            hfa.storeDate(year, month + 1, day);
         }
     }
 

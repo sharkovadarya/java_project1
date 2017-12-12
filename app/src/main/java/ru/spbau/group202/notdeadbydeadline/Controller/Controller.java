@@ -82,15 +82,29 @@ public class Controller {
     }
 
     private static <T extends DetailedEntry> ArrayList<ArrayList<String>> getEntriesDetailList(ArrayList<T> entries) {
-        return entries.stream()
+
+        ArrayList<ArrayList<String>> entriesDetails = new ArrayList<>();
+        for (T entry : entries) {
+            entriesDetails.add(entry.getDetails());
+        }
+
+        return entriesDetails;
+        /*return entries.stream()
                 .map(DetailedEntry::getDetails)
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toCollection(ArrayList::new));*/
     }
 
     private static ArrayList<Homework.Deadline> toDeadlines(ArrayList<Homework> homeworks) {
-        return homeworks.stream()
+        ArrayList<Homework.Deadline> deadlines = new ArrayList<>();
+
+        for (Homework homework : homeworks) {
+            deadlines.add(homework.getDeadline());
+        }
+
+        return deadlines;
+        /*return homeworks.stream()
                 .map(Homework::getDeadline)
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toCollection(ArrayList::new));*/
     }
 
 }

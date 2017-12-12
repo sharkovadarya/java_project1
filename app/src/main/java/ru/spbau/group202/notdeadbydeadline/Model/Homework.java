@@ -1,11 +1,12 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Homework implements DetailedEntry{
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.*;
+
+public class Homework implements DetailedEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
     private boolean isRegular;
@@ -16,7 +17,7 @@ public class Homework implements DetailedEntry{
                     int hour, int minute, String subject,
                     boolean isRegular, String description,
                     String howToSend, double expectedScore) {
-        deadline = new Deadline(LocalDateTime.of(year, month, day, hour, minute));
+        deadline = new Deadline(new LocalDateTime(year, month, day, hour, minute));
         this.subject = subject;
         this.isRegular = isRegular;
         this.description = description;
@@ -82,7 +83,7 @@ public class Homework implements DetailedEntry{
     }
 
     public int getMonth() {
-        return deadline.deadline.getMonthValue();
+        return deadline.deadline.getMonthOfYear();
     }
 
     public int getDay() {
@@ -90,11 +91,11 @@ public class Homework implements DetailedEntry{
     }
 
     public int getHour() {
-        return deadline.deadline.getHour();
+        return deadline.deadline.getHourOfDay();
     }
 
     public int getMinute() {
-        return deadline.deadline.getMinute();
+        return deadline.deadline.getMinuteOfHour();
     }
 
     public boolean hasPassed() {
@@ -103,11 +104,11 @@ public class Homework implements DetailedEntry{
 
     public boolean isBetween(int year1, int month1, int day1,
                              int year2, int month2, int day2) {
-        return LocalDate.of(year1, month1, day1).isAfter(deadline.deadline.toLocalDate()) &&
-                LocalDate.of(year2, month2, day2).isBefore(deadline.deadline.toLocalDate());
+        return (new LocalDate(year1, month1, day1)).isAfter(deadline.deadline.toLocalDate()) &&
+                (new LocalDate(year2, month2, day2)).isBefore(deadline.deadline.toLocalDate());
     }
 
-    public class Deadline implements DetailedEntry{
+    public class Deadline implements DetailedEntry {
         private LocalDateTime deadline;
 
         private Deadline(LocalDateTime deadline) {
@@ -119,13 +120,14 @@ public class Homework implements DetailedEntry{
         }
 
         private String getFormattedDeadline() {
-            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
-            return deadline.format(pattern);
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm");
+            return formatter.print(deadline);
         }
 
         public ArrayList<String> getDetails() {
             ArrayList<String> deadlineDetails = new ArrayList<>();
             deadlineDetails.add(getSubject());
+            deadlineDetails.add(getDescription());
             deadlineDetails.add(getFormattedDeadline());
 
             return deadlineDetails;
