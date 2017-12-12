@@ -20,10 +20,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime.Property;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
@@ -37,10 +42,10 @@ public class MainActivity extends AppCompatActivity
         StringBuilder dateStringBuilder =
                 new StringBuilder(Integer.toString(currentDate.getDayOfMonth()));
         dateStringBuilder.append("\n");
-        dateStringBuilder.append(currentDate.getMonth());
+        dateStringBuilder.append(currentDate.monthOfYear().getAsText());
         dateStringBuilder.append("\n");
         int pos = dateStringBuilder.length();
-        dateStringBuilder.append(currentDate.getDayOfWeek());
+        dateStringBuilder.append(currentDate.dayOfWeek().getAsText());
         String dateString = dateStringBuilder.toString();
 
         SpannableString date = new SpannableString(dateString);
@@ -55,24 +60,26 @@ public class MainActivity extends AppCompatActivity
     private void outputDeadlines() {
         ArrayList<ArrayList<String>> deadlinesDetails =
                 Controller.getDeadlinesByDay(LocalDateTime.now().getYear(),
-                                             LocalDateTime.now().getMonthValue(),
-                                             LocalDateTime.now().getDayOfMonth());
+                        LocalDateTime.now().getMonthOfYear(),
+                        LocalDateTime.now().getDayOfMonth());
 
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 1);
-        LocalDateTime ldt = LocalDateTime.ofInstant(c.toInstant(), ZoneId.systemDefault());
+
+        LocalDateTime ldt = LocalDateTime.now().plusDays(1);
         deadlinesDetails.addAll(Controller.getDeadlinesByDay(ldt.getYear(),
-                ldt.getMonthValue(), ldt.getDayOfMonth()));
+                ldt.getMonthOfYear(), ldt.getDayOfMonth()));
 
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
         for (ArrayList<String> deadlineDetails : deadlinesDetails) {
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(deadlineDetails.get(0));
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(deadlineDetails.get(2));
 
-            stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                    0, stringBuilder.length(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int position = stringBuilder.length();
             stringBuilder.append(" ");
+            stringBuilder.append(deadlineDetails.get(0));
+            stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
+                    position, stringBuilder.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append("\n");
             stringBuilder.append(deadlineDetails.get(1));
 
             formattedDeadlines.add(stringBuilder);
@@ -91,6 +98,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        JodaTimeAndroid.init(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -141,7 +150,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NotNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -150,18 +159,18 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.nav_deadlines) {
             Intent intent = new Intent(this, DeadlinesActivity.class);
+            intent.putExtra("date", new LocalDate());
             startActivityForResult(intent, 1);
         } else if (id == R.id.nav_homework) {
             Intent intent = new Intent(this, HomeworkActivity.class);
             startActivityForResult(intent, 1);
-
-        } else if (id == R.id.nav_schedule) {
+        } /*else if (id == R.id.nav_schedule) {
             Intent intent = new Intent(this, ScheduleActivity.class);
             startActivityForResult(intent, 1);
         } else if (id == R.id.nav_studymaterials) {
             Intent intent = new Intent(this, StudyMaterialsActivity.class);
             startActivityForResult(intent, 1);
-        } 
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

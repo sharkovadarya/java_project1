@@ -1,20 +1,30 @@
 package ru.spbau.group202.notdeadbydeadline.UI;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 import static android.graphics.Typeface.BOLD;
+
+
 
 public class DisplayHomeworkActivity extends AppCompatActivity {
 
@@ -55,10 +65,22 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
         }
 
         ListView homeworksListView = findViewById(R.id.homeworksListView);
-        ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
+        DetailedEntriesListViewAdapter adapter1 = new DetailedEntriesListViewAdapter(this, formattedHomeworksDetails);
+        /*ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
                 R.layout.custom_homework_listview_entry,
-                formattedHomeworks);
-        homeworksListView.setAdapter(adapter);
+                formattedHomeworks);*/
+        //homeworksListView.setAdapter(adapter);
+        homeworksListView.setAdapter(adapter1);
+    }
+
+    private void processOnClickHomeworks() {
+        ListView homeworksListView = findViewById(R.id.homeworksListView);
+        homeworksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 
     @Override

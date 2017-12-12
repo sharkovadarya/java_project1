@@ -20,9 +20,12 @@ public class Class implements DetailedEntry {
     }
 
     public ArrayList<String> getDetails() {
-        ArrayList<String> classDetails = new ArrayList<>();
+        // debug!
+        return null;
+        /*ArrayList<String> classDetails = new ArrayList<>();
         classDetails.add(subject);
-        return classDetails;
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("hh:mm");
+        classDetails.*/
     }
 
     public int getHour() {

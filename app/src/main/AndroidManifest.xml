@@ -40,24 +40,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.spbau.group202.notdeadbydeadline.UI.HomeworkActivity" />
         </activity>
-        <activity
-            android:name=".UI.StudyMaterialsActivity"
-            android:label="@string/title_activity_study_materials"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
-    </activity>
-        <activity
-            android:name=".UI.ScheduleActivity"
-            android:label="@string/title_activity_schedule"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
-    </activity>
 
         <activity
             android:name=".UI.DeadlinesActivity"
@@ -85,7 +67,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
+        <!--<activity
             android:name=".UI.ScheduleActivity"
             android:label="@string/title_activity_schedule"
             android:parentActivityName=".UI.MainActivity"
@@ -93,7 +75,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
-        </activity>
+        </activity>-->
     </application>
 
 </manifest>
