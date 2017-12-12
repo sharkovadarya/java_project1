@@ -12,10 +12,13 @@ public class Homework implements DetailedEntry {
     private boolean isRegular;
     private double expectedScore;
     private double actualScore = 0;
+    private int id;
 
     public Homework(int year, int month, int day,
                     int hour, int minute, String subject,
                     boolean isRegular, String description,
+                    String howToSend, double expectedScore, int id) {
+        deadline = new Deadline(LocalDateTime.of(year, month, day, hour, minute));
                     String howToSend, double expectedScore) {
         deadline = new Deadline(new LocalDateTime(year, month, day, hour, minute));
         this.subject = subject;
@@ -23,6 +26,7 @@ public class Homework implements DetailedEntry {
         this.description = description;
         this.howToSend = howToSend;
         this.expectedScore = expectedScore;
+        this.id = id;
     }
 
     public void setActualScore(double score) {
@@ -108,7 +112,11 @@ public class Homework implements DetailedEntry {
                 (new LocalDate(year2, month2, day2)).isBefore(deadline.deadline.toLocalDate());
     }
 
-    public class Deadline implements DetailedEntry {
+    public int getId() {
+        return id;
+    }
+
+    public class Deadline implements DetailedEntry{
         private LocalDateTime deadline;
 
         private Deadline(LocalDateTime deadline) {

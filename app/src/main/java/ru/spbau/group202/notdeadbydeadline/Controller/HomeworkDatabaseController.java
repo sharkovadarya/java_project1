@@ -37,7 +37,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d("Database", "onCreate database");
         db.execSQL("CREATE TABLE " + DATABASE_NAME + " (" +
-                COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_NAME_SUBJECT + " TEXT, " +
                 COLUMN_NAME_YEAR + " INTEGER, " +
                 COLUMN_NAME_MONTH + " INTEGER, " +
@@ -59,6 +59,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
 
 
     private Homework getHomeworkByCursor(@NotNull Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
         int month = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MONTH));
@@ -72,7 +73,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
 
         Homework homework = new Homework(year, month, day, hour, minute, subject,
-                isRegular, description, howToSend, expectedScore);
+                isRegular, description, howToSend, expectedScore, id);
         homework.setActualScore(actualScore);
         return homework;
     }
@@ -80,6 +81,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     public void addHomework(@NotNull Homework homework) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_ID, homework.getId());
             values.put(COLUMN_NAME_SUBJECT, homework.getSubject());
             values.put(COLUMN_NAME_YEAR, homework.getYear());
             values.put(COLUMN_NAME_MONTH, homework.getMonth());

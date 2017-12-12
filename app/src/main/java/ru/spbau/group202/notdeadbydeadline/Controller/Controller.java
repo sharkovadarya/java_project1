@@ -14,7 +14,7 @@ public class Controller {
     private static HomeworkDatabaseController homeworkDatabase;
     private static SubjectDatabaseController subjectDatabase;
     private static ScheduleDatabaseController scheduleDatabase;
-    //private static SettingsDatabaseController settingsDatabse;
+    private static SettingsController settings;
     private static Set<String> subjectList;
 
     public static ArrayList<ArrayList<String>> getActualHomeworks() {
@@ -64,9 +64,11 @@ public class Controller {
     public static void addHomework(int year, int month, int day, int hour, int minutes,
                                    String subject, boolean isRegular, String description,
                                    String howToSend, double expectedScore) {
-        Homework newHomework = new Homework(year, month, day, hour, minutes, subject, isRegular,
-                description, howToSend, expectedScore);
-        homeworkDatabase.addHomework(newHomework);
+        int id = settings.getTotalNumberOfHW();
+        Homework homework = new Homework(year, month, day, hour, minutes, subject, isRegular,
+                description, howToSend, expectedScore, id);
+        homeworkDatabase.addHomework(homework);
+        settings.saveTotalNumberOfHW(++id);
 
         if(subjectList.add(subject)){
             subjectDatabase.addSubject(subject);
@@ -77,6 +79,7 @@ public class Controller {
         homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);
         scheduleDatabase = new ScheduleDatabaseController(context);
+        settings = new SettingsController(context);
         subjectList = new LinkedHashSet<>();
         subjectList.addAll(subjectDatabase.getAllSubjects());
     }
