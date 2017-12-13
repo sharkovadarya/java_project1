@@ -18,8 +18,6 @@ public class Homework implements DetailedEntry {
                     int hour, int minute, String subject,
                     boolean isRegular, String description,
                     String howToSend, double expectedScore, int id) {
-        deadline = new Deadline(LocalDateTime.of(year, month, day, hour, minute));
-                    String howToSend, double expectedScore) {
         deadline = new Deadline(new LocalDateTime(year, month, day, hour, minute));
         this.subject = subject;
         this.isRegular = isRegular;
@@ -37,19 +35,13 @@ public class Homework implements DetailedEntry {
         return actualScore >= expectedScore;
     }
 
-    public void checkDeadline() {
-        /*if (deadline.hasPassed()) {
-            // TODO move to old h/ws
-        }*/
-    }
-
     public ArrayList<String> getDetails() {
         ArrayList<String> homeworkDetails = new ArrayList<>();
-
         homeworkDetails.add(getDescription());
         homeworkDetails.add(deadline.getFormattedDeadline());
         homeworkDetails.add(getHowToSend());
         homeworkDetails.add(Double.toString(getExpectedScore()));
+        homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
     }

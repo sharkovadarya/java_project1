@@ -11,8 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import ru.spbau.group202.notdeadbydeadline.Model.Class;
-import ru.spbau.group202.notdeadbydeadline.Model.Homework;
+import ru.spbau.group202.notdeadbydeadline.Model.ScheduleEntry;
 
 public class ScheduleDatabaseController extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Schedule";
@@ -50,7 +49,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private Class getScheduleEntryByCursor(@NotNull Cursor cursor) {
+    private ScheduleEntry getScheduleEntryByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int dayOfWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY_OF_WEEK));
@@ -60,11 +59,11 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         String auditorium = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_AUDITORIUM));
         String teacher = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TEACHER));
 
-        return new Class(subject, dayOfWeek, hour, minute,
+        return new ScheduleEntry(subject, dayOfWeek, hour, minute,
                 isOnEvenWeek, auditorium, teacher, id);
     }
 
-    public void addScheduleEntry(@NotNull Class scheduleEntry) {
+    public void addScheduleEntry(@NotNull ScheduleEntry scheduleEntry) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_ID, scheduleEntry.getId());
@@ -80,20 +79,20 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<Class> getDaySchedule(int dayOfWeek, boolean isOnEvenWeek) {
+    public ArrayList<ScheduleEntry> getDaySchedule(int dayOfWeek, boolean isOnEvenWeek) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_DAY_OF_WEEK + "=? " +
                 "AND " + COLUMN_NAME_IS_ON_EVEN_WEEK + "=? " +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
                 String.valueOf(isOnEvenWeek ? 1 : 0)};
-        ArrayList<Class> daySchedule = new ArrayList<>();
+        ArrayList<ScheduleEntry> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    Class scheduleEntry= getScheduleEntryByCursor(cursor);
+                    ScheduleEntry scheduleEntry= getScheduleEntryByCursor(cursor);
                     daySchedule.add(scheduleEntry);
                 } while (cursor.moveToNext());
             }
@@ -102,4 +101,10 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         return daySchedule;
     }
 
+    public void deleteScheduleEntryById(int id) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            database.delete(DATABASE_NAME, COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+        }
+    }
 }

@@ -1,18 +1,21 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+
 import java.util.ArrayList;
 
-public class Class implements DetailedEntry {
+public class ScheduleEntry implements DetailedEntry {
     private String subject, auditorium, teacher;
-    private int dayOfWeek, hour, minute, id;
+    private LocalTime time;
+    private int dayOfWeek, id;
     private boolean isOnEvenWeeks;
 
-    public Class(String subject, int dayOfWeek, int hour, int minute, boolean isOnEvenWeeks,
-                 String auditorium, String teacher, int id) {
+    public ScheduleEntry(String subject, int dayOfWeek, int hour, int minute, boolean isOnEvenWeeks,
+                         String auditorium, String teacher, int id) {
+        time = new LocalTime(hour, minute);
         this.subject = subject;
         this.dayOfWeek = dayOfWeek;
-        this.hour = hour;
-        this.minute = minute;
         this.isOnEvenWeeks = isOnEvenWeeks;
         this.auditorium = auditorium;
         this.teacher = teacher;
@@ -20,20 +23,19 @@ public class Class implements DetailedEntry {
     }
 
     public ArrayList<String> getDetails() {
-        // debug!
-        return null;
-        /*ArrayList<String> classDetails = new ArrayList<>();
+        ArrayList<String> classDetails = new ArrayList<>();
         classDetails.add(subject);
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("hh:mm");
-        classDetails.*/
+        classDetails.add(DateTimeFormat.forPattern("hh:mm").print(time));
+        classDetails.add(Integer.toString(id));
+        return classDetails;
     }
 
     public int getHour() {
-        return hour;
+        return time.getHourOfDay();
     }
 
     public int getMinute() {
-        return minute;
+        return time.getMinuteOfHour();
     }
 
     public String getSubject() {

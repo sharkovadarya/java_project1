@@ -57,7 +57,6 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
     private Homework getHomeworkByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
@@ -105,7 +104,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     Homework homework = getHomeworkByCursor(cursor);
-                    if (homework.hasPassed()) {
+                    if (!homework.hasPassed()) {
                         homeworks.add(homework);
                     }
                 } while (cursor.moveToNext());
@@ -169,5 +168,21 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         }
 
         return homeworks;
+    }
+
+    public void deleteHomeworkById(int id) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            database.delete(DATABASE_NAME, COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+        }
+    }
+
+    public void setScoreById(int id, int score) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_ACTUAL_SCORE, score);
+            database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
+                    new String[] { String.valueOf(id) });
+        }
     }
 }
