@@ -10,6 +10,7 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.Model.ScheduleEntry;
 
@@ -49,6 +50,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @NotNull
     private ScheduleEntry getScheduleEntryByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
@@ -79,14 +81,15 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<ScheduleEntry> getDaySchedule(int dayOfWeek, boolean isOnEvenWeek) {
+    @NotNull
+    public List<ScheduleEntry> getDaySchedule(int dayOfWeek, boolean isOnEvenWeek) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_DAY_OF_WEEK + "=? " +
                 "AND " + COLUMN_NAME_IS_ON_EVEN_WEEK + "=? " +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
                 String.valueOf(isOnEvenWeek ? 1 : 0)};
-        ArrayList<ScheduleEntry> daySchedule = new ArrayList<>();
+        List<ScheduleEntry> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {

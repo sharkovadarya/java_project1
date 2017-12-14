@@ -2,6 +2,7 @@ package ru.spbau.group202.notdeadbydeadline.Model;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.*;
@@ -11,13 +12,11 @@ public class Homework implements DetailedEntry {
     private String subject, description, howToSend;
     private boolean isRegular;
     private double expectedScore;
-    private double actualScore = 0;
+    private double actualScore = -1;
     private int id;
 
-    public Homework(int year, int month, int day,
-                    int hour, int minute, String subject,
-                    boolean isRegular, String description,
-                    String howToSend, double expectedScore, int id) {
+    public Homework(int year, int month, int day, int hour, int minute, @NotNull String subject,
+                    boolean isRegular, String description, String howToSend, double expectedScore, int id) {
         deadline = new Deadline(new LocalDateTime(year, month, day, hour, minute));
         this.subject = subject;
         this.isRegular = isRegular;
@@ -35,6 +34,7 @@ public class Homework implements DetailedEntry {
         return actualScore >= expectedScore;
     }
 
+    @NotNull
     public ArrayList<String> getDetails() {
         ArrayList<String> homeworkDetails = new ArrayList<>();
         homeworkDetails.add(getDescription());
@@ -50,6 +50,7 @@ public class Homework implements DetailedEntry {
         return deadline;
     }
 
+    @NotNull
     public String getSubject() {
         return subject;
     }
@@ -111,7 +112,7 @@ public class Homework implements DetailedEntry {
     public class Deadline implements DetailedEntry{
         private LocalDateTime deadline;
 
-        private Deadline(LocalDateTime deadline) {
+        private Deadline(@NotNull LocalDateTime deadline) {
             this.deadline = deadline;
         }
 
@@ -119,11 +120,13 @@ public class Homework implements DetailedEntry {
             return LocalDateTime.now().compareTo(deadline) > 0;
         }
 
+        @NotNull
         private String getFormattedDeadline() {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm");
             return formatter.print(deadline);
         }
 
+        @NotNull
         public ArrayList<String> getDetails() {
             ArrayList<String> deadlineDetails = new ArrayList<>();
             deadlineDetails.add(getSubject());

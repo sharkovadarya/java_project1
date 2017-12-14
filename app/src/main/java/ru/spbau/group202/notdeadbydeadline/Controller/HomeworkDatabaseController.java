@@ -10,6 +10,7 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 
@@ -57,6 +58,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @NotNull
     private Homework getHomeworkByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
@@ -97,8 +99,9 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<Homework> getActualHomeworks() {
-        ArrayList<Homework> homeworks = new ArrayList<>();
+    @NotNull
+    public List<Homework> getActualHomeworks() {
+        List<Homework> homeworks = new ArrayList<>();
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
             if (cursor != null && cursor.moveToFirst()) {
@@ -114,10 +117,11 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         return homeworks;
     }
 
-    public ArrayList<Homework> getHomeworksBySubject(@NotNull String subject) {
+    @NotNull
+    public List<Homework> getHomeworksBySubject(@NotNull String subject) {
         String query = "SELECT * FROM " + DATABASE_NAME +
                 " WHERE " + COLUMN_NAME_SUBJECT + "=" + "?";
-        ArrayList<Homework> homeworks = new ArrayList<>();
+        List<Homework> homeworks = new ArrayList<>();
         String[] selectionArgs = new String[]{String.valueOf(subject)};
 
         try (SQLiteDatabase database = this.getReadableDatabase();
@@ -132,12 +136,24 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         return homeworks;
     }
 
-    public ArrayList<Homework> getHomeworksByDay(int year, int month, int day) {
+    @NotNull
+    public List<Homework> getPassedHomeworksBySubject(@NotNull String subject) {
+        List<Homework> passedHomeworks = new ArrayList<>();
+        for (Homework homework : getHomeworksBySubject(subject)) {
+            if (homework.hasPassed()) {
+                passedHomeworks.add(homework);
+            }
+        }
+        return passedHomeworks;
+    }
+
+    @NotNull
+    public List<Homework> getHomeworksByDay(int year, int month, int day) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_YEAR + "=? " +
                 "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?";
         String[] selectionArgs = new String[]{String.valueOf(year),
                 String.valueOf(month), String.valueOf(day)};
-        ArrayList<Homework> homeworks = new ArrayList<>();
+        List<Homework> homeworks = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
@@ -152,9 +168,10 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         return homeworks;
     }
 
-    public ArrayList<Homework> getHomeworksBetweenDates(int year1, int month1, int day1,
-                                                        int year2, int month2, int day2) {
-        ArrayList<Homework> homeworks = new ArrayList<>();
+    @NotNull
+    public List<Homework> getHomeworksBetweenDates(int year1, int month1, int day1,
+                                                   int year2, int month2, int day2) {
+        List<Homework> homeworks = new ArrayList<>();
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
             if (cursor != null && cursor.moveToFirst()) {
@@ -185,4 +202,5 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                     new String[] { String.valueOf(id) });
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.Model;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -11,8 +12,8 @@ public class ScheduleEntry implements DetailedEntry {
     private int dayOfWeek, id;
     private boolean isOnEvenWeeks;
 
-    public ScheduleEntry(String subject, int dayOfWeek, int hour, int minute, boolean isOnEvenWeeks,
-                         String auditorium, String teacher, int id) {
+    public ScheduleEntry(@NotNull String subject, int dayOfWeek, int hour, int minute,
+                         boolean isOnEvenWeeks, String auditorium, String teacher, int id) {
         time = new LocalTime(hour, minute);
         this.subject = subject;
         this.dayOfWeek = dayOfWeek;
@@ -22,6 +23,7 @@ public class ScheduleEntry implements DetailedEntry {
         this.id = id;
     }
 
+    @NotNull
     public ArrayList<String> getDetails() {
         ArrayList<String> classDetails = new ArrayList<>();
         classDetails.add(subject);
@@ -38,6 +40,7 @@ public class ScheduleEntry implements DetailedEntry {
         return time.getMinuteOfHour();
     }
 
+    @NotNull
     public String getSubject() {
         return subject;
     }
