@@ -23,8 +23,8 @@
         <activity
             android:name=".UI.AddHomeworkActivity"
             android:label="@string/title_activity_addHomework"
-            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.HomeworkActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -33,19 +33,18 @@
         <activity
             android:name=".UI.DisplayHomeworkActivity"
             android:label="@string/title_activity_display_homework"
-            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.HomeworkActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.spbau.group202.notdeadbydeadline.UI.HomeworkActivity" />
         </activity>
-
         <activity
             android:name=".UI.DeadlinesActivity"
             android:label="@string/title_activity_deadline"
-            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.MainActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -54,8 +53,8 @@
         <activity
             android:name=".UI.HomeworkActivity"
             android:label="@string/title_activity_homework"
-            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".UI.MainActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -67,7 +66,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity
+        <!--
+        <activity
             android:name=".UI.ScheduleActivity"
             android:label="@string/title_activity_schedule"
             android:parentActivityName=".UI.MainActivity"
@@ -75,7 +75,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
-        </activity>-->
+        </activity>
+        -->
+        <activity
+            android:name=".UI.ScheduleActivity"
+            android:label="@string/title_activity_schedule"
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.spbau.group202.notdeadbydeadline.UI.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

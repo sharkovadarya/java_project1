@@ -39,7 +39,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
     public void getSubject() {
 
-        final ArrayList<String> source = Controller.getSubjectList();
+        //final ArrayList<String> source = Controller.getSubjectList();
+        // TODO fix this
+        final ArrayList<String> source = new ArrayList<>();
 
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
         actv.setAdapter(new ArrayAdapter<>(this,
@@ -247,7 +249,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 howToSend = " ";
             }
 
-            Controller.addHomework(year, month, day, hour, minutes,
+            Controller.HomeworkController.addHomework(year, month, day, hour, minutes,
                     subject, false, description,
                     howToSend, expectedScore);
         }

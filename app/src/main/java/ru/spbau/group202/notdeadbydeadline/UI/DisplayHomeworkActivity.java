@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
@@ -30,8 +31,8 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
 
 
     public void outputHomeworks(String subject) {
-        ArrayList<ArrayList<String>> formattedHomeworksDetails =
-                Controller.getHomeworksBySubject(subject);
+        List<List<String>> formattedHomeworksDetails =
+                Controller.HomeworkController.getHomeworksBySubject(subject);
         // local utility variables
         String deadlinesField = "\nDeadlines: ";
         String descriptionFiled = "\nDescription: ";
@@ -39,7 +40,7 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
         String expectedScoreField = "\nExpected Score: ";
 
         ArrayList<SpannableStringBuilder> formattedHomeworks = new ArrayList<>();
-        for (ArrayList<String> homeworkDetails : formattedHomeworksDetails) {
+        for (List<String> homeworkDetails : formattedHomeworksDetails) {
 
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder(descriptionFiled);
             stringBuilder.setSpan(new StyleSpan(BOLD),

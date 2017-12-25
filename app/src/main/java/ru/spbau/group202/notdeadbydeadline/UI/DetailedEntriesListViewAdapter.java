@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.R;
 
@@ -19,10 +20,10 @@ import static android.graphics.Typeface.BOLD;
 public class DetailedEntriesListViewAdapter extends BaseAdapter {
     private Context ctx;
     LayoutInflater lInflater;
-    ArrayList<ArrayList<String>> detailedEntries;
+    List<List<String>> detailedEntries;
 
     DetailedEntriesListViewAdapter(Context context,
-                                   ArrayList<ArrayList<String>> detailedEntries) {
+                                   List<List<String>> detailedEntries) {
         ctx = context;
         this.detailedEntries = detailedEntries;
         lInflater = (LayoutInflater) ctx

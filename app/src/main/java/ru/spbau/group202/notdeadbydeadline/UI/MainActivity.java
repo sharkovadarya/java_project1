@@ -29,6 +29,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.DateTime.Property;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.Controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
@@ -58,19 +59,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void outputDeadlines() {
-        ArrayList<ArrayList<String>> deadlinesDetails =
-                Controller.getDeadlinesByDay(LocalDateTime.now().getYear(),
+        List<List<String>> deadlinesDetails =
+                Controller.HomeworkController.getDeadlinesByDay(LocalDateTime.now().getYear(),
                         LocalDateTime.now().getMonthOfYear(),
                         LocalDateTime.now().getDayOfMonth());
 
 
         LocalDateTime ldt = LocalDateTime.now().plusDays(1);
-        deadlinesDetails.addAll(Controller.getDeadlinesByDay(ldt.getYear(),
+        deadlinesDetails.addAll(Controller.HomeworkController.getDeadlinesByDay(ldt.getYear(),
                 ldt.getMonthOfYear(), ldt.getDayOfMonth()));
 
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
-        for (ArrayList<String> deadlineDetails : deadlinesDetails) {
+        for (List<String> deadlineDetails : deadlinesDetails) {
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder(deadlineDetails.get(2));
 
             int position = stringBuilder.length();
@@ -164,10 +165,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_homework) {
             Intent intent = new Intent(this, HomeworkActivity.class);
             startActivityForResult(intent, 1);
-        } /*else if (id == R.id.nav_schedule) {
+        } else if (id == R.id.nav_schedule) {
             Intent intent = new Intent(this, ScheduleActivity.class);
             startActivityForResult(intent, 1);
-        } else if (id == R.id.nav_studymaterials) {
+        } /*else if (id == R.id.nav_studymaterials) {
             Intent intent = new Intent(this, StudyMaterialsActivity.class);
             startActivityForResult(intent, 1);
         }*/

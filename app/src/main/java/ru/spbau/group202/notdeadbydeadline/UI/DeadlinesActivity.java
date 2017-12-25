@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,15 +64,15 @@ public class DeadlinesActivity extends AppCompatActivity
 
     private void outputDeadlineByDay( int dayNumber ) {
 
-        ArrayList<ArrayList<String>> deadlinesDetails;
+        List<List<String>> deadlinesDetails;
 
         LocalDate weekDay = localDate.withDayOfWeek(dayNumber);
-        deadlinesDetails = Controller.getDeadlinesByDay(weekDay.getYear(),
+        deadlinesDetails = Controller.HomeworkController.getDeadlinesByDay(weekDay.getYear(),
                 weekDay.getMonthOfYear(),
                 weekDay.getDayOfMonth());
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
-        for (ArrayList<String> deadlineDetails : deadlinesDetails) {
+        for (List<String> deadlineDetails : deadlinesDetails) {
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder(deadlineDetails.get(2));
 
 
