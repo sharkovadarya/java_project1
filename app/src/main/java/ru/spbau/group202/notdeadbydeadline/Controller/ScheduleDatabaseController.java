@@ -95,7 +95,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    ScheduleEntry scheduleEntry= getScheduleEntryByCursor(cursor);
+                    ScheduleEntry scheduleEntry = getScheduleEntryByCursor(cursor);
                     daySchedule.add(scheduleEntry);
                 } while (cursor.moveToNext());
             }

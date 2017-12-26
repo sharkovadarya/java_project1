@@ -110,7 +110,7 @@ public class Homework implements DetailedEntry {
     }
 
 
-    public class Deadline implements DetailedEntry, Comparable<Deadline>{
+    public class Deadline implements DetailedEntry, Comparable<Deadline> {
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {

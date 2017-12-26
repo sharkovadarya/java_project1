@@ -29,9 +29,9 @@ public class Controller {
         settings.saveWeekPairity(isInversed);
     }
 
-    public static class AcademicProgressController{
+    public static class AcademicProgressController {
         @NotNull
-        public List<String> calculateProgress(String subject) throws UnrecognizedCreditFormException{
+        public List<String> calculateProgress(String subject) throws UnrecognizedCreditFormException {
             SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
             return subjectCredit.calculateProgress(HomeworkController
                     .homeworkDatabase.getPassedHomeworksBySubject(subject));

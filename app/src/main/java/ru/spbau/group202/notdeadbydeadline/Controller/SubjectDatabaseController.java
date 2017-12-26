@@ -73,12 +73,12 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private SubjectCredit getSubjectCreditByCursor(@NotNull Cursor cursor) throws UnrecognizedCreditFormException{
+    private SubjectCredit getSubjectCreditByCursor(@NotNull Cursor cursor) throws UnrecognizedCreditFormException {
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int creditForm = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_CREDIT_FORM));
         double percentForCredit = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_PERCENT_FOR_CREDIT));
 
-        switch (CreditEnum.values()[creditForm]){
+        switch (CreditEnum.values()[creditForm]) {
             case ByPercent:
                 return new CreditByPercent(subject, percentForCredit);
             case ByAcceptedHomeworks:
@@ -91,7 +91,7 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public SubjectCredit getSubjectCredit(@NotNull String subject) throws UnrecognizedCreditFormException{
+    public SubjectCredit getSubjectCredit(@NotNull String subject) throws UnrecognizedCreditFormException {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_SUBJECT + "=?";
         String[] selectionArgs = new String[]{subject};
 
@@ -106,7 +106,7 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_CREDIT_FORM, credit.ordinal());
             database.update(DATABASE_NAME, values, COLUMN_NAME_SUBJECT + " = ?",
-                    new String[] {subject});
+                    new String[]{subject});
         }
     }
 }

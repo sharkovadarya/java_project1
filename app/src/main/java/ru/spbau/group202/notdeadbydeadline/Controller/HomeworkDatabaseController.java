@@ -202,7 +202,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_ACTUAL_SCORE, score);
             database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
-                    new String[] { String.valueOf(id) });
+                    new String[]{String.valueOf(id)});
         }
     }
 

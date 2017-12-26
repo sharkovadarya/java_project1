@@ -16,10 +16,10 @@ public class CreditByAcceptedHomeworks extends SubjectCredit {
         int numberOfCheckedHomeworks = 0;
         int numberOfAcceptedHomeworks = 0;
 
-        for (Homework homework : homeworks){
-            if(homework.getActualScore() != -1){
+        for (Homework homework : homeworks) {
+            if (homework.getActualScore() != -1) {
                 numberOfCheckedHomeworks++;
-                if(homework.hasPassed()){
+                if (homework.hasPassed()) {
                     numberOfAcceptedHomeworks++;
                 }
             }
@@ -28,7 +28,7 @@ public class CreditByAcceptedHomeworks extends SubjectCredit {
         String credit = percent == 1.0 ? "Passed class" : "Failed class";
         int numberOfNotAcceptedHomeworks = numberOfCheckedHomeworks - numberOfAcceptedHomeworks;
 
-        return Arrays.asList("by accepted homeworks", Double.toString(percent) , credit,
+        return Arrays.asList("by accepted homeworks", Double.toString(percent), credit,
                 Integer.toString(numberOfNotAcceptedHomeworks));
     }
 }

@@ -17,8 +17,8 @@ public class SubjectCredit {
         double totalPoints = 0;
         double earnedPoints = 0;
 
-        for (Homework homework : homeworks){
-            if(homework.getActualScore() != -1){
+        for (Homework homework : homeworks) {
+            if (homework.getActualScore() != -1) {
                 earnedPoints += homework.getActualScore();
                 totalPoints += homework.getExpectedScore();
             }
