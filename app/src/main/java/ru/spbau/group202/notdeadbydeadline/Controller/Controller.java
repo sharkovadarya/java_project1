@@ -16,7 +16,21 @@ import ru.spbau.group202.notdeadbydeadline.Model.SubjectCredit;
 
 public class Controller {
     private static StoredDataController settings;
+    private static SubjectDatabaseController subjectDatabase;
+    private static Set<String> subjectList;
 
+    @NotNull
+    public static List<String> getSubjectList() {
+        return new ArrayList<>(subjectList);
+    }
+/*
+    @NotNull
+    public List<String> calculateProgress(String subject) {
+        SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
+        return subjectCredit.calculateProgress(HomeworkController.
+                homeworkDatabase.getPassedHomeworksBySubject(subject));
+    }
+*/
     public static class HomeworkController {
         private static HomeworkDatabaseController homeworkDatabase;
 
@@ -44,9 +58,10 @@ public class Controller {
             homeworkDatabase.addHomework(homework);
             settings.saveTotalNumberOfHW(++id);
 
-            if (AcademicProgressController.subjectList.add(subject)) {
-                AcademicProgressController.subjectDatabase.addSubject(subject, sth, -1);
+            if (subjectList.add(subject)) {
+                subjectDatabase.addSubject(subject);
             }
+
         }
 
         public static void deleteHomeworkById(int id) {
@@ -96,34 +111,13 @@ public class Controller {
 
     }
 
-    public static class AcademicProgressController {
-        private static SubjectDatabaseController subjectDatabase;
-        private static Set<String> subjectList;
-
-        static {
-            subjectList = new HashSet<>();
-            subjectList.addAll(subjectDatabase.getAllSubjects());
-        }
-
-        @NotNull
-        public static List<String> getSubjectList() {
-            return new ArrayList<>(subjectList);
-        }
-
-        @NotNull
-        public List<String> calculateProgress(String subject) {
-            SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
-            return subjectCredit.calculateProgress(HomeworkController.
-                    homeworkDatabase.getPassedHomeworksBySubject(subject));
-        }
-    }
-
-
     public static void createDatabases(@NotNull Context context) {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
-        AcademicProgressController.subjectDatabase = new SubjectDatabaseController(context);
+        subjectDatabase = new SubjectDatabaseController(context);
         ScheduleController.scheduleDatabase = new ScheduleDatabaseController(context);
         settings = new StoredDataController(context);
+        subjectList = new HashSet<>();
+        subjectList.addAll(subjectDatabase.getAllSubjects());
     }
 
     @NotNull

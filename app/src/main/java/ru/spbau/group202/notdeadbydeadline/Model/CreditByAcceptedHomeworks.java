@@ -24,8 +24,8 @@ public class CreditByAcceptedHomeworks extends SubjectCredit {
                 }
             }
         }
-        double percent = numberOfAcceptedHomeworks == 0 ? 1 : (double) numberOfAcceptedHomeworks / numberOfCheckedHomeworks;
-        String credit = percent == 1.0 ? "OK" : "WTF";
+        double percent = numberOfCheckedHomeworks == 0 ? 1 : (double) numberOfAcceptedHomeworks / numberOfCheckedHomeworks;
+        String credit = percent == 1.0 ? "Passed class" : "Failed class";
         int numberOfNotAcceptedHomeworks = numberOfCheckedHomeworks - numberOfAcceptedHomeworks;
 
         return Arrays.asList("by accepted homeworks", Double.toString(percent) , credit,
