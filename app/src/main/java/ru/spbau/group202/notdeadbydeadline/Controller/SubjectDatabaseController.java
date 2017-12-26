@@ -12,8 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.spbau.group202.notdeadbydeadline.Model.Homework;
-import ru.spbau.group202.notdeadbydeadline.Model.ScheduleEntry;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditByAcceptedHomeworks;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditByPercent;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditEnum;
 import ru.spbau.group202.notdeadbydeadline.Model.SubjectCredit;
 
 
@@ -34,7 +35,7 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + DATABASE_NAME + " (" +
                 COLUMN_NAME_SUBJECT + " TEXT PRIMARY KEY, " +
                 COLUMN_NAME_CREDIT_FORM + " INTEGER, " +
-                COLUMN_NAME_PERCENT_FOR_CREDIT + " REAL, " + ");");
+                COLUMN_NAME_PERCENT_FOR_CREDIT + " REAL" + ");");
     }
 
     @Override
@@ -43,12 +44,11 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    //TODO creditForm type?
-    public void addSubject(@NotNull String subject, creditForm, double percentForCredit) {
+    public void addSubject(@NotNull String subject, @NotNull CreditEnum creditForm, double percentForCredit) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, subject);
-            values.put(COLUMN_NAME_CREDIT_FORM, crediForm);
+            values.put(COLUMN_NAME_CREDIT_FORM, creditForm.ordinal());
             values.put(COLUMN_NAME_PERCENT_FOR_CREDIT, percentForCredit);
             long rowId = database.insert(DATABASE_NAME, null, values);
             Log.d("Database", "inserted row number " + rowId);
@@ -59,7 +59,8 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
     public List<String> getAllSubjects() {
         ArrayList<String> subjects = new ArrayList<>();
         try (SQLiteDatabase database = this.getReadableDatabase();
-             Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
+             Cursor cursor = database.rawQuery("SELECT " + COLUMN_NAME_SUBJECT
+                     + " FROM " + DATABASE_NAME, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
@@ -72,32 +73,40 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private SubjectCredit getSubjectCreditByCursor(@NotNull Cursor cursor) {
+    private SubjectCredit getSubjectCreditByCursor(@NotNull Cursor cursor) throws UnrecognizedCreditFormException{
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
-        creditForm = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_CREDIT_FORM));
+        int creditForm = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_CREDIT_FORM));
         double percentForCredit = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_PERCENT_FOR_CREDIT));
 
-        //TODO
-        if(creditForm){
-            return
+        switch (CreditEnum.values()[creditForm]){
+            case ByPercent:
+                return new CreditByPercent(subject, percentForCredit);
+            case ByAcceptedHomeworks:
+                return new CreditByAcceptedHomeworks(subject);
+            case NotStated:
+                return new SubjectCredit(subject);
+            default:
+                throw new UnrecognizedCreditFormException();
         }
-        else if(){
-            return
-        }
-        return
     }
 
     @NotNull
-    public SubjectCredit getSubjectCredit(@NotNull String subject) {
+    public SubjectCredit getSubjectCredit(@NotNull String subject) throws UnrecognizedCreditFormException{
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_SUBJECT + "=?";
         String[] selectionArgs = new String[]{subject};
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                SubjectCredit subjectCredit = getSubjectCreditByCursor(cursor);
-                return subjectCredit;
-            }
+            return getSubjectCreditByCursor(cursor);
+        }
+    }
+
+    public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditEnum credit) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_CREDIT_FORM, credit.ordinal());
+            database.update(DATABASE_NAME, values, COLUMN_NAME_SUBJECT + " = ?",
+                    new String[] {subject});
         }
     }
 }

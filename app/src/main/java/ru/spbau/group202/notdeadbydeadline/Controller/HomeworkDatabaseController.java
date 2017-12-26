@@ -10,6 +10,7 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
@@ -144,6 +145,8 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 passedHomeworks.add(homework);
             }
         }
+
+        Collections.sort(passedHomeworks, (h1, h2) -> h1.getDeadline().compareTo(h2.getDeadline()));
         return passedHomeworks;
     }
 

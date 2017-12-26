@@ -109,7 +109,8 @@ public class Homework implements DetailedEntry {
         return id;
     }
 
-    public class Deadline implements DetailedEntry{
+
+    public class Deadline implements DetailedEntry, Comparable<Deadline>{
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {
@@ -136,5 +137,9 @@ public class Homework implements DetailedEntry {
             return deadlineDetails;
         }
 
+        @Override
+        public int compareTo(@NotNull Deadline deadline) {
+            return this.deadline.compareTo(deadline.deadline);
+        }
     }
 }

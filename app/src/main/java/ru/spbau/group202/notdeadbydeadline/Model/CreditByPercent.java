@@ -7,31 +7,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CreditByPercent extends SubjectCredit {
-    double percentForCredit;
+    private double percentForCredit;
 
-    CreditByPercent(@NotNull String subject, double percentForCredit) {
+    public CreditByPercent(@NotNull String subject, double percentForCredit) {
         super(subject);
         this.percentForCredit = percentForCredit;
     }
 
     @Override
     public List<String> calculateProgress(@NotNull List<Homework> homeworks) {
-        int numberOfCheckedHomeworks = 0;
-        int numberOfAcceptedHomeworks = 0;
+        double totalPoints = 0;
+        double earnedPoints = 0;
 
         for (Homework homework : homeworks){
             if(homework.getActualScore() != -1){
-                numberOfCheckedHomeworks++;
-                if(homework.hasPassed()){
-                    numberOfAcceptedHomeworks++;
-                }
+                earnedPoints += homework.getActualScore();
+                totalPoints += homework.getExpectedScore();
             }
         }
-        double percent = numberOfCheckedHomeworks == 0 ? 1 : (double) numberOfAcceptedHomeworks / numberOfCheckedHomeworks;
-        String credit = percent == 1.0 ? "Passed class" : "Failed class";
-        int numberOfNotAcceptedHomeworks = numberOfCheckedHomeworks - numberOfAcceptedHomeworks;
 
-        return Arrays.asList("by accepted homeworks", Double.toString(percent) , credit,
-                Integer.toString(numberOfNotAcceptedHomeworks));
+        double percent = totalPoints == 0 ? 1 : earnedPoints / totalPoints;
+        String result = percent >= percentForCredit ? "Class passed" : "Class failed";
+        double pointsForCredit = percentForCredit * totalPoints - earnedPoints;
+        return Arrays.asList("by percent", Double.toString(percent), result,
+                pointsForCredit < 0 ? "0" : Double.toString(pointsForCredit));
     }
 }

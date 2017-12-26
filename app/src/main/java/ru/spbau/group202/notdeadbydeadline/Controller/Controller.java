@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ru.spbau.group202.notdeadbydeadline.Model.CreditEnum;
 import ru.spbau.group202.notdeadbydeadline.Model.DetailedEntry;
 import ru.spbau.group202.notdeadbydeadline.Model.Homework;
 import ru.spbau.group202.notdeadbydeadline.Model.ScheduleEntry;
@@ -23,24 +24,34 @@ public class Controller {
     public static List<String> getSubjectList() {
         return new ArrayList<>(subjectList);
     }
-/*
-    @NotNull
-    public List<String> calculateProgress(String subject) {
-        SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
-        return subjectCredit.calculateProgress(HomeworkController.
-                homeworkDatabase.getPassedHomeworksBySubject(subject));
+
+    public static void setWeekPairity(boolean isInversed) {
+        settings.saveWeekPairity(isInversed);
     }
-*/
+
+    public static class AcademicProgressController{
+        @NotNull
+        public List<String> calculateProgress(String subject) throws UnrecognizedCreditFormException{
+            SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
+            return subjectCredit.calculateProgress(HomeworkController
+                    .homeworkDatabase.getPassedHomeworksBySubject(subject));
+        }
+
+        public void setSubjectCreditForm(@NotNull String subject, CreditEnum credit) {
+            subjectDatabase.setSubjectCreditForm(subject, credit);
+        }
+    }
+
     public static class HomeworkController {
         private static HomeworkDatabaseController homeworkDatabase;
 
         @NotNull
-        public static List<List<String>> getHomeworksBySubject(String subject) {
+        public static List<List<String>> getHomeworksBySubject(@NotNull String subject) {
             return getEntriesDetailList(homeworkDatabase.getHomeworksBySubject(subject));
         }
 
         @NotNull
-        public static List<List<String>> getPassedHomeworksBySubject(String subject) {
+        public static List<List<String>> getPassedHomeworksBySubject(@NotNull String subject) {
             return getEntriesDetailList(homeworkDatabase.getPassedHomeworksBySubject(subject));
         }
 
@@ -59,9 +70,8 @@ public class Controller {
             settings.saveTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject);
+                subjectDatabase.addSubject(subject, CreditEnum.NotStated, -1);
             }
-
         }
 
         public static void deleteHomeworkById(int id) {

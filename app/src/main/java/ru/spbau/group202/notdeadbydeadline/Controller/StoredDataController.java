@@ -19,7 +19,7 @@ public class StoredDataController {
                 .getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public void savePairityOfWeek(boolean isInversed) {
+    public void saveWeekPairity(boolean isInversed) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, isInversed);
         editor.apply();
@@ -48,4 +48,5 @@ public class StoredDataController {
     public int getTotalNumberOfScheduleEntries() {
         return settings.getInt(APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES, 0);
     }
+
 }

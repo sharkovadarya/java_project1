@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CreditByAcceptedHomeworks extends SubjectCredit {
-    CreditByAcceptedHomeworks(@NotNull String subject) {
+    public CreditByAcceptedHomeworks(@NotNull String subject) {
         super(subject);
     }
 

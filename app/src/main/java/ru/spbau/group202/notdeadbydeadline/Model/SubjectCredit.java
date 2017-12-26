@@ -8,14 +8,14 @@ import java.util.List;
 public class SubjectCredit {
     private String subject;
 
-    SubjectCredit(@NotNull String subject) {
+    public SubjectCredit(@NotNull String subject) {
         this.subject = subject;
     }
 
     @NotNull
     public List<String> calculateProgress(@NotNull List<Homework> homeworks) {
-        int totalPoints = 0;
-        int earnedPoints = 0;
+        double totalPoints = 0;
+        double earnedPoints = 0;
 
         for (Homework homework : homeworks){
             if(homework.getActualScore() != -1){
@@ -24,7 +24,7 @@ public class SubjectCredit {
             }
         }
 
-        double percent = totalPoints == 0 ? 1 : (double) earnedPoints / totalPoints;
+        double percent = totalPoints == 0 ? 1 : earnedPoints / totalPoints;
         return Arrays.asList("not stated", Double.toString(percent));
     }
 }
