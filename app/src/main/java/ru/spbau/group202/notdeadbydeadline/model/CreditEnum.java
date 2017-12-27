@@ -2,5 +2,5 @@ package ru.spbau.group202.notdeadbydeadline.model;
 
 
 public enum CreditEnum {
-    ByAcceptedHomeworks, ByPercent, NotStated
+    BY_ACCEPTED_HOMEWORKS, BY_PERCENT, NOT_STATED
 }
