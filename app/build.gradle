@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -29,10 +34,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'org.jetbrains:annotations-java5:15.0'
-    compile 'net.danlew:android.joda:2.9.9.1'
-    compile 'com.android.support:multidex:1.0.2'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
-    compile group: 'joda-time', name: 'joda-time', version: '2.3'
+    implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation 'net.danlew:android.joda:2.9.9.1'
+    implementation 'com.android.support:multidex:1.0.2'
 }

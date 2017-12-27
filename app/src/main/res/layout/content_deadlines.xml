@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ru.spbau.group202.notdeadbydeadline.UI.DeadlinesActivity"
+    tools:context="ru.spbau.group202.notdeadbydeadline.ui.DeadlinesActivity"
     tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/app_bar_deadlines">
 
@@ -19,18 +19,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/previous_week" />
-
-    <!--<Button
-        android:id="@+id/previousWeekButton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/previous_week" />-->
-
 
     <Button
         android:id="@+id/nextWeekButton"

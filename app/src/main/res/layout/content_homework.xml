@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ru.spbau.group202.notdeadbydeadline.UI.HomeworkActivity"
+    tools:context="ru.spbau.group202.notdeadbydeadline.ui.HomeworkActivity"
     tools:showIn="@layout/app_bar_homework">
 
     <ListView

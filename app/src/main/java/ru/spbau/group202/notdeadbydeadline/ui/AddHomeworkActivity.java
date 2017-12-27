@@ -1,0 +1,284 @@
+package ru.spbau.group202.notdeadbydeadline.ui;
+
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.util.List;
+
+import ru.spbau.group202.notdeadbydeadline.controller.Controller;
+import ru.spbau.group202.notdeadbydeadline.R;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractDatePicker;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractTimePicker;
+
+public class AddHomeworkActivity extends AppCompatActivity {
+
+    public static final HomeworkFieldsAccumulator HFA = new HomeworkFieldsAccumulator();
+    private static boolean isSetTime = false;
+    private static boolean isSetDate = false;
+
+    public void getSubject() {
+
+        final List<String> source = Controller.getSubjectList();
+
+        final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
+        actv.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, source));
+
+        actv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (!source.contains(actv.getText().toString())) {
+                    source.add(actv.getText().toString());
+                }
+                HFA.storeSubject((actv.getText().toString()));
+
+
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("TAG", "Done pressed");
+                }
+                return false;
+            }
+        });
+
+        actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HFA.storeSubject((actv.getText().toString()));
+                if (!source.contains(actv.getText().toString())) {
+                    source.add(actv.getText().toString());
+                }
+
+                if (!source.contains(actv.getText().toString())) {
+                    source.add(actv.getText().toString());
+                }
+
+                View view1 = getCurrentFocus();
+                if (view1 != null) {
+                    InputMethodManager inputManager =
+                            (InputMethodManager) getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+
+                    if (inputManager != null) {
+                        inputManager.hideSoftInputFromWindow(view1.getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+
+                }
+            }
+        });
+    }
+
+    public void getDescription() {
+        final EditText editText = findViewById(R.id.getDescriptionEditText);
+        HFA.storeDescription(editText.getText().toString());
+    }
+
+    public void getExpectedScore() {
+        final EditText editText = findViewById(R.id.expectedScore);
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                HFA.storeExpectedScore(
+                        Double.parseDouble(editText.getText().toString()));
+                return false;
+            }
+        });
+    }
+
+    public void getHowToSend() {
+        final EditText editText = findViewById(R.id.submitWayEditText);
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("TAG", "Done pressed");
+                }
+                return false;
+            }
+        });
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                HFA.storeHowToSend(editText.getText().toString());
+
+
+                View view1 = getCurrentFocus();
+                if (view1 != null) {
+                    InputMethodManager inputManager =
+                            (InputMethodManager) getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                    if (inputManager != null) {
+                        inputManager.hideSoftInputFromWindow(view1.getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    public void setTime(View view) {
+        TimePickerFragment timePickerFragment = new TimePickerFragment();
+
+        timePickerFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    public void setDate(View view) {
+        DatePickerFragment datePickerFragment = new DatePickerFragment();
+
+        datePickerFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    /*public void getRegularity() {
+        CheckBox checkBox = findViewById(R.id.isRegularCheckBox);
+
+    }*/
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_homework);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Add h/w entry");
+        }
+
+        getSubject();
+        getDescription();
+        getExpectedScore();
+        getHowToSend();
+
+        Button addHomeworkButton = findViewById(R.id.finishButton);
+        addHomeworkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getDescription();
+
+                if (!HFA.isValidHomework()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Fill 'subject' and input correct date", Toast.LENGTH_LONG).show();
+                } else {
+                    HFA.addNewHomework();
+                    HFA.clear();
+                    finish();
+                }
+            }
+        });
+    }
+
+    public static class HomeworkFieldsAccumulator {
+        private String subject;
+        private String description;
+        private int year;
+        private int month;
+        private int day;
+        private int hour;
+        private int minutes;
+        private double expectedScore;
+        private boolean isRegular;
+        private String howToSend;
+
+        public void storeSubject(String subject) {
+            this.subject = subject == null ? "" : subject;
+        }
+
+        public void storeDescription(String description) {
+            this.description = description == null ? "" : description;
+        }
+
+        public void storeExpectedScore(double expectedScore) {
+            this.expectedScore = expectedScore;
+        }
+
+        public void storeDate(int year, int month, int day) {
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+
+        public void storeTime(int hour, int minutes) {
+            this.hour = hour;
+            this.minutes = minutes;
+        }
+
+    /*public void storeRegularity(boolean isRegular) {
+        this.isRegular = isRegular;
+    }*/
+
+        public void storeHowToSend(String howToSend) {
+            this.howToSend = howToSend == null ? "" : howToSend;
+        }
+
+        public void addNewHomework() {
+
+            if (description == null) {
+                description = " ";
+            }
+
+            if (howToSend == null) {
+                howToSend = " ";
+            }
+
+            Controller.HomeworkController.addHomework(year, month, day, hour, minutes,
+                    subject, false, description,
+                    howToSend, expectedScore);
+        }
+
+        public boolean isValidHomework() {
+            return subject != null && isSetDate && isSetTime;
+        }
+
+        public void clear() {
+            subject = null;
+            description = null;
+            howToSend = null;
+            expectedScore = 0;
+            year = 0;
+            month= 0;
+            day = 0;
+            hour = 0;
+            minutes = 0;
+            isSetTime = false;
+            isSetDate = false;
+        }
+
+    }
+
+    public static class TimePickerFragment extends AbstractTimePicker {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            isSetTime = true;
+            HFA.storeTime(hourOfDay, minute);
+        }
+    }
+
+    public static class DatePickerFragment extends AbstractDatePicker {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            isSetDate = true;
+            HFA.storeDate(year, month + 1, day);
+        }
+    }
+
+
+}

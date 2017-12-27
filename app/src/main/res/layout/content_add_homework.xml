@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ru.spbau.group202.notdeadbydeadline.UI.AddHomeworkActivity"
+    tools:context="ru.spbau.group202.notdeadbydeadline.ui.AddHomeworkActivity"
     tools:showIn="@layout/activity_add_homework">
 
 </android.support.constraint.ConstraintLayout>

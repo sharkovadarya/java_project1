@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ru.spbau.group202.notdeadbydeadline.ui.AddScheduleEntryActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:showIn="@layout/activity_add_schedule_entry">
+
+    <TextView
+        android:id="@+id/addNewSEHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/add_schedule_entry_header"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/scheduleGetSubjectET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="28dp"
+        android:hint="@string/subject"
+        android:inputType="text"
+        android:text=""
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addNewSEHeader" />
+
+    <Button
+        android:id="@+id/scheduleSetWeekDayButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:onClick="setWeekDay"
+        android:text="@string/set_date"
+        app:layout_constraintStart_toStartOf="@+id/scheduleGetSubjectET"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleGetSubjectET"
+        tools:text="@string/set_week_day" />
+
+    <Button
+        android:id="@+id/scheduleSetTimeButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="74dp"
+        android:onClick="setTime"
+        app:layout_constraintBaseline_toBaselineOf="@+id/scheduleSetWeekDayButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@string/schedule_set_time" />
+
+    <EditText
+        android:id="@+id/scheduleTeacherET"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="64dp"
+        android:ems="10"
+        android:hint="@string/teacher"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/scheduleAuditoriumET"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleSetWeekDayButton" />
+
+    <Button
+        android:id="@+id/scheduleFinishButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="47dp"
+        android:text="@string/finish_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/scheduleAuditoriumET"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="150dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginStart="33dp"
+        android:ems="10"
+        android:hint="@string/auditorium"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/scheduleParityCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="@string/parity_checkbox"
+        app:layout_constraintBottom_toTopOf="@+id/scheduleTeacherET"
+        app:layout_constraintStart_toStartOf="@+id/scheduleTeacherET" />
+
+</android.support.constraint.ConstraintLayout>
