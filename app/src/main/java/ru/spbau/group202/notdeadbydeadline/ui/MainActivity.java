@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
         for (List<String> deadlineDetails : deadlinesDetails) {
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder(
-                    deadlineDetails.get(2).split("\\s+")[1]);
+                    deadlineDetails.get(2));
 
             int position = stringBuilder.length();
             stringBuilder.append(" ");

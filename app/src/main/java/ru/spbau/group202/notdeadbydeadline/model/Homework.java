@@ -123,7 +123,7 @@ public class Homework implements DetailedEntry {
 
         @NotNull
         private String getFormattedDeadline() {
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm");
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy hh:mm");
             return formatter.print(deadline);
         }
 
