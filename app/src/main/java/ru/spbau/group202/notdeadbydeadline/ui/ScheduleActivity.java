@@ -103,12 +103,12 @@ public class ScheduleActivity extends AppCompatActivity
 
     private void setHeaders() {
 
-        String monday = getResources().getString(R.string.monday);
-        String tuesday = getResources().getString(R.string.tuesday);
-        String wednesday = getResources().getString(R.string.wednesday);
-        String thursday = getResources().getString(R.string.thursday);
-        String friday = getResources().getString(R.string.friday);
-        String saturday = getResources().getString(R.string.saturday);
+        String monday = getResources().getString(R.string.monday, "");
+        String tuesday = getResources().getString(R.string.tuesday, "");
+        String wednesday = getResources().getString(R.string.wednesday, "");
+        String thursday = getResources().getString(R.string.thursday, "");
+        String friday = getResources().getString(R.string.friday, "");
+        String saturday = getResources().getString(R.string.saturday, "");
 
         TextView tv = findViewById(R.id.scheduleMondayHeader);
         tv.setText(monday);
@@ -160,8 +160,8 @@ public class ScheduleActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(), AddScheduleEntryActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 
