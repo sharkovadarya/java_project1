@@ -48,20 +48,15 @@ public class ScheduleActivity extends AppCompatActivity
         for (int i = 0; i < scheduleDetails.size(); i++) {
             List<String> schDetails = scheduleDetails.get(i);
             SpannableStringBuilder stringBuilder =
-                    new SpannableStringBuilder(Integer.toString(i + 1));
+                    new SpannableStringBuilder(schDetails.get(1));
 
-            int position = stringBuilder.length();
             stringBuilder.append("  ");
+            int position = stringBuilder.length();
             stringBuilder.append(schDetails.get(0));
             stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                     position, stringBuilder.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder.append(", ");
-            stringBuilder.append(schDetails.get(1));
-            stringBuilder.append("\n");
-            for (int j = 0; j < Integer.toString(i + 1).length() + 1; j++) {
-                stringBuilder.append(" ");
-            }
+            stringBuilder.append(", \n");
             stringBuilder.append(schDetails.get(2));
             stringBuilder.append(", ");
             stringBuilder.append(schDetails.get(3));
@@ -264,5 +259,10 @@ public class ScheduleActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        outputSchedule();
     }
 }

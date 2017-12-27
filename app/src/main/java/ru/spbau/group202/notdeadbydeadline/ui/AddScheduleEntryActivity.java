@@ -131,7 +131,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
     }
 
     public void getAuditorium() {
-        EditText editText = findViewById(R.id.scheduleTeacherET);
+        EditText editText = findViewById(R.id.scheduleAuditoriumET);
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
