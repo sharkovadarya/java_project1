@@ -161,6 +161,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.weekParitySpinner);
         spinner.setAdapter(adapter);
         spinner.setPrompt("Week Parity");
+        //spinner.setSelection(2);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -223,7 +224,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
 
         public boolean isValidSE() {
             return subject != null && teacher != null && auditorium != null
-                   && weekDay != null && isSetTime && parity != null;
+                    && weekDay != null && isSetTime;
         }
 
         public void addScheduleEntry() {
@@ -237,7 +238,6 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
             teacher = null;
             auditorium = null;
             weekDay = null;
-            parity = null;
             hour = 0;
             minute = 0;
         }
