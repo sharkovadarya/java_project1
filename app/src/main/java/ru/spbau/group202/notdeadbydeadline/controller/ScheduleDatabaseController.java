@@ -90,7 +90,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
-                String.valueOf(weekParity.ordinal())};
+                String.valueOf(weekParity.ordinal()), String.valueOf(WeekParityEnum.ALWAYS.ordinal())};
         List<ScheduleEntry> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
