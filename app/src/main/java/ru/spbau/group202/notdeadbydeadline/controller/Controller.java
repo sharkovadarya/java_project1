@@ -7,8 +7,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +16,7 @@ import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
+import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 
 public class Controller {
     private static StoredDataController settings;
@@ -73,7 +72,7 @@ public class Controller {
             settings.saveTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NotStated, -1);
+                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
             }
         }
 
@@ -115,22 +114,22 @@ public class Controller {
         private static ScheduleDatabaseController scheduleDatabase;
 
         @NotNull
-        public static List<List<String>> getScheduleByDayOfWeek(int dayOfWeek, boolean isOnEvenWeek) {
-            return getEntriesDetailList(scheduleDatabase.getDaySchedule(dayOfWeek, isOnEvenWeek));
+        public static List<List<String>> getScheduleByDayOfWeek(int dayOfWeek, WeekParityEnum weekParity) {
+            return getEntriesDetailList(scheduleDatabase.getDaySchedule(dayOfWeek, weekParity));
         }
 
         public static void addScheduleEntry(@NotNull String subject, int dayOfWeek, int hour,
-                                            int minute, boolean isOnEvenWeeks,
+                                            int minute, WeekParityEnum weekParity,
                                             @NotNull String auditorium, @NotNull String teacher) {
-            int id = settings.getTotalNumberOfHW();
+            int id = settings.getTotalNumberOfScheduleEntries();
             ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
-                    isOnEvenWeeks, auditorium, teacher, id);
+                    weekParity, auditorium, teacher, id);
             scheduleDatabase.addScheduleEntry(scheduleEntry);
             settings.saveTotalNumberOfScheduleEntries(++id);
         }
 
         public static void deleteScheduleEntryById(int id) {
-            HomeworkController.homeworkDatabase.deleteHomeworkById(id);
+            scheduleDatabase.deleteScheduleEntryById(id);
         }
 
     }

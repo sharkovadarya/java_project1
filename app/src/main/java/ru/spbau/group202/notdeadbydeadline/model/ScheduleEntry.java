@@ -10,14 +10,14 @@ public class ScheduleEntry implements DetailedEntry {
     private String subject, auditorium, teacher;
     private LocalTime time;
     private int dayOfWeek, id;
-    private boolean isOnEvenWeeks;
+    private WeekParityEnum weekParity;
 
     public ScheduleEntry(@NotNull String subject, int dayOfWeek, int hour, int minute,
-                         boolean isOnEvenWeeks, String auditorium, String teacher, int id) {
+                         WeekParityEnum weekParity, String auditorium, String teacher, int id) {
         time = new LocalTime(hour, minute);
         this.subject = subject;
         this.dayOfWeek = dayOfWeek;
-        this.isOnEvenWeeks = isOnEvenWeeks;
+        this.weekParity= weekParity;
         this.auditorium = auditorium;
         this.teacher = teacher;
         this.id = id;
@@ -59,8 +59,8 @@ public class ScheduleEntry implements DetailedEntry {
         return dayOfWeek;
     }
 
-    public boolean isOnEvenWeeks() {
-        return isOnEvenWeeks;
+    public WeekParityEnum getWeekParity() {
+        return weekParity;
     }
 
     public int getId() {

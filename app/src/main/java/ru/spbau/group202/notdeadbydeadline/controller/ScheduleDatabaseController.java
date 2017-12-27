@@ -10,9 +10,11 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
+import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 
 public class ScheduleDatabaseController extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Schedule";
@@ -22,7 +24,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_DAY_OF_WEEK = "DAY_OF_WEEK";
     private static final String COLUMN_NAME_HOUR = "HOUR";
     private static final String COLUMN_NAME_MINUTE = "MINUTE";
-    private static final String COLUMN_NAME_IS_ON_EVEN_WEEK = "IS_ON_EVEN_WEEK";
+    private static final String COLUMN_NAME_WEEK_PARITY = "WEEK_PARITY";
     private static final String COLUMN_NAME_AUDITORIUM = "AUDITORIUM";
     private static final String COLUMN_NAME_TEACHER = "TEACHER";
 
@@ -39,7 +41,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
                 COLUMN_NAME_DAY_OF_WEEK + " INTEGER, " +
                 COLUMN_NAME_HOUR + " INTEGER, " +
                 COLUMN_NAME_MINUTE + " INTEGER, " +
-                COLUMN_NAME_IS_ON_EVEN_WEEK + " INTEGER, " +
+                COLUMN_NAME_WEEK_PARITY + " INTEGER, " +
                 COLUMN_NAME_AUDITORIUM + " TEXT, " +
                 COLUMN_NAME_TEACHER + " TEXT" + ");");
     }
@@ -57,12 +59,12 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         int dayOfWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY_OF_WEEK));
         int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
         int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
-        boolean isOnEvenWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_ON_EVEN_WEEK)) == 1;
+        int weekParity = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_WEEK_PARITY));
         String auditorium = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_AUDITORIUM));
         String teacher = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TEACHER));
 
         return new ScheduleEntry(subject, dayOfWeek, hour, minute,
-                isOnEvenWeek, auditorium, teacher, id);
+                WeekParityEnum.values()[weekParity], auditorium, teacher, id);
     }
 
     public void addScheduleEntry(@NotNull ScheduleEntry scheduleEntry) {
@@ -73,7 +75,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
             values.put(COLUMN_NAME_DAY_OF_WEEK, scheduleEntry.getDayOfWeek());
             values.put(COLUMN_NAME_HOUR, scheduleEntry.getHour());
             values.put(COLUMN_NAME_MINUTE, scheduleEntry.getMinute());
-            values.put(COLUMN_NAME_IS_ON_EVEN_WEEK, scheduleEntry.isOnEvenWeeks() ? 1 : 0);
+            values.put(COLUMN_NAME_WEEK_PARITY, scheduleEntry.getWeekParity().ordinal());
             values.put(COLUMN_NAME_AUDITORIUM, scheduleEntry.getAuditorium());
             values.put(COLUMN_NAME_TEACHER, scheduleEntry.getTeacher());
             long rowId = database.insert(DATABASE_NAME, null, values);
@@ -82,13 +84,13 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public List<ScheduleEntry> getDaySchedule(int dayOfWeek, boolean isOnEvenWeek) {
+    public List<ScheduleEntry> getDaySchedule(int dayOfWeek, WeekParityEnum weekParity) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_DAY_OF_WEEK + "=? " +
-                "AND " + COLUMN_NAME_IS_ON_EVEN_WEEK + "=? " +
+                "AND " + COLUMN_NAME_WEEK_PARITY + "=? " +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
-                String.valueOf(isOnEvenWeek ? 1 : 0)};
+                String.valueOf(weekParity.ordinal())};
         List<ScheduleEntry> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
@@ -101,6 +103,13 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
             }
         }
 
+        Collections.sort(daySchedule, (h1, h2) -> {
+            if (h1.getHour() == h2.getHour()) {
+                return h1.getMinute() - h2.getMinute();
+            } else {
+                return h1.getHour() - h2.getHour();
+            }
+        });
         return daySchedule;
     }
 

@@ -79,11 +79,11 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
         double percentForCredit = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_PERCENT_FOR_CREDIT));
 
         switch (CreditEnum.values()[creditForm]) {
-            case ByPercent:
+            case BY_PERCENT:
                 return new CreditByPercent(subject, percentForCredit);
-            case ByAcceptedHomeworks:
+            case BY_ACCEPTED_HOMEWORKS:
                 return new CreditByAcceptedHomeworks(subject);
-            case NotStated:
+            case NOT_STATED:
                 return new SubjectCredit(subject);
             default:
                 throw new UnrecognizedCreditFormException();
