@@ -39,7 +39,11 @@ public class Homework implements DetailedEntry {
         homeworkDetails.add(getDescription());
         homeworkDetails.add(deadline.getFormattedDeadline());
         homeworkDetails.add(getHowToSend());
-        homeworkDetails.add(Double.toString(getExpectedScore()));
+        if (getExpectedScore() == -1.0) {
+            homeworkDetails.add("Not specified");
+        } else {
+            homeworkDetails.add(Double.toString(getExpectedScore()));
+        }
         homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
@@ -128,7 +132,7 @@ public class Homework implements DetailedEntry {
 
         @NotNull
         private String getFormattedDeadline() {
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy hh:mm");
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
             return formatter.print(deadline);
         }
 

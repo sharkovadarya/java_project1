@@ -27,7 +27,7 @@ public class ScheduleEntry implements DetailedEntry {
     public ArrayList<String> getDetails() {
         ArrayList<String> classDetails = new ArrayList<>();
         classDetails.add(subject);
-        classDetails.add(DateTimeFormat.forPattern("hh:mm").print(time));
+        classDetails.add(DateTimeFormat.forPattern("HH:mm").print(time));
         classDetails.add(teacher);
         classDetails.add(auditorium);
         classDetails.add(Integer.toString(id));

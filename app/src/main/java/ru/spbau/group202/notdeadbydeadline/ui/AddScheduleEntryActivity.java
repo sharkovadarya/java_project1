@@ -13,13 +13,17 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import ru.spbau.group202.notdeadbydeadline.R;
+import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractTimePicker;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.WeekDayEnum;
 
 public class AddScheduleEntryActivity extends AppCompatActivity {
 
@@ -38,7 +42,31 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add a new schedule entry");
         }
 
+        getSubject();
+        getAuditorium();
+        getTeacher();
+        getParity();
+
         Button addSEbutton = findViewById(R.id.scheduleFinishButton);
+        addSEbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getSubject();
+                getAuditorium();
+                getTeacher();
+                getParity();
+
+                if (SEFA.isValidSE()) {
+                    SEFA.addScheduleEntry();
+                    SEFA.clear();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Fill all fields", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
     }
 
@@ -64,7 +92,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public void processSubject() {
+    public void getSubject() {
         EditText editText = findViewById(R.id.scheduleGetSubjectET);
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -83,17 +111,56 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         SEFA.storeSubject(editText.getText().toString());
     }
 
-    public void getSubject() {
-        EditText editText = findViewById(R.id.scheduleGetSubjectET);
-        SEFA.storeSubject(editText.getText().toString());
+    public void getTeacher() {
+        EditText editText = findViewById(R.id.scheduleTeacherET);
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                SEFA.storeTeacher((editText.getText().toString()));
+
+
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("TAG", "Done pressed");
+                }
+                return false;
+            }
+        });
+
+        SEFA.storeTeacher(editText.getText().toString());
     }
 
-    // TODO fill this class and add storage methods
+    public void getAuditorium() {
+        EditText editText = findViewById(R.id.scheduleTeacherET);
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                SEFA.storeAuditorium((editText.getText().toString()));
+
+
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    Log.e("TAG", "Done pressed");
+                }
+                return false;
+            }
+        });
+
+        SEFA.storeAuditorium(editText.getText().toString());
+    }
+
+    public void getParity() {
+        CheckBox checkBox = findViewById(R.id.scheduleParityCheckBox);
+        SEFA.storeParity(checkBox.isChecked());
+    }
+
+
     public static class ScheduleEntryFieldsAccumulator{
         private String subject = null;
         private String teacher = null;
         private String auditorium = null;
         private String weekDay = null;
+        private boolean isOnEvenWeeks = false;
         private int hour;
         private int minute;
 
@@ -116,6 +183,31 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         public void storeTime(int hour, int minute) {
             this.hour = hour;
             this.minute = minute;
+        }
+
+        public void storeParity(boolean isOnEvenWeeks) {
+            this.isOnEvenWeeks = isOnEvenWeeks;
+        }
+
+        public boolean isValidSE() {
+            return subject != null && teacher != null && auditorium != null
+                   && weekDay != null && isSetTime;
+        }
+
+        public void addScheduleEntry() {
+            Controller.ScheduleController.addScheduleEntry(subject,
+                    WeekDayEnum.valueOf(weekDay).ordinal(), hour, minute,
+                    isOnEvenWeeks, auditorium, teacher);
+        }
+
+        public void clear() {
+            subject = null;
+            teacher = null;
+            auditorium = null;
+            weekDay = null;
+            isOnEvenWeeks = false;
+            hour = 0;
+            minute = 0;
         }
 
     }

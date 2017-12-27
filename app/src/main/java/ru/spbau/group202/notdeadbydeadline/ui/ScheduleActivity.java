@@ -70,7 +70,7 @@ public class ScheduleActivity extends AppCompatActivity
         }
 
         ListView lv;
-        switch (dayNumber) {
+        switch (dayNumber + 1) {
             case DateTimeConstants.MONDAY:
                 lv = findViewById(R.id.scheduleMondayList);
                 break;
@@ -141,7 +141,7 @@ public class ScheduleActivity extends AppCompatActivity
         table.setColumnShrinkable(0, true);
         table.setColumnShrinkable(1, true);
 
-        for (int i = 1; i <= 6; ++i)
+        for (int i = 0; i <= 5; ++i)
             outputScheduleByDay(i);
 
         setListViewsHeightAllDays();
