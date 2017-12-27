@@ -1,4 +1,4 @@
-package ru.spbau.group202.notdeadbydeadline.controller;
+package ru.spbau.group202.notdeadbydeadline.Controller;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.spbau.group202.notdeadbydeadline.model.CreditByAcceptedHomeworks;
-import ru.spbau.group202.notdeadbydeadline.model.CreditByPercent;
-import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
-import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditByAcceptedHomeworks;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditByPercent;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditEnum;
+import ru.spbau.group202.notdeadbydeadline.Model.SubjectCredit;
 
 
 public class SubjectDatabaseController extends SQLiteOpenHelper {

@@ -1,4 +1,4 @@
-package ru.spbau.group202.notdeadbydeadline.controller;
+package ru.spbau.group202.notdeadbydeadline.Controller;
 
 import android.content.Context;
 
@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
-import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
-import ru.spbau.group202.notdeadbydeadline.model.Homework;
-import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
-import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
+import ru.spbau.group202.notdeadbydeadline.Model.CreditEnum;
+import ru.spbau.group202.notdeadbydeadline.Model.DetailedEntry;
+import ru.spbau.group202.notdeadbydeadline.Model.Homework;
+import ru.spbau.group202.notdeadbydeadline.Model.ScheduleEntry;
+import ru.spbau.group202.notdeadbydeadline.Model.SubjectCredit;
 
 public class Controller {
     private static StoredDataController settings;
