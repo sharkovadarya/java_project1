@@ -3,6 +3,8 @@ package ru.spbau.group202.notdeadbydeadline.controller;
 import android.content.Context;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,13 +33,13 @@ public class Controller {
 
     public static class AcademicProgressController {
         @NotNull
-        public List<String> calculateProgress(String subject) throws UnrecognizedCreditFormException {
+        public List<String> calculateProgress(@NotNull String subject) throws UnrecognizedCreditFormException {
             SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
             return subjectCredit.calculateProgress(HomeworkController
                     .homeworkDatabase.getPassedHomeworksBySubject(subject));
         }
 
-        public void setSubjectCreditForm(@NotNull String subject, CreditEnum credit) {
+        public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditEnum credit) {
             subjectDatabase.setSubjectCreditForm(subject, credit);
         }
     }
@@ -56,16 +58,15 @@ public class Controller {
         }
 
         @NotNull
-        public static List<List<String>> getHomeworksByDay(int year, int month, int day) {
-            return getEntriesDetailList(homeworkDatabase.getHomeworksByDay(year, month, day));
+        public static List<List<String>> getHomeworksByDay(@NotNull LocalDate date) {
+            return getEntriesDetailList(homeworkDatabase.getHomeworksByDay(date));
         }
 
-        public static void addHomework(int year, int month, int day, int hour, int minutes,
-                                       @NotNull String subject, boolean isRegular, String description,
-                                       String howToSend, double expectedScore) {
+        public static void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject, int regularity,
+                                       String description, String howToSend, double expectedScore) {
             int id = settings.getTotalNumberOfHW();
-            Homework homework = new Homework(year, month, day, hour, minutes, subject, isRegular,
-                    description, howToSend, expectedScore, id);
+            Homework homework = new Homework(deadline, subject, regularity, description,
+                    howToSend, expectedScore, id);
             homeworkDatabase.addHomework(homework);
             settings.saveTotalNumberOfHW(++id);
 
@@ -83,8 +84,19 @@ public class Controller {
         }
 
         @NotNull
-        public static List<List<String>> getDeadlinesByDay(int year, int month, int day) {
-            return getEntriesDetailList(toDeadlines(homeworkDatabase.getHomeworksByDay(year, month, day)));
+        public static List<List<String>> getDeadlinesByDay(@NotNull LocalDate date) {
+            return getEntriesDetailList(toDeadlines(homeworkDatabase.getHomeworksByDay(date)));
+        }
+
+        public static void generateHomeworks() {
+            LocalDate today = LocalDate.now();
+            for(Homework homework : homeworkDatabase.getHomeworksByDay(today)) {
+                if (homework.getRegularity() != 0) {
+                    int id = settings.getTotalNumberOfHW();
+                    homeworkDatabase.addHomework(homework.generateNewHomeworkById(id));
+                    settings.saveTotalNumberOfHW(++id);
+                }
+            }
         }
 
         @NotNull
@@ -128,6 +140,7 @@ public class Controller {
         settings = new StoredDataController(context);
         subjectList = new HashSet<>();
         subjectList.addAll(subjectDatabase.getAllSubjects());
+        HomeworkController.generateHomeworks();
     }
 
     @NotNull

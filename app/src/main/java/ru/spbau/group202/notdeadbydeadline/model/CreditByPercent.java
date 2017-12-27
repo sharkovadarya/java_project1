@@ -21,7 +21,7 @@ public class CreditByPercent extends SubjectCredit {
         double earnedPoints = 0;
 
         for (Homework homework : homeworks) {
-            if (homework.getActualScore() != -1) {
+            if (homework.getActualScore() != -1 && homework.getExpectedScore() != -1) {
                 earnedPoints += homework.getActualScore();
                 totalPoints += homework.getExpectedScore();
             }
