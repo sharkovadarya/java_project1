@@ -32,7 +32,6 @@ import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
-import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.ListViewUtility;
 
 public class ScheduleActivity extends AppCompatActivity
@@ -43,8 +42,7 @@ public class ScheduleActivity extends AppCompatActivity
     private LocalDate localDate;
 
     private void outputScheduleByDay(int dayNumber) {
-        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
-                WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
+        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber, localDate.getWeekOfWeekyear() % 2 != 0);
 
         ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
         for (int i = 0; i < scheduleDetails.size(); i++) {

@@ -12,11 +12,9 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -24,13 +22,11 @@ import android.widget.Toast;
 import ru.spbau.group202.notdeadbydeadline.R;
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
-import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractTimePicker;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.WeekDayEnum;
 
 public class AddScheduleEntryActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddSchEntryActivity";
     private static final ScheduleEntryFieldsAccumulator SEFA = new ScheduleEntryFieldsAccumulator();
     private static boolean isSetTime = false;
 
@@ -154,37 +150,8 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
     }
 
     public void getParity() {
-        String parity[] = {"even weeks", "odd weeks", "every week"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, parity);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner spinner = findViewById(R.id.weekParitySpinner);
-        spinner.setAdapter(adapter);
-        spinner.setPrompt("Week Parity");
-        //spinner.setSelection(2);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                String text = parent.getItemAtPosition(position).toString();
-                switch (text) {
-                    case "even weeks":
-                        SEFA.storeParity(WeekParityEnum.ON_EVEN_WEEK);
-                        break;
-                    case "odd weeks":
-                        SEFA.storeParity(WeekParityEnum.ON_ODD_WEEK);
-                        break;
-                    case "every week":
-                        SEFA.storeParity(WeekParityEnum.ALWAYS);
-                        break;
-                    default:
-                        Log.e(TAG,"wrong week parity type");
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
+        CheckBox checkBox = findViewById(R.id.scheduleParityCheckBox);
+        SEFA.storeParity(checkBox.isChecked());
     }
 
 
@@ -193,7 +160,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         private String teacher = null;
         private String auditorium = null;
         private String weekDay = null;
-        private WeekParityEnum parity;
+        private boolean isOnEvenWeeks = false;
         private int hour;
         private int minute;
 
@@ -218,19 +185,19 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
             this.minute = minute;
         }
 
-        public void storeParity(WeekParityEnum parity) {
-            this.parity = parity;
+        public void storeParity(boolean isOnEvenWeeks) {
+            this.isOnEvenWeeks = isOnEvenWeeks;
         }
 
         public boolean isValidSE() {
             return subject != null && teacher != null && auditorium != null
-                   && weekDay != null && isSetTime && parity != null;
+                   && weekDay != null && isSetTime;
         }
 
         public void addScheduleEntry() {
             Controller.ScheduleController.addScheduleEntry(subject,
                     WeekDayEnum.valueOf(weekDay).ordinal(), hour, minute,
-                    parity, auditorium, teacher);
+                    isOnEvenWeeks, auditorium, teacher);
         }
 
         public void clear() {
@@ -238,7 +205,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
             teacher = null;
             auditorium = null;
             weekDay = null;
-            parity = null;
+            isOnEvenWeeks = false;
             hour = 0;
             minute = 0;
         }
