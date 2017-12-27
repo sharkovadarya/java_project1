@@ -21,7 +21,7 @@
     <string name="subject">Subject</string>
 
     <string name="set_date">Set due date</string>
-    <string name="set_time">Set due date time</string>
+    <string name="set_time">Set due time</string>
     <string name="description">Description</string>
     <string name="expected_score">Expected Score</string>
     <string name="is_regular">Regular</string>
@@ -30,7 +30,28 @@
     <string name="title_activity_display_homework">DisplayHomeworkActivity</string>
     <string name="title_activity_study_materials">StudyMaterialsActivity</string>
     <string name="title_activity_deadline">DeadlineActivity</string>
+    <string name="title_activity_schedule">ScheduleActivity</string>
     <string name="mainScreen">Home</string>
 
+    <string name="monday">Monday, %s</string>
+    <string name="thursday">Thursday, %s</string>
+    <string name="tuesday">Tuesday, %s</string>
+    <string name="friday">Friday, %s</string>
+    <string name="wednesday">Wednesday, %s</string>
+    <string name="saturday">Saturday, %s</string>
+    <string name="sunday">Sunday, %s</string>
+
+    <string name="title_activity_add_homework">Add new h/w entry</string>
+
+    <string name="next_week">Next week</string>
+    <string name="previous_week">Previous week</string>
+    <string name="scheduleHeader">Schedule</string>
+    <string name="title_activity_add_schedule_entry">AddScheduleEntryActivity</string>
+    <string name="add_schedule_entry_header">Add a new schedule entry</string>
+    <string name="auditorium">Auditorium</string>
+    <string name="teacher">]Teacher</string>
+    <string name="schedule_set_time">Set time</string>
+    <string name="set_week_day">Set week day</string>
+    <string name="parity_checkbox">is on odd week</string>
 
 </resources>
