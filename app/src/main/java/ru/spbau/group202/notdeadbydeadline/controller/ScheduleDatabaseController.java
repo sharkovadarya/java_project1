@@ -86,11 +86,11 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     @NotNull
     public List<ScheduleEntry> getDaySchedule(int dayOfWeek, WeekParityEnum weekParity) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_DAY_OF_WEEK + "=? " +
-                "AND " + COLUMN_NAME_WEEK_PARITY + "=? " +
+                "AND (" + COLUMN_NAME_WEEK_PARITY + "=? " + " OR " + COLUMN_NAME_WEEK_PARITY + "=?) " +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
-                String.valueOf(weekParity.ordinal())};
+                String.valueOf(weekParity.ordinal()), String.valueOf(WeekParityEnum.ALWAYS.ordinal())};
         List<ScheduleEntry> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();

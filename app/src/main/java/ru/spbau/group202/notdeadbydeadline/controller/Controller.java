@@ -72,7 +72,7 @@ public class Controller {
             settings.saveTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditEnum.NotStated, -1);
             }
         }
 
@@ -114,7 +114,7 @@ public class Controller {
         private static ScheduleDatabaseController scheduleDatabase;
 
         @NotNull
-        public static List<List<String>> getScheduleByDayOfWeek(int dayOfWeek, WeekParityEnum weekParity) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        public static List<List<String>> getScheduleByDayOfWeek(int dayOfWeek, WeekParityEnum weekParity) {
             return getEntriesDetailList(scheduleDatabase.getDaySchedule(dayOfWeek, weekParity));
         }
 
