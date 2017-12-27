@@ -18,9 +18,9 @@ public class CreditByAcceptedHomeworks extends SubjectCredit {
         int numberOfAcceptedHomeworks = 0;
 
         for (Homework homework : homeworks) {
-            if (homework.getActualScore() != -1) {
+            if (homework.getActualScore() != -1 && homework.getExpectedScore() != -1) {
                 numberOfCheckedHomeworks++;
-                if (homework.hasPassed()) {
+                if (homework.isAccepted()) {
                     numberOfAcceptedHomeworks++;
                 }
             }

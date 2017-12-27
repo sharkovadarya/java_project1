@@ -18,6 +18,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
@@ -101,16 +104,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
         } else {
             HFA.storeExpectedScore(-1.0);
         }
-
-
-
-        /*editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-                return false;
-            }
-        });*/
     }
 
     public void processHowToSend() {
@@ -191,7 +184,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
                 // TODO fix this; there should not be code duplication
                 getDescription();
-                getSubject();
+                //getSubject();
+                processSubject();
                 getExpectedScore();
                 getHowToSend();
 
@@ -260,8 +254,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 howToSend = " ";
             }
 
-            Controller.HomeworkController.addHomework(year, month, day, hour, minutes,
-                    subject, false, description,
+            Controller.HomeworkController.addHomework(new LocalDateTime(year, month, day, hour, minutes),
+                    subject, 0, description,
                     howToSend, expectedScore);
         }
 

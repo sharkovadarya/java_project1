@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -103,12 +102,12 @@ public class ScheduleActivity extends AppCompatActivity
 
     private void setHeaders() {
 
-        String monday = getResources().getString(R.string.monday, "");
-        String tuesday = getResources().getString(R.string.tuesday, "");
-        String wednesday = getResources().getString(R.string.wednesday, "");
-        String thursday = getResources().getString(R.string.thursday, "");
-        String friday = getResources().getString(R.string.friday, "");
-        String saturday = getResources().getString(R.string.saturday, "");
+        String monday = getResources().getString(R.string.monday);
+        String tuesday = getResources().getString(R.string.tuesday);
+        String wednesday = getResources().getString(R.string.wednesday);
+        String thursday = getResources().getString(R.string.thursday);
+        String friday = getResources().getString(R.string.friday);
+        String saturday = getResources().getString(R.string.saturday);
 
         TextView tv = findViewById(R.id.scheduleMondayHeader);
         tv.setText(monday);

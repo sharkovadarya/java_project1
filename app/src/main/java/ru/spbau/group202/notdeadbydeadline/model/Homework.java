@@ -10,16 +10,15 @@ import org.joda.time.format.*;
 public class Homework implements DetailedEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
-    private boolean isRegular;
-    private double expectedScore;
-    private double actualScore = -1;
+    private int regularity;
+    private double expectedScore, actualScore = -1;
     private int id;
 
-    public Homework(int year, int month, int day, int hour, int minute, @NotNull String subject,
-                    boolean isRegular, String description, String howToSend, double expectedScore, int id) {
-        deadline = new Deadline(new LocalDateTime(year, month, day, hour, minute));
+    public Homework(LocalDateTime deadline, @NotNull String subject, int regularity,
+                    String description, String howToSend, double expectedScore, int id) {
+        this.deadline = new Deadline(deadline);
         this.subject = subject;
-        this.isRegular = isRegular;
+        this.regularity = regularity;
         this.description = description;
         this.howToSend = howToSend;
         this.expectedScore = expectedScore;
@@ -40,11 +39,7 @@ public class Homework implements DetailedEntry {
         homeworkDetails.add(getDescription());
         homeworkDetails.add(deadline.getFormattedDeadline());
         homeworkDetails.add(getHowToSend());
-        if (getExpectedScore() == -1.0) {
-            homeworkDetails.add("Not specified");
-        } else {
-            homeworkDetails.add(Double.toString(getExpectedScore()));
-        }
+        homeworkDetails.add(Double.toString(getExpectedScore()));
         homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
@@ -63,8 +58,8 @@ public class Homework implements DetailedEntry {
         return description;
     }
 
-    public boolean isRegular() {
-        return isRegular;
+    public int getRegularity() {
+        return regularity;
     }
 
     public String getHowToSend() {
@@ -113,6 +108,12 @@ public class Homework implements DetailedEntry {
         return id;
     }
 
+    @NotNull
+    public Homework generateNewHomeworkById(int id) {
+        LocalDateTime newDeadline = deadline.deadline.plusWeeks(regularity);
+        return new Homework(newDeadline, subject, regularity, " ", howToSend,
+                -1, id);
+    }
 
     public class Deadline implements DetailedEntry, Comparable<Deadline> {
         private LocalDateTime deadline;

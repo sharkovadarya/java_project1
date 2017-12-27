@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +27,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_DAY = "DAY";
     private static final String COLUMN_NAME_HOUR = "HOUR";
     private static final String COLUMN_NAME_MINUTE = "MINUTE";
-    private static final String COLUMN_NAME_IS_REGULAR = "IS_REGULAR";
+    private static final String COLUMN_NAME_REGULARITY = "REGULARITY";
     private static final String COLUMN_NAME_EXPECTED_SCORE = "EXPECTED_SCORE";
     private static final String COLUMN_NAME_ACTUAL_SCORE = "ACTUAL_SCORE";
     private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
@@ -46,7 +48,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 COLUMN_NAME_DAY + " INTEGER, " +
                 COLUMN_NAME_HOUR + " INTEGER, " +
                 COLUMN_NAME_MINUTE + " INTEGER, " +
-                COLUMN_NAME_IS_REGULAR + " INTEGER, " +
+                COLUMN_NAME_REGULARITY + " INTEGER, " +
                 COLUMN_NAME_EXPECTED_SCORE + " INTEGER, " +
                 COLUMN_NAME_ACTUAL_SCORE + " INTEGER, " +
                 COLUMN_NAME_DESCRIPTION + " TEXT, " +
@@ -68,14 +70,15 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         int day = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY));
         int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
         int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
-        boolean isRegular = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_REGULAR)) == 1;
+        int regularity = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_REGULARITY));
         int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
         int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
         String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
         String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
 
-        Homework homework = new Homework(year, month, day, hour, minute, subject,
-                isRegular, description, howToSend, expectedScore, id);
+        LocalDateTime deadline = new LocalDateTime(year, month, day, hour, minute);
+        Homework homework = new Homework(deadline, subject, regularity, description, howToSend,
+                expectedScore, id);
         homework.setActualScore(actualScore);
         return homework;
     }
@@ -90,7 +93,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             values.put(COLUMN_NAME_DAY, homework.getDay());
             values.put(COLUMN_NAME_HOUR, homework.getHour());
             values.put(COLUMN_NAME_MINUTE, homework.getMinute());
-            values.put(COLUMN_NAME_IS_REGULAR, homework.isRegular() ? 1 : 0);
+            values.put(COLUMN_NAME_REGULARITY, homework.getRegularity());
             values.put(COLUMN_NAME_EXPECTED_SCORE, homework.getExpectedScore());
             values.put(COLUMN_NAME_ACTUAL_SCORE, homework.getActualScore());
             values.put(COLUMN_NAME_DESCRIPTION, homework.getDescription());
@@ -134,6 +137,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             }
         }
 
+        Collections.sort(homeworks, (h1, h2) -> h1.getDeadline().compareTo(h2.getDeadline()));
         return homeworks;
     }
 
@@ -146,16 +150,15 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             }
         }
 
-        Collections.sort(passedHomeworks, (h1, h2) -> h1.getDeadline().compareTo(h2.getDeadline()));
         return passedHomeworks;
     }
 
     @NotNull
-    public List<Homework> getHomeworksByDay(int year, int month, int day) {
+    public List<Homework> getHomeworksByDay(LocalDate date) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_YEAR + "=? " +
                 "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(year),
-                String.valueOf(month), String.valueOf(day)};
+        String[] selectionArgs = new String[]{String.valueOf(date.getYear()),
+                String.valueOf(date.getMonthOfYear()), String.valueOf(date.getDayOfMonth())};
         List<Homework> homeworks = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();

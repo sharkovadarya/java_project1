@@ -33,13 +33,21 @@
     <string name="title_activity_schedule">ScheduleActivity</string>
     <string name="mainScreen">Home</string>
 
-    <string name="monday">Monday%s</string>
-    <string name="thursday">Thursday%s</string>
-    <string name="tuesday">Tuesday%s</string>
-    <string name="friday">Friday%s</string>
-    <string name="wednesday">Wednesday%s</string>
-    <string name="saturday">Saturday%s</string>
-    <string name="sunday">Sunday%s</string>
+    <string name="monday_for_deadlines">Monday, %s</string>
+    <string name="thursday_for_deadlines">Thursday, %s</string>
+    <string name="tuesday_for_deadlines">Tuesday, %s</string>
+    <string name="friday_for_deadlines">Friday, %s</string>
+    <string name="wednesday_for_deadlines">Wednesday, %s</string>
+    <string name="saturday_for_deadlines">Saturday, %s</string>
+    <string name="sunday_for_deadlines">Sunday, %s</string>
+
+    <string name="monday">Monday</string>
+    <string name="thursday">Thursday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="friday">Friday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 
     <string name="title_activity_add_homework">Add new h/w entry</string>
 

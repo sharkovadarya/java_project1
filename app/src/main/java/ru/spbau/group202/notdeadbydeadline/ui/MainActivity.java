@@ -58,15 +58,12 @@ public class MainActivity extends AppCompatActivity
 
     private void outputDeadlines() {
         List<List<String>> deadlinesDetails = Controller.HomeworkController
-                           .getDeadlinesByDay(LocalDateTime.now().getYear(),
-                                       LocalDateTime.now().getMonthOfYear(),
-                                       LocalDateTime.now().getDayOfMonth());
+                           .getDeadlinesByDay(LocalDate.now());
 
 
         LocalDateTime ldt = LocalDateTime.now().plusDays(1);
         deadlinesDetails.addAll(Controller.HomeworkController
-                            .getDeadlinesByDay(ldt.getYear(),
-                 ldt.getMonthOfYear(), ldt.getDayOfMonth()));
+                            .getDeadlinesByDay(ldt.toLocalDate()));
 
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();

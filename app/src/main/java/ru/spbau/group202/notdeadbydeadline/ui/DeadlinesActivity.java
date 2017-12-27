@@ -49,9 +49,7 @@ public class DeadlinesActivity extends AppCompatActivity
 
         LocalDate weekDay = localDate.withDayOfWeek(dayNumber);
         deadlinesDetails = Controller.HomeworkController
-                                     .getDeadlinesByDay(weekDay.getYear(),
-                                                 weekDay.getMonthOfYear(),
-                                                 weekDay.getDayOfMonth());
+                                     .getDeadlinesByDay(weekDay);
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();
         for (List<String> deadlineDetails : deadlinesDetails) {
@@ -135,19 +133,19 @@ public class DeadlinesActivity extends AppCompatActivity
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy");
 
-        String monday = getResources().getString(R.string.monday, ", " +
+        String monday = getResources().getString(R.string.monday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(1)));
-        String tuesday = getResources().getString(R.string.tuesday, ", " +
+        String tuesday = getResources().getString(R.string.tuesday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(2)));
-        String wednesday = getResources().getString(R.string.wednesday, ", " +
+        String wednesday = getResources().getString(R.string.wednesday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(3)));
-        String thursday = getResources().getString(R.string.thursday, ", " +
+        String thursday = getResources().getString(R.string.thursday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(4)));
-        String friday = getResources().getString(R.string.friday, ", " +
+        String friday = getResources().getString(R.string.friday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(5)));
-        String saturday = getResources().getString(R.string.saturday, ", " +
+        String saturday = getResources().getString(R.string.saturday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(6)));
-        String sunday = getResources().getString(R.string.sunday, ", " +
+        String sunday = getResources().getString(R.string.sunday_for_deadlines,
                 formatter.print(localDate.withDayOfWeek(7)));
 
         TextView tv = findViewById(R.id.deadlinesMondayHeader);

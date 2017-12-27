@@ -89,7 +89,7 @@
                         android:layout_height="match_parent"
                         android:layout_column="0"
                         android:layout_weight="0.5"
-                        android:text="@string/monday"
+                        android:text="@string/monday_for_deadlines"
                         android:textStyle="bold" />
 
                     <TextView
@@ -98,7 +98,7 @@
                         android:layout_height="match_parent"
                         android:layout_column="1"
                         android:layout_weight="0.5"
-                        android:text="@string/thursday"
+                        android:text="@string/thursday_for_deadlines"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -137,7 +137,7 @@
                         android:layout_height="match_parent"
                         android:layout_column="0"
                         android:layout_weight="0.5"
-                        android:text="@string/tuesday"
+                        android:text="@string/tuesday_for_deadlines"
                         android:textStyle="bold" />
 
                     <TextView
@@ -146,7 +146,7 @@
                         android:layout_height="match_parent"
                         android:layout_column="1"
                         android:layout_weight="0.5"
-                        android:text="@string/friday"
+                        android:text="@string/friday_for_deadlines"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -185,7 +185,7 @@
                         android:layout_height="match_parent"
                         android:layout_column="0"
                         android:layout_weight="0.5"
-                        android:text="@string/wednesday"
+                        android:text="@string/wednesday_for_deadlines"
                         android:textStyle="bold" />
 
                     <TextView
@@ -194,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:layout_column="1"
                         android:layout_weight="0.5"
-                        android:text="@string/saturday"
+                        android:text="@string/saturday_for_deadlines"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -246,7 +246,7 @@
                         android:layout_height="match_parent"
                         android:layout_column="1"
                         android:layout_weight="0.5"
-                        android:text="@string/sunday"
+                        android:text="@string/sunday_for_deadlines"
                         android:textStyle="bold" />
 
                 </TableRow>
