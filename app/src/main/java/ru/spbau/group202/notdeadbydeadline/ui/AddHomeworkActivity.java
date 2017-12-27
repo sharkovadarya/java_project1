@@ -27,11 +27,12 @@ import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractTimePicker;
 
 public class AddHomeworkActivity extends AppCompatActivity {
 
+    private static final String TAG = "AddHomeworkActivity";
     public static final HomeworkFieldsAccumulator HFA = new HomeworkFieldsAccumulator();
     private static boolean isSetTime = false;
     private static boolean isSetDate = false;
 
-    public void getSubject() {
+    public void processSubject() {
 
         final List<String> source = Controller.getSubjectList();
 
@@ -58,11 +59,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HFA.storeSubject((actv.getText().toString()));
-                if (!source.contains(actv.getText().toString())) {
-                    source.add(actv.getText().toString());
-                }
-
+                //HFA.storeSubject((actv.getText().toString()));
                 if (!source.contains(actv.getText().toString())) {
                     source.add(actv.getText().toString());
                 }
@@ -81,6 +78,13 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 }
             }
         });
+
+        HFA.storeSubject(actv.getText().toString());
+    }
+
+    public void getSubject() {
+        final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
+        HFA.storeSubject(actv.getText().toString());
     }
 
     public void getDescription() {
@@ -91,24 +95,32 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public void getExpectedScore() {
         final EditText editText = findViewById(R.id.expectedScore);
 
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        String expectedScore = editText.getText().toString();
+        if (!expectedScore.equals("")) {
+            HFA.storeExpectedScore(Double.parseDouble(expectedScore));
+        } else {
+            HFA.storeExpectedScore(-1.0);
+        }
+
+
+
+        /*editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                HFA.storeExpectedScore(
-                        Double.parseDouble(editText.getText().toString()));
+
                 return false;
             }
-        });
+        });*/
     }
 
-    public void getHowToSend() {
+    public void processHowToSend() {
         final EditText editText = findViewById(R.id.submitWayEditText);
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
                         || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    Log.e("TAG", "Done pressed");
+                    Log.d(TAG, "Done pressed");
                 }
                 return false;
             }
@@ -133,6 +145,11 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    public void getHowToSend() {
+        final EditText editText = findViewById(R.id.submitWayEditText);
+        HFA.storeHowToSend(editText.getText().toString());
     }
 
     public void setTime(View view) {
@@ -162,17 +179,21 @@ public class AddHomeworkActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Add h/w entry");
         }
 
-        getSubject();
-        getDescription();
-        getExpectedScore();
-        getHowToSend();
+        processSubject();
+        /*getDescription();
+        getExpectedScore();*/
+        processHowToSend();
 
         Button addHomeworkButton = findViewById(R.id.finishButton);
         addHomeworkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                // TODO fix this; there should not be code duplication
                 getDescription();
+                getSubject();
+                getExpectedScore();
+                getHowToSend();
 
                 if (!HFA.isValidHomework()) {
                     Toast.makeText(getApplicationContext(),

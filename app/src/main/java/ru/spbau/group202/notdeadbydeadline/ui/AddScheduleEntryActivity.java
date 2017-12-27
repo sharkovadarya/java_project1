@@ -34,6 +34,9 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
     // TODO fill this class and add storage methods
     public static class ScheduleEntryFieldsAccumulator{
         private String subject;
+        private String teacher;
+        private String auditorium;
+        private String weekDay;
 
     }
 
