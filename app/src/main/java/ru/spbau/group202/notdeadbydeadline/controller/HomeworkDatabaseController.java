@@ -49,7 +49,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 COLUMN_NAME_HOUR + " INTEGER, " +
                 COLUMN_NAME_MINUTE + " INTEGER, " +
                 COLUMN_NAME_REGULARITY + " INTEGER, " +
-                COLUMN_NAME_EXPECTED_SCORE + " INTEGER, " +
+                COLUMN_NAME_EXPECTED_SCORE + " REAL, " +
                 COLUMN_NAME_ACTUAL_SCORE + " INTEGER, " +
                 COLUMN_NAME_DESCRIPTION + " TEXT, " +
                 COLUMN_NAME_HOW_TO_SEND + " TEXT" + ");");
@@ -71,7 +71,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
         int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
         int regularity = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_REGULARITY));
-        int expectedScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
+        double expectedScore = cursor.getDouble(cursor.getColumnIndex(COLUMN_NAME_EXPECTED_SCORE));
         int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
         String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
         String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
@@ -156,7 +156,8 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     @NotNull
     public List<Homework> getHomeworksByDay(LocalDate date) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_YEAR + "=? " +
-                "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?";
+                "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?" +
+                "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE + " ASC";
         String[] selectionArgs = new String[]{String.valueOf(date.getYear()),
                 String.valueOf(date.getMonthOfYear()), String.valueOf(date.getDayOfMonth())};
         List<Homework> homeworks = new ArrayList<>();

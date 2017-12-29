@@ -161,7 +161,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.weekParitySpinner);
         spinner.setAdapter(adapter);
         spinner.setPrompt("Week Parity");
-        //spinner.setSelection(2);
+        spinner.setSelection(2);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
