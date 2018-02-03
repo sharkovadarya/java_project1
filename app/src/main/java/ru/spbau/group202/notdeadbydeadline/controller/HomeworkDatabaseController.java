@@ -210,4 +210,22 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         }
     }
 
+    @NotNull
+    public List<Homework> getHomeworkById(int id) {
+        String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(id)};
+        List<Homework> homeworks = new ArrayList<>();
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, selectionArgs)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Homework homework = getHomeworkByCursor(cursor);
+                    homeworks.add(homework);
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return homeworks;
+    }
 }

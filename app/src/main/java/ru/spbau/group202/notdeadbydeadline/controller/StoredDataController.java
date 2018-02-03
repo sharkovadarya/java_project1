@@ -12,6 +12,8 @@ public class StoredDataController {
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_HW = "TOTAL_NUMBER_OF_HW";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES
             = "TOTAL_NUMBER_OF_SCHEDULE_ENTRIES";
+    //TODO rename
+    private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_WORKS = "TOTAL_NUMBER_OF_WORKS";
     private SharedPreferences settings;
 
     public StoredDataController(@NotNull Context context) {
@@ -37,6 +39,12 @@ public class StoredDataController {
         editor.apply();
     }
 
+    public void saveTotalNumberOfWorks(int totalNumberOfWorks) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_WORKS, totalNumberOfWorks);
+        editor.apply();
+    }
+
     public boolean getParityOfWeek() {
         return settings.getBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, false);
     }
@@ -49,4 +57,7 @@ public class StoredDataController {
         return settings.getInt(APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES, 0);
     }
 
+    public int getTotalNumberOfWorks() {
+        return settings.getInt(APP_PREFERENCES_TOTAL_NUMBER_OF_WORKS, 0);
+    }
 }
