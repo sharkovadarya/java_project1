@@ -13,7 +13,7 @@ public class CreditByAcceptedHomeworks extends SubjectCredit {
 
     @NotNull
     @Override
-    public List<String> calculateProgress(@NotNull List<Homework> homeworks) {
+    protected List<String> calculateHomeworkProgress(@NotNull List<Homework> homeworks) {
         int numberOfCheckedHomeworks = 0;
         int numberOfAcceptedHomeworks = 0;
 

@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 
-public class ScheduleEntry implements DetailedEntry {
+public class ScheduleEntry extends DetailedEntry {
     private String subject, auditorium, teacher;
     private LocalTime time;
     private int dayOfWeek, id;
@@ -32,6 +32,12 @@ public class ScheduleEntry implements DetailedEntry {
         classDetails.add(auditorium);
         classDetails.add(Integer.toString(id));
         return classDetails;
+    }
+
+    @NotNull
+    @Override
+    protected LocalTime getTime() {
+        return time;
     }
 
     public int getHour() {

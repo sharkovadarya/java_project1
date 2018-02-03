@@ -16,7 +16,7 @@ public class CreditByPercent extends SubjectCredit {
 
     @NotNull
     @Override
-    public List<String> calculateProgress(@NotNull List<Homework> homeworks) {
+    protected List<String> calculateHomeworkProgress(@NotNull List<Homework> homeworks) {
         double totalPoints = 0;
         double earnedPoints = 0;
 

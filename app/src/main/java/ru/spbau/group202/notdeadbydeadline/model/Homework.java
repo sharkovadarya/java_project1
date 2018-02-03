@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
-public class Homework implements DetailedEntry {
+public class Homework extends DetailedEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
     private int regularity;
@@ -47,6 +48,12 @@ public class Homework implements DetailedEntry {
         homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
+    }
+
+    @NotNull
+    @Override
+    protected LocalTime getTime() {
+        return deadline.deadline.toLocalTime();
     }
 
     public Deadline getDeadline() {
@@ -119,7 +126,7 @@ public class Homework implements DetailedEntry {
                 -1, id);
     }
 
-    public class Deadline implements DetailedEntry, Comparable<Deadline> {
+    public class Deadline extends DetailedEntry {
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {
@@ -146,9 +153,11 @@ public class Homework implements DetailedEntry {
             return deadlineDetails;
         }
 
+        @NotNull
         @Override
-        public int compareTo(@NotNull Deadline deadline) {
-            return this.deadline.compareTo(deadline.deadline);
+        protected LocalTime getTime() {
+            return deadline.toLocalTime();
         }
+
     }
 }
