@@ -61,5 +61,7 @@
     <string name="schedule_set_time">Set time</string>
     <string name="set_week_day">Set week day</string>
     <string name="parity_checkbox">is on even week</string>
+    <string name="lv_entry_edit">Edit</string>
+    <string name="lv_entry_delete">Delete</string>
 
 </resources>

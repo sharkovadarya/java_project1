@@ -2,7 +2,9 @@ package ru.spbau.group202.notdeadbydeadline.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -16,23 +18,56 @@ import ru.spbau.group202.notdeadbydeadline.R;
 public class DisplayHomeworkActivity extends AppCompatActivity {
 
 
-    private void outputHomeworks(String subject) {
+    private void outputHomeworksBySubject(String subject) {
         List<List<String>> formattedHomeworksDetails =
                 Controller.HomeworkController.getHomeworksBySubject(subject);
 
         ListView homeworksListView = findViewById(R.id.homeworksListView);
-        DetailedEntriesListViewAdapter adapter1 = new DetailedEntriesListViewAdapter(this, formattedHomeworksDetails);
+        HomeworkListViewAdapter adapter1 = new HomeworkListViewAdapter(this, formattedHomeworksDetails);
         homeworksListView.setAdapter(adapter1);
     }
 
-    private void processOnClickHomeworks() {
+    private void processOnLongTapHomework() {
         ListView homeworksListView = findViewById(R.id.homeworksListView);
-        homeworksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        homeworksListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                PopupMenu popup = new PopupMenu(DisplayHomeworkActivity.this, view);
+                popup.getMenuInflater()
+                        .inflate(R.menu.listview_item_menu, popup.getMenu());
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getTitle().toString().equals(getResources()
+                                        .getString(R.string.lv_entry_edit))) {
+                            // TODO call edit (which is yet nonexistent)
 
+                            return true;
+                        } else if (item.getTitle().toString().equals(getResources()
+                                .getString(R.string.lv_entry_delete))) {
+                            List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
+                            Controller.HomeworkController.deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
+                            recreate();
+                            return true;
+                        }
+
+                        return false;
+                    }
+                });
+
+                popup.show(); //showing popup menu
+                return true;
             }
         });
+
+
+    }
+
+    private void outputHomeworks() {
+        String subject = getIntent().getStringExtra("SUBJECT_NAME");
+        setTitle(subject);
+
+        outputHomeworksBySubject(subject);
     }
 
     @Override
@@ -48,7 +83,9 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
         String subject = getIntent().getStringExtra("SUBJECT_NAME");
         setTitle(subject);
 
-        outputHomeworks(subject);
+        //outputHomeworksBySubject(subject);
+        outputHomeworks();
+        processOnLongTapHomework();
     }
 
 }

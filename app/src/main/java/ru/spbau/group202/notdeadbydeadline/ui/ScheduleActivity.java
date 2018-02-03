@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.PopupMenu;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -28,6 +30,7 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
@@ -46,7 +49,7 @@ public class ScheduleActivity extends AppCompatActivity
         List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
                 WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
 
-        ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
+        /*ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
         for (int i = 0; i < scheduleDetails.size(); i++) {
             List<String> schDetails = scheduleDetails.get(i);
             SpannableStringBuilder stringBuilder =
@@ -64,7 +67,7 @@ public class ScheduleActivity extends AppCompatActivity
             stringBuilder.append(schDetails.get(3));
 
             formattedSchedule.add(stringBuilder);
-        }
+        }*/
 
         ListView lv;
         switch (dayNumber + 1) {
@@ -91,9 +94,7 @@ public class ScheduleActivity extends AppCompatActivity
                 return;
         }
 
-        ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
-                R.layout.custom_deadline_listview_entry,
-                formattedSchedule);
+        ScheduleListViewAdapter adapter = new ScheduleListViewAdapter(this, scheduleDetails);
         lv.setAdapter(adapter);
     }
 
@@ -143,6 +144,51 @@ public class ScheduleActivity extends AppCompatActivity
 
         setListViewsHeightAllDays();
     }
+
+    private void processOnLongTapScheduleEntry(int listViewId) {
+        ListView scheduleListView = findViewById(listViewId);
+        scheduleListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                PopupMenu popup = new PopupMenu(ScheduleActivity.this, view);
+                popup.getMenuInflater()
+                        .inflate(R.menu.listview_item_menu, popup.getMenu());
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getTitle().toString().equals(getResources()
+                                .getString(R.string.lv_entry_edit))) {
+                            // TODO call edit (which is yet nonexistent)
+                            return true;
+                        } else if (item.getTitle().toString().equals(getResources()
+                                .getString(R.string.lv_entry_delete))) {
+                            List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
+                            Controller.ScheduleController.deleteScheduleEntryById(
+                                    Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
+                            recreate();
+                            return true;
+                        }
+
+                        return false;
+                    }
+                });
+
+                popup.show(); //showing popup menu
+                return true;
+            }
+        });
+
+    }
+
+    private void processListviewLongTapForAllWeekdays() {
+        processOnLongTapScheduleEntry(R.id.scheduleMondayList);
+        processOnLongTapScheduleEntry(R.id.scheduleTuesdayList);
+        processOnLongTapScheduleEntry(R.id.scheduleWednesdayList);
+        processOnLongTapScheduleEntry(R.id.scheduleThursdayList);
+        processOnLongTapScheduleEntry(R.id.scheduleFridayList);
+        processOnLongTapScheduleEntry(R.id.scheduleSaturdayList);
+    }
+
 
 
     @Override
@@ -199,6 +245,8 @@ public class ScheduleActivity extends AppCompatActivity
                 outputSchedule();
             }
         });
+
+        processListviewLongTapForAllWeekdays();
     }
 
     @Override
