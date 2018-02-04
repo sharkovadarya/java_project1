@@ -10,14 +10,14 @@ import java.util.ArrayList;
 
 
 //TODO rename
-public class Work extends DetailedEntry{
+public class Work extends DetailedEntry {
     private String subject, description;
     private LocalDateTime date;
     private boolean isAccepted = false;
     private WorkEnum kind;
     private int id;
-    
-    public Work(@NotNull String subject, String description, @NotNull LocalDateTime date, 
+
+    public Work(@NotNull String subject, String description, @NotNull LocalDateTime date,
                 @NotNull WorkEnum kind, int id) {
         this.subject = subject;
         this.description = description;

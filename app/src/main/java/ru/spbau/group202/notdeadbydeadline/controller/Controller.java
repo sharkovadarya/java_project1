@@ -112,7 +112,7 @@ public class Controller {
 
         public static void generateHomeworks() {
             LocalDate today = LocalDate.now();
-            for(Homework homework : homeworkDatabase.getHomeworksByDay(today)) {
+            for (Homework homework : homeworkDatabase.getHomeworksByDay(today)) {
                 if (homework.getRegularity() != 0) {
                     int id = settings.getTotalNumberOfHW();
                     homeworkDatabase.addHomework(homework.generateNewHomeworkById(id));
@@ -137,7 +137,7 @@ public class Controller {
         @NotNull
         public static List<List<String>> getScheduleByDay(LocalDate day) {
             WeekParityEnum weekParity = WeekParityEnum.values()[day.getWeekOfWeekyear() % 2];
-            if(settings.getParityOfWeek()) {
+            if (settings.getParityOfWeek()) {
                 weekParity = weekParity.inverse();
             }
 
@@ -151,7 +151,7 @@ public class Controller {
         }
 
         public static void addScheduleEntry(@NotNull String subject, int dayOfWeek, int hour,
-                                            int minute, WeekParityEnum weekParity,
+                                            int minute, @NotNull WeekParityEnum weekParity,
                                             @NotNull String auditorium, @NotNull String teacher) {
             int id = settings.getTotalNumberOfScheduleEntries();
             ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
@@ -181,8 +181,8 @@ public class Controller {
             return getEntriesDetailList(workDatabase.getWorksByDay(date));
         }
 
-        public static void addWork(@NotNull LocalDateTime date, @NotNull String subject, WorkEnum workEnum,
-                                       String description) {
+        public static void addWork(@NotNull LocalDateTime date, @NotNull String subject,
+                                   @NotNull WorkEnum workEnum, String description) {
             int id = settings.getTotalNumberOfWorks();
             Work work = new Work(subject, description, date, workEnum, id);
             workDatabase.addWork(work);
@@ -201,8 +201,8 @@ public class Controller {
             workDatabase.setAcceptedById(id, isAccepted);
         }
 
-        public static void editWorkById(int id, @NotNull LocalDateTime date, @NotNull String subject, WorkEnum workEnum,
-                                        String description) {
+        public static void editWorkById(int id, @NotNull LocalDateTime date, @NotNull String subject,
+                                        @NotNull WorkEnum workEnum, String description) {
             deleteWorkById(id);
             Work work = new Work(subject, description, date, workEnum, id);
             workDatabase.addWork(work);
@@ -222,6 +222,7 @@ public class Controller {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);
         ScheduleController.scheduleDatabase = new ScheduleDatabaseController(context);
+        WorkController.workDatabase = new WorkDatabaseController(context);
         settings = new StoredDataController(context);
         subjectList = new HashSet<>();
         subjectList.addAll(subjectDatabase.getAllSubjects());

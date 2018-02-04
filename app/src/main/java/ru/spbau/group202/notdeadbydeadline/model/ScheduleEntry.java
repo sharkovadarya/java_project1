@@ -17,7 +17,7 @@ public class ScheduleEntry extends DetailedEntry {
         time = new LocalTime(hour, minute);
         this.subject = subject;
         this.dayOfWeek = dayOfWeek;
-        this.weekParity= weekParity;
+        this.weekParity = weekParity;
         this.auditorium = auditorium;
         this.teacher = teacher;
         this.id = id;

@@ -22,7 +22,7 @@ public class SubjectCredit {
         for (Work work : works) {
             WorkEnum kind = work.getKind();
             totalNumber.put(kind, totalNumber.get(kind) + 1);
-            if(work.isAccepted()) {
+            if (work.isAccepted()) {
                 numberOfPassed.put(kind, numberOfPassed.get(kind) + 1);
             }
         }

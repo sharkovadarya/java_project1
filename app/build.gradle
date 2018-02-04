@@ -27,7 +27,6 @@ android {
 }
 
 dependencies {
-
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
