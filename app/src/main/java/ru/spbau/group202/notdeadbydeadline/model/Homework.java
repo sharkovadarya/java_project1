@@ -8,7 +8,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
-public class Homework extends DetailedTimeEntry {
+public class Homework extends DetailedTimedEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
     private int regularity;
@@ -47,8 +47,8 @@ public class Homework extends DetailedTimeEntry {
         } else {
             homeworkDetails.add(Double.toString(getExpectedScore()));
         }
-        homeworkDetails.add(Integer.toString(id));
         homeworkDetails.addAll(materials);
+        homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
     }
@@ -133,7 +133,7 @@ public class Homework extends DetailedTimeEntry {
                 -1, id, new ArrayList<>());
     }
 
-    public class Deadline extends DetailedTimeEntry {
+    public class Deadline extends DetailedTimedEntry {
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {

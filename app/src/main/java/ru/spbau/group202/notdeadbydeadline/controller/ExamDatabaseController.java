@@ -15,13 +15,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ru.spbau.group202.notdeadbydeadline.model.Work;
-import ru.spbau.group202.notdeadbydeadline.model.WorkEnum;
+import ru.spbau.group202.notdeadbydeadline.model.Exam;
+import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
 
 
-//TODO rename
-class WorkDatabaseController extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "Works";
+class ExamDatabaseController extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "Exams";
     private static final int DATABASE_VERSION = 1;
     private static final String COLUMN_NAME_ID = "ID";
     private static final String COLUMN_NAME_SUBJECT = "SUBJECT";
@@ -34,7 +33,7 @@ class WorkDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_KIND = "KIND";
     private static final String COLUMN_NAME_IS_ACCEPTED = "IS_ACCEPTED";
 
-    public WorkDatabaseController(@NotNull Context context) {
+    public ExamDatabaseController(@NotNull Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -61,7 +60,7 @@ class WorkDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private Work getWorkByCursor(@NotNull Cursor cursor) {
+    private Exam getExamByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int year = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_YEAR));
@@ -74,72 +73,72 @@ class WorkDatabaseController extends SQLiteOpenHelper {
         boolean isAccepted = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_ACCEPTED)) == 1;
 
         LocalDateTime date = new LocalDateTime(year, month, day, hour, minute);
-        Work work = new Work(subject, description, date, WorkEnum.values()[kind], id);
-        work.setAccepted(isAccepted);
-        return work;
+        Exam exam = new Exam(subject, description, date, ExamEnum.values()[kind], id);
+        exam.setAccepted(isAccepted);
+        return exam;
     }
 
-    public void addWork(@NotNull Work work) {
+    public void addExam(@NotNull Exam exam) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
-            values.put(COLUMN_NAME_ID, work.getId());
-            values.put(COLUMN_NAME_SUBJECT, work.getSubject());
-            values.put(COLUMN_NAME_YEAR, work.getYear());
-            values.put(COLUMN_NAME_MONTH, work.getMonth());
-            values.put(COLUMN_NAME_DAY, work.getDay());
-            values.put(COLUMN_NAME_HOUR, work.getHour());
-            values.put(COLUMN_NAME_MINUTE, work.getMinute());
-            values.put(COLUMN_NAME_DESCRIPTION, work.getDescription());
-            values.put(COLUMN_NAME_KIND, work.getKind().ordinal());
-            values.put(COLUMN_NAME_IS_ACCEPTED, work.isAccepted() ? 1 : 0);
+            values.put(COLUMN_NAME_ID, exam.getId());
+            values.put(COLUMN_NAME_SUBJECT, exam.getSubject());
+            values.put(COLUMN_NAME_YEAR, exam.getYear());
+            values.put(COLUMN_NAME_MONTH, exam.getMonth());
+            values.put(COLUMN_NAME_DAY, exam.getDay());
+            values.put(COLUMN_NAME_HOUR, exam.getHour());
+            values.put(COLUMN_NAME_MINUTE, exam.getMinute());
+            values.put(COLUMN_NAME_DESCRIPTION, exam.getDescription());
+            values.put(COLUMN_NAME_KIND, exam.getKind().ordinal());
+            values.put(COLUMN_NAME_IS_ACCEPTED, exam.isAccepted() ? 1 : 0);
             long rowId = database.insert(DATABASE_NAME, null, values);
             Log.d("Database", "inserted row number " + rowId);
         }
     }
 
     @NotNull
-    public List<Work> getWorksBySubject(@NotNull String subject) {
+    public List<Exam> getExamsBySubject(@NotNull String subject) {
         String query = "SELECT * FROM " + DATABASE_NAME +
                 " WHERE " + COLUMN_NAME_SUBJECT + "=" + "?";
-        List<Work> works = new ArrayList<>();
+        List<Exam> exams = new ArrayList<>();
         String[] selectionArgs = new String[]{String.valueOf(subject)};
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    works.add(getWorkByCursor(cursor));
+                    exams.add(getExamByCursor(cursor));
                 } while (cursor.moveToNext());
             }
         }
 
-        Collections.sort(works);
-        return works;
+        Collections.sort(exams);
+        return exams;
     }
 
     @NotNull
-    public List<Work> getWorksByDay(LocalDate date) {
+    public List<Exam> getExamsByDay(LocalDate date) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_YEAR + "=? " +
                 "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?" +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE + " ASC";
         String[] selectionArgs = new String[]{String.valueOf(date.getYear()),
                 String.valueOf(date.getMonthOfYear()), String.valueOf(date.getDayOfMonth())};
-        List<Work> works = new ArrayList<>();
+        List<Exam> exams = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    Work work = getWorkByCursor(cursor);
-                    works.add(work);
+                    Exam exam = getExamByCursor(cursor);
+                    exams.add(exam);
                 } while (cursor.moveToNext());
             }
         }
 
-        return works;
+        return exams;
     }
 
-    public void deleteWorkById(int id) {
+    public void deleteExamById(int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             database.delete(DATABASE_NAME, COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(id)});
@@ -156,21 +155,21 @@ class WorkDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public List<Work> getWorkById(int id) {
+    public List<Exam> getExamById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
-        List<Work> works = new ArrayList<>();
+        List<Exam> exams = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    Work work = getWorkByCursor(cursor);
-                    works.add(work);
+                    Exam exam = getExamByCursor(cursor);
+                    exams.add(exam);
                 } while (cursor.moveToNext());
             }
         }
 
-        return works;
+        return exams;
     }
 }

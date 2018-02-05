@@ -5,11 +5,11 @@ import org.joda.time.LocalTime;
 
 
 //TODO rename
-public abstract class DetailedTimeEntry implements DetailedEntry, Comparable<DetailedTimeEntry> {
+public abstract class DetailedTimedEntry implements DetailedEntry, Comparable<DetailedTimedEntry> {
     @NotNull
     protected abstract LocalTime getTime();
 
-    public int compareTo(@NotNull DetailedTimeEntry detailedEntry) {
+    public int compareTo(@NotNull DetailedTimedEntry detailedEntry) {
         return getTime().compareTo(detailedEntry.getTime());
     }
 }

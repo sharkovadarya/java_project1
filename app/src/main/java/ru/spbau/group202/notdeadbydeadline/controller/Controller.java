@@ -15,14 +15,14 @@ import java.util.Set;
 
 import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
 import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
-import ru.spbau.group202.notdeadbydeadline.model.DetailedTimeEntry;
+import ru.spbau.group202.notdeadbydeadline.model.DetailedTimedEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
 import ru.spbau.group202.notdeadbydeadline.model.StudyMaterial;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
-import ru.spbau.group202.notdeadbydeadline.model.Work;
-import ru.spbau.group202.notdeadbydeadline.model.WorkEnum;
+import ru.spbau.group202.notdeadbydeadline.model.Exam;
+import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
 
 public class Controller {
     private static StoredDataController settings;
@@ -43,7 +43,7 @@ public class Controller {
         public List<String> calculateProgress(@NotNull String subject) throws UnrecognizedCreditFormException {
             SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
             return subjectCredit.calculateProgress(HomeworkController.homeworkDatabase.getPassedHomeworksBySubject(subject),
-                    WorkController.workDatabase.getWorksBySubject(subject));
+                    ExamController.examDatabase.getExamsBySubject(subject));
         }
 
         public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditEnum credit) {
@@ -147,8 +147,8 @@ public class Controller {
 
             List<ScheduleEntry> classes = scheduleDatabase.getDaySchedule(day.getDayOfWeek() - 1,
                     weekParity);
-            List<Work> works = WorkController.workDatabase.getWorksByDay(day);
-            List<DetailedTimeEntry> detailedEntryList = ListUtils.union(works, classes);
+            List<Exam> exams = ExamController.examDatabase.getExamsByDay(day);
+            List<DetailedTimedEntry> detailedEntryList = ListUtils.union(exams, classes);
             Collections.sort(detailedEntryList);
 
             return getEntriesDetailList(detailedEntryList);
@@ -172,24 +172,24 @@ public class Controller {
     }
 
     //TODO rename
-    public static class WorkController {
-        private static WorkDatabaseController workDatabase;
+    public static class ExamController {
+        private static ExamDatabaseController examDatabase;
 
         @NotNull
         public static List<List<String>> getWorksBySubject(@NotNull String subject) {
-            return getEntriesDetailList(workDatabase.getWorksBySubject(subject));
+            return getEntriesDetailList(examDatabase.getExamsBySubject(subject));
         }
 
         @NotNull
         public static List<List<String>> getWorksByDay(@NotNull LocalDate date) {
-            return getEntriesDetailList(workDatabase.getWorksByDay(date));
+            return getEntriesDetailList(examDatabase.getExamsByDay(date));
         }
 
         public static void addWork(@NotNull LocalDateTime date, @NotNull String subject,
-                                   @NotNull WorkEnum workEnum, String description) {
+                                   @NotNull ExamEnum examEnum, String description) {
             int id = settings.getTotalNumberOfWorks();
-            Work work = new Work(subject, description, date, workEnum, id);
-            workDatabase.addWork(work);
+            Exam exam = new Exam(subject, description, date, examEnum, id);
+            examDatabase.addExam(exam);
             settings.saveTotalNumberOfWorks(++id);
 
             if (subjectList.add(subject)) {
@@ -198,18 +198,18 @@ public class Controller {
         }
 
         public static void deleteWorkById(int id) {
-            workDatabase.deleteWorkById(id);
+            examDatabase.deleteExamById(id);
         }
 
         public static void setWorkAcceptedById(int id, boolean isAccepted) {
-            workDatabase.setAcceptedById(id, isAccepted);
+            examDatabase.setAcceptedById(id, isAccepted);
         }
 
         public static void editWorkById(int id, @NotNull LocalDateTime date, @NotNull String subject,
-                                        @NotNull WorkEnum workEnum, String description) {
+                                        @NotNull ExamEnum examEnum, String description) {
             deleteWorkById(id);
-            Work work = new Work(subject, description, date, workEnum, id);
-            workDatabase.addWork(work);
+            Exam exam = new Exam(subject, description, date, examEnum, id);
+            examDatabase.addExam(exam);
 
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
@@ -218,7 +218,7 @@ public class Controller {
 
         @NotNull
         public static List<String> getWorkById(int id) {
-            return getEntriesDetailList(workDatabase.getWorkById(id)).get(0);
+            return getEntriesDetailList(examDatabase.getExamById(id)).get(0);
         }
     }
 
@@ -273,7 +273,7 @@ public class Controller {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);
         ScheduleController.scheduleDatabase = new ScheduleDatabaseController(context);
-        WorkController.workDatabase = new WorkDatabaseController(context);
+        ExamController.examDatabase = new ExamDatabaseController(context);
         StudyMaterialsController.studyMaterialDatabase = new StudyMaterialDatabaseController(context);
         settings = new StoredDataController(context);
         subjectList = new HashSet<>();

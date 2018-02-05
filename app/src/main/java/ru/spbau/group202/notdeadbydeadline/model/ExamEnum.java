@@ -2,13 +2,13 @@ package ru.spbau.group202.notdeadbydeadline.model;
 
 
 //TODO rename
-public enum WorkEnum {
+public enum ExamEnum {
     TEST() {
         public String getDescription() {
             return "Test";
         }
     },
-    EXAM() {
+    FINAL_EXAM() {
         public String getDescription() {
             return "Exam";
         }

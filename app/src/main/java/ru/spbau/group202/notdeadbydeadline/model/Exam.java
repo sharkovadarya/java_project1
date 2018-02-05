@@ -9,16 +9,15 @@ import org.joda.time.format.DateTimeFormat;
 import java.util.ArrayList;
 
 
-//TODO rename
-public class Work extends DetailedTimeEntry {
+public class Exam extends DetailedTimedEntry {
     private String subject, description;
     private LocalDateTime date;
     private boolean isAccepted = false;
-    private WorkEnum kind;
+    private ExamEnum kind;
     private int id;
 
-    public Work(@NotNull String subject, String description, @NotNull LocalDateTime date,
-                @NotNull WorkEnum kind, int id) {
+    public Exam(@NotNull String subject, String description, @NotNull LocalDateTime date,
+                @NotNull ExamEnum kind, int id) {
         this.subject = subject;
         this.description = description;
         this.date = date;
@@ -64,7 +63,7 @@ public class Work extends DetailedTimeEntry {
     }
 
     @NotNull
-    public WorkEnum getKind() {
+    public ExamEnum getKind() {
         return kind;
     }
 

@@ -15,30 +15,30 @@ public class SubjectCredit {
     }
 
     @NotNull
-    public List<String> calculateProgress(@NotNull List<Homework> homeworks, @NotNull List<Work> works) {
-        HashMap<WorkEnum, Integer> totalNumber = new HashMap<>();
-        HashMap<WorkEnum, Integer> numberOfPassed = new HashMap<>();
+    public List<String> calculateProgress(@NotNull List<Homework> homeworks, @NotNull List<Exam> exams) {
+        HashMap<ExamEnum, Integer> totalNumber = new HashMap<>();
+        HashMap<ExamEnum, Integer> numberOfPassed = new HashMap<>();
 
-        for (Work work : works) {
-            WorkEnum kind = work.getKind();
+        for (Exam exam : exams) {
+            ExamEnum kind = exam.getKind();
             totalNumber.put(kind, totalNumber.get(kind) + 1);
-            if (work.isAccepted()) {
+            if (exam.isAccepted()) {
                 numberOfPassed.put(kind, numberOfPassed.get(kind) + 1);
             }
         }
 
-        double passedTestsPercent = totalNumber.get(WorkEnum.TEST) == 0 ? 1 :
-                (double) numberOfPassed.get(WorkEnum.TEST) / totalNumber.get(WorkEnum.TEST);
-        double passedExamsPercent = totalNumber.get(WorkEnum.EXAM) == 0 ? 1 :
-                (double) numberOfPassed.get(WorkEnum.EXAM) / totalNumber.get(WorkEnum.EXAM);
+        double passedTestsPercent = totalNumber.get(ExamEnum.TEST) == 0 ? 1 :
+                (double) numberOfPassed.get(ExamEnum.TEST) / totalNumber.get(ExamEnum.TEST);
+        double passedExamsPercent = totalNumber.get(ExamEnum.FINAL_EXAM) == 0 ? 1 :
+                (double) numberOfPassed.get(ExamEnum.FINAL_EXAM) / totalNumber.get(ExamEnum.FINAL_EXAM);
         String testCredit = passedTestsPercent == 1.0 ? "Passed class" : "Failed class";
         String examsCredit = passedExamsPercent == 1.0 ? "Passed class" : "Failed class";
-        int numberOfNotPassedTests = totalNumber.get(WorkEnum.TEST) - numberOfPassed.get(WorkEnum.TEST);
-        int numberOfNotPassedExams = totalNumber.get(WorkEnum.EXAM) - numberOfPassed.get(WorkEnum.EXAM);
+        int numberOfNotPassedTests = totalNumber.get(ExamEnum.TEST) - numberOfPassed.get(ExamEnum.TEST);
+        int numberOfNotPassedExams = totalNumber.get(ExamEnum.FINAL_EXAM) - numberOfPassed.get(ExamEnum.FINAL_EXAM);
 
         List<String> result = Arrays.asList(Double.toString(passedTestsPercent), testCredit,
-                Integer.toBinaryString(numberOfNotPassedTests), Double.toString(passedExamsPercent), examsCredit,
-                Integer.toBinaryString(numberOfNotPassedExams));
+                Integer.toString(numberOfNotPassedTests), Double.toString(passedExamsPercent), examsCredit,
+                Integer.toString(numberOfNotPassedExams));
         return ListUtils.union(calculateHomeworkProgress(homeworks), result);
     }
 

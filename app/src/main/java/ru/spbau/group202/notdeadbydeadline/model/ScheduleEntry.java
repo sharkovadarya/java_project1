@@ -6,7 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 
-public class ScheduleEntry extends DetailedTimeEntry {
+public class ScheduleEntry extends DetailedTimedEntry {
     private String subject, auditorium, teacher;
     private LocalTime time;
     private int dayOfWeek, id;

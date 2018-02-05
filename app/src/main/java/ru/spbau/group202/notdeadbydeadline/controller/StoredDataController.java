@@ -12,8 +12,7 @@ public class StoredDataController {
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_HW = "TOTAL_NUMBER_OF_HW";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES
             = "TOTAL_NUMBER_OF_SCHEDULE_ENTRIES";
-    //TODO rename
-    private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_WORKS = "TOTAL_NUMBER_OF_WORKS";
+    private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_EXAMS = "TOTAL_NUMBER_OF_EXAMS";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_STUDY_MATERIALS
             = "TOTAL_NUMBER_OF_STUDY_MATERIALS";
     private SharedPreferences settings;
@@ -43,7 +42,7 @@ public class StoredDataController {
 
     public void saveTotalNumberOfWorks(int totalNumberOfWorks) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_WORKS, totalNumberOfWorks);
+        editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_EXAMS, totalNumberOfWorks);
         editor.apply();
     }
 
@@ -66,7 +65,7 @@ public class StoredDataController {
     }
 
     public int getTotalNumberOfWorks() {
-        return settings.getInt(APP_PREFERENCES_TOTAL_NUMBER_OF_WORKS, 0);
+        return settings.getInt(APP_PREFERENCES_TOTAL_NUMBER_OF_EXAMS, 0);
     }
 
     public int getTotalNumberOfStudyMaterials() {
