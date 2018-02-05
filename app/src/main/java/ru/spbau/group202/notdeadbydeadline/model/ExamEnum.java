@@ -1,7 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
 
-//TODO rename
 public enum ExamEnum {
     TEST() {
         public String getDescription() {
