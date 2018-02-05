@@ -8,15 +8,16 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
-public class Homework extends DetailedEntry {
+public class Homework extends DetailedTimeEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
     private int regularity;
     private double expectedScore, actualScore = -1;
     private int id;
+    private ArrayList<String> materials;
 
-    public Homework(LocalDateTime deadline, @NotNull String subject, int regularity,
-                    String description, String howToSend, double expectedScore, int id) {
+    public Homework(LocalDateTime deadline, @NotNull String subject, int regularity, String description,
+                    String howToSend, double expectedScore, int id, @NotNull ArrayList<String> materials) {
         this.deadline = new Deadline(deadline);
         this.subject = subject;
         this.regularity = regularity;
@@ -24,6 +25,7 @@ public class Homework extends DetailedEntry {
         this.howToSend = howToSend;
         this.expectedScore = expectedScore;
         this.id = id;
+        this.materials = materials;
     }
 
     public void setActualScore(double score) {
@@ -46,6 +48,7 @@ public class Homework extends DetailedEntry {
             homeworkDetails.add(Double.toString(getExpectedScore()));
         }
         homeworkDetails.add(Integer.toString(id));
+        homeworkDetails.addAll(materials);
 
         return homeworkDetails;
     }
@@ -119,14 +122,18 @@ public class Homework extends DetailedEntry {
         return id;
     }
 
+    public ArrayList<String> getMaterials() {
+        return materials;
+    }
+
     @NotNull
     public Homework generateNewHomeworkById(int id) {
         LocalDateTime newDeadline = deadline.deadline.plusWeeks(regularity);
         return new Homework(newDeadline, subject, regularity, " ", howToSend,
-                -1, id);
+                -1, id, new ArrayList<>());
     }
 
-    public class Deadline extends DetailedEntry {
+    public class Deadline extends DetailedTimeEntry {
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {

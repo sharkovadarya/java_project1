@@ -15,8 +15,10 @@ import java.util.Set;
 
 import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
 import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
+import ru.spbau.group202.notdeadbydeadline.model.DetailedTimeEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
+import ru.spbau.group202.notdeadbydeadline.model.StudyMaterial;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.model.Work;
@@ -67,11 +69,12 @@ public class Controller {
             return getEntriesDetailList(homeworkDatabase.getHomeworksByDay(date));
         }
 
-        public static void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject, int regularity,
-                                       String description, String howToSend, double expectedScore) {
+        public static void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
+                                       int regularity, String description, String howToSend,
+                                       double expectedScore, @NotNull ArrayList<String> materials) {
             int id = settings.getTotalNumberOfHW();
             Homework homework = new Homework(deadline, subject, regularity, description,
-                    howToSend, expectedScore, id);
+                    howToSend, expectedScore, id, materials);
             homeworkDatabase.addHomework(homework);
             settings.saveTotalNumberOfHW(++id);
 
@@ -89,10 +92,11 @@ public class Controller {
         }
 
         public static void editHomeworkById(int id, @NotNull LocalDateTime deadline, @NotNull String subject,
-                                            int regularity, String description, String howToSend, double expectedScore) {
+                                            int regularity, String description, String howToSend,
+                                            double expectedScore, @NotNull ArrayList<String> materials) {
             deleteHomeworkById(id);
             Homework homework = new Homework(deadline, subject, regularity, description,
-                    howToSend, expectedScore, id);
+                    howToSend, expectedScore, id, materials);
             homeworkDatabase.addHomework(homework);
 
             if (subjectList.add(subject)) {
@@ -144,7 +148,7 @@ public class Controller {
             List<ScheduleEntry> classes = scheduleDatabase.getDaySchedule(day.getDayOfWeek() - 1,
                     weekParity);
             List<Work> works = WorkController.workDatabase.getWorksByDay(day);
-            List<DetailedEntry> detailedEntryList = ListUtils.union(works, classes);
+            List<DetailedTimeEntry> detailedEntryList = ListUtils.union(works, classes);
             Collections.sort(detailedEntryList);
 
             return getEntriesDetailList(detailedEntryList);
@@ -218,11 +222,59 @@ public class Controller {
         }
     }
 
+    public static class StudyMaterialsController {
+        private static StudyMaterialDatabaseController studyMaterialDatabase;
+
+        @NotNull
+        public static List<List<String>> getStudyMaterialsBySubject(@NotNull String subject) {
+            return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsBySubject(subject));
+        }
+
+        @NotNull
+        public static List<List<String>> getStudyMaterialsByTerm(int term) {
+            return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsByTerm(term));
+        }
+
+        public static void addStudyMaterial(@NotNull String subject, int term, @NotNull String URL,
+                                            @NotNull String path) {
+            int id = settings.getTotalNumberOfStudyMaterials();
+            StudyMaterial studyMaterial = new StudyMaterial(subject, term, URL, path, id);
+            studyMaterialDatabase.addStudyMaterial(studyMaterial);
+            settings.saveTotalNumberOfStudyMaterials(++id);
+
+            if (!subject.equals("Not stated") && subjectList.add(subject)) {
+                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+            }
+        }
+
+        public static void deleteStudyMaterialById(int id) {
+            studyMaterialDatabase.deleteStudyMaterialById(id);
+        }
+
+        public static void editStudyMaterialById(int id, @NotNull String subject, int term,
+                                                 @NotNull String URL, @NotNull String path) {
+            deleteStudyMaterialById(id);
+            StudyMaterial studyMaterial = new StudyMaterial(subject, term, URL, path, id);
+            studyMaterialDatabase.addStudyMaterial(studyMaterial);
+
+            if (!subject.equals("Not stated") && subjectList.add(subject)) {
+                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+            }
+        }
+
+        @NotNull
+        public static List<String> getStudyMaterialById(int id) {
+            return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialById(id)).get(0);
+        }
+
+    }
+
     public static void createDatabases(@NotNull Context context) {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);
         ScheduleController.scheduleDatabase = new ScheduleDatabaseController(context);
         WorkController.workDatabase = new WorkDatabaseController(context);
+        StudyMaterialsController.studyMaterialDatabase = new StudyMaterialDatabaseController(context);
         settings = new StoredDataController(context);
         subjectList = new HashSet<>();
         subjectList.addAll(subjectDatabase.getAllSubjects());

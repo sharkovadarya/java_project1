@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 
 //TODO rename
-public class Work extends DetailedEntry {
+public class Work extends DetailedTimeEntry {
     private String subject, description;
     private LocalDateTime date;
     private boolean isAccepted = false;
