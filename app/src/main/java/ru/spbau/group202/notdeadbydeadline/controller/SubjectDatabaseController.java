@@ -16,6 +16,7 @@ import ru.spbau.group202.notdeadbydeadline.model.CreditByAcceptedHomeworks;
 import ru.spbau.group202.notdeadbydeadline.model.CreditByPercent;
 import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
 
 
 public class SubjectDatabaseController extends SQLiteOpenHelper {

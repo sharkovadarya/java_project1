@@ -11,7 +11,7 @@ import org.joda.time.format.*;
 public class Homework extends DetailedTimedEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
-    private int regularity;
+    private int regularity, deferral = 0;
     private double expectedScore, actualScore = -1;
     private int id;
     private ArrayList<String> materials;
@@ -30,6 +30,15 @@ public class Homework extends DetailedTimedEntry {
 
     public void setActualScore(double score) {
         actualScore = score;
+    }
+
+    public void setDeferral(int deferral) {
+        deadline.deadline.plusDays(deferral);
+        assignDeferral(deferral);
+    }
+
+    public void assignDeferral(int deferral) {
+        this.deferral = deferral;
     }
 
     public boolean isAccepted() {
@@ -108,6 +117,10 @@ public class Homework extends DetailedTimedEntry {
         return deadline.deadline.getMinuteOfHour();
     }
 
+    public int getDeferral() {
+        return deferral;
+    }
+
     public boolean hasPassed() {
         return deadline.hasPassed();
     }
@@ -128,7 +141,8 @@ public class Homework extends DetailedTimedEntry {
 
     @NotNull
     public Homework generateNewHomeworkById(int id) {
-        LocalDateTime newDeadline = deadline.deadline.plusWeeks(regularity);
+        LocalDateTime newDeadline = deadline.deadline.minusDays(deferral);
+        deadline.deadline.plusWeeks(regularity);
         return new Homework(newDeadline, subject, regularity, " ", howToSend,
                 -1, id, new ArrayList<>());
     }

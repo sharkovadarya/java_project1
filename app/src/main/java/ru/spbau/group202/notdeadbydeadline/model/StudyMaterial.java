@@ -2,11 +2,18 @@ package ru.spbau.group202.notdeadbydeadline.model;
 
 
 import org.jetbrains.annotations.NotNull;
+import org.apache.commons.io.FileUtils;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.io.File;
+import java.net.URL;
+
+import ru.spbau.group202.notdeadbydeadline.model.utilities.DownloadingException;
 
 public class StudyMaterial implements DetailedEntry {
-    private String subject = "Not stated", path, URL;
+    private String subject, path, URL;
     private int term, id;
 
     public StudyMaterial(@NotNull String subject, int term, @NotNull String URL,
@@ -16,7 +23,6 @@ public class StudyMaterial implements DetailedEntry {
         this.URL = URL;
         this.path = path;
         this.id = id;
-        update();
     }
 
     @NotNull
@@ -42,8 +48,16 @@ public class StudyMaterial implements DetailedEntry {
         return id;
     }
 
-    //TODO
-    public void update() {
+
+    public void update() throws MalformedURLException, DownloadingException {
+        URL url = new URL(URL);
+        File file = new File(path);
+
+        try{
+            FileUtils.copyURLToFile(url, file);
+        } catch (IOException exception) {
+            throw new DownloadingException();
+        }
 
     }
 

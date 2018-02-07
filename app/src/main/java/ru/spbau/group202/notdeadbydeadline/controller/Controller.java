@@ -7,6 +7,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.apache.commons.collections4.ListUtils;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +24,8 @@ import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.model.Exam;
 import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.DownloadingException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
 
 public class Controller {
     private static StoredDataController settings;
@@ -89,6 +92,10 @@ public class Controller {
 
         public static void setHomeworkScoreById(int id, int score) {
             homeworkDatabase.setScoreById(id, score);
+        }
+
+        public static void setHomeworkDeferralById(int id, int deferral) {
+            homeworkDatabase.setDeferralById(id, deferral);
         }
 
         public static void editHomeworkById(int id, @NotNull LocalDateTime deadline, @NotNull String subject,
@@ -187,7 +194,6 @@ public class Controller {
         }
     }
 
-
     public static class ExamController {
         private static ExamDatabaseController examDatabase;
 
@@ -252,7 +258,7 @@ public class Controller {
         }
 
         public static void addStudyMaterial(@NotNull String subject, int term, @NotNull String URL,
-                                            @NotNull String path) {
+                                            @NotNull String path) throws MalformedURLException, DownloadingException {
             int id = settings.getTotalNumberOfStudyMaterials();
             StudyMaterial studyMaterial = new StudyMaterial(subject, term, URL, path, id);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
@@ -261,6 +267,7 @@ public class Controller {
             if (!subject.equals("Not stated") && subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
             }
+            studyMaterial.update();
         }
 
         public static void deleteStudyMaterialById(int id) {
@@ -268,7 +275,8 @@ public class Controller {
         }
 
         public static void editStudyMaterialById(int id, @NotNull String subject, int term,
-                                                 @NotNull String URL, @NotNull String path) {
+                                                 @NotNull String URL, @NotNull String path)
+                throws MalformedURLException, DownloadingException {
             deleteStudyMaterialById(id);
             StudyMaterial studyMaterial = new StudyMaterial(subject, term, URL, path, id);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
@@ -276,6 +284,7 @@ public class Controller {
             if (!subject.equals("Not stated") && subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
             }
+            studyMaterial.update();
         }
 
         @NotNull
@@ -283,9 +292,15 @@ public class Controller {
             return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialById(id)).get(0);
         }
 
+        public static void updateStudyMaterials() throws MalformedURLException, DownloadingException {
+            List<StudyMaterial> studyMaterials = studyMaterialDatabase.getUpdatableStudyMaterials();
+            for (StudyMaterial studyMaterial : studyMaterials) {
+                studyMaterial.update();
+            }
+        }
     }
 
-    public static void createDatabases(@NotNull Context context) {
+    public static void createDatabases(@NotNull Context context) throws MalformedURLException, DownloadingException {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);
         ScheduleController.scheduleDatabase = new ScheduleDatabaseController(context);
@@ -294,7 +309,9 @@ public class Controller {
         settings = new StoredDataController(context);
         subjectList = new HashSet<>();
         subjectList.addAll(subjectDatabase.getAllSubjects());
+
         HomeworkController.generateHomeworks();
+        StudyMaterialsController.updateStudyMaterials();
     }
 
     @NotNull
