@@ -14,7 +14,7 @@
         android:id="@+id/currentDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="43dp"
+        android:layout_marginEnd="42dp"
         android:layout_marginTop="28dp"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/deadlinesHeader"
@@ -25,7 +25,7 @@
         android:id="@+id/deadlinesHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="9dp"
         android:layout_marginStart="9dp"
         android:text="@string/deadlineHeader"
         android:textSize="30sp"
@@ -38,12 +38,35 @@
         android:id="@+id/deadlinesList2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="181dp"
         android:layout_marginEnd="22dp"
         android:layout_marginStart="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/scheduleHeaderMainScreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deadlinesHeader" />
+
+    <TextView
+        android:id="@+id/scheduleHeaderMainScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:text="@string/scheduleHeader"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/scheduleListViewMainScreen"
+        app:layout_constraintStart_toStartOf="@+id/deadlinesList2"
+        app:layout_constraintTop_toBottomOf="@+id/deadlinesList2" />
+
+    <ListView
+        android:id="@+id/scheduleListViewMainScreen"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginStart="21dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleHeaderMainScreen" />
 
 </android.support.constraint.ConstraintLayout>

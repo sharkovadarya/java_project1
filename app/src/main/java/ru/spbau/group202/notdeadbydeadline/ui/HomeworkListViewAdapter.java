@@ -17,12 +17,12 @@ import ru.spbau.group202.notdeadbydeadline.R;
 
 import static android.graphics.Typeface.BOLD;
 
-public class DetailedEntriesListViewAdapter extends BaseAdapter {
+public class HomeworkListViewAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
     private List<List<String>> detailedEntries;
 
-    DetailedEntriesListViewAdapter(Context context,
-                                   List<List<String>> detailedEntries) {
+    HomeworkListViewAdapter(Context context,
+                            List<List<String>> detailedEntries) {
         this.detailedEntries = detailedEntries;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,7 +49,7 @@ public class DetailedEntriesListViewAdapter extends BaseAdapter {
 
         View view = convertView;
         if (view == null) {
-            view = lInflater.inflate(R.layout.custom_listview_item, parent, false);
+            view = lInflater.inflate(R.layout.custom_homework_listview_item, parent, false);
         }
 
         ArrayList<String> detailedEntry = (ArrayList<String>) getItem(position);
@@ -80,7 +80,7 @@ public class DetailedEntriesListViewAdapter extends BaseAdapter {
         stringBuilder.append(detailedEntry.get(3));
 
 
-        ((TextView) view.findViewById(R.id.list_item)).setText(stringBuilder);
+        ((TextView) view.findViewById(R.id.list_item_hw)).setText(stringBuilder);
 
         return view;
     }

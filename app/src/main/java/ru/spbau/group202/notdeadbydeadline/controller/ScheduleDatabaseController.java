@@ -10,7 +10,6 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
@@ -103,13 +102,6 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
             }
         }
 
-        Collections.sort(daySchedule, (h1, h2) -> {
-            if (h1.getHour() == h2.getHour()) {
-                return h1.getMinute() - h2.getMinute();
-            } else {
-                return h1.getHour() - h2.getHour();
-            }
-        });
         return daySchedule;
     }
 

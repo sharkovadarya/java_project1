@@ -31,6 +31,7 @@ import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
+import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -77,16 +78,51 @@ public class MainActivity extends AppCompatActivity
             stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                     position, stringBuilder.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder.append("\n");
-            stringBuilder.append(deadlineDetails.get(1));
+            if (!deadlineDetails.get(1).isEmpty()) {
+                stringBuilder.append("\n");
+                stringBuilder.append(deadlineDetails.get(1));
+            }
 
             formattedDeadlines.add(stringBuilder);
         }
 
         ListView lv = findViewById(R.id.deadlinesList2);
         ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
-                R.layout.custom_homework_listview_entry,
+                R.layout.custom_mainscreen_listview_entry,
                 formattedDeadlines);
+        lv.setAdapter(adapter);
+    }
+
+    private void outputTodaySchedule() {
+        LocalDate localDate = LocalDate.now();
+        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDay(localDate);
+        /*List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(localDate.getDayOfWeek() - 1,
+                WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);*/
+
+        ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
+        for (int i = 0; i < scheduleDetails.size(); i++) {
+            List<String> schDetails = scheduleDetails.get(i);
+            SpannableStringBuilder stringBuilder =
+                    new SpannableStringBuilder(schDetails.get(1));
+
+            stringBuilder.append("  ");
+            int position = stringBuilder.length();
+            stringBuilder.append(schDetails.get(0));
+            stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
+                    position, stringBuilder.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(", \n");
+            stringBuilder.append(schDetails.get(2));
+            stringBuilder.append(", ");
+            stringBuilder.append(schDetails.get(3));
+
+            formattedSchedule.add(stringBuilder);
+        }
+
+        ListView lv = findViewById(R.id.scheduleListViewMainScreen);
+        ArrayAdapter<SpannableStringBuilder> adapter = new ArrayAdapter<>(this,
+                R.layout.custom_mainscreen_listview_entry,
+                formattedSchedule);
         lv.setAdapter(adapter);
     }
 
@@ -112,6 +148,7 @@ public class MainActivity extends AppCompatActivity
 
         outputCurrentDate();
         outputDeadlines();
+        outputTodaySchedule();
     }
 
     @Override
@@ -179,5 +216,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         outputDeadlines();
+        outputTodaySchedule();
     }
 }
