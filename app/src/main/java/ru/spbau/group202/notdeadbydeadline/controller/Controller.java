@@ -174,7 +174,6 @@ public class Controller {
 
     }
 
-    //TODO rename
     public static class ExamController {
         private static ExamDatabaseController examDatabase;
 
