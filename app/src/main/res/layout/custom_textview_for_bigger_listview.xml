@@ -10,4 +10,5 @@
     android:paddingRight="6dip"
     android:gravity="center"
     android:textStyle="bold"
+    android:singleLine="false"
 />
