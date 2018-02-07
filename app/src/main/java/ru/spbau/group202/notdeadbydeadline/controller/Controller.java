@@ -106,7 +106,7 @@ public class Controller {
 
         @NotNull
         public static List<String> getHomeworkById(int id) {
-            List<Homework> homeworks = (homeworkDatabase.getHomeworkById(id));
+            List<Homework> homeworks = homeworkDatabase.getHomeworkById(id);
             List<String> entriesDetailList = getEntriesDetailList(homeworks).get(0);
             entriesDetailList.add(0, homeworks.get(0).getSubject());
             return entriesDetailList;
@@ -162,7 +162,6 @@ public class Controller {
                                             @NotNull String auditorium, @NotNull String teacher) {
             int id = settings.getTotalNumberOfScheduleEntries();
             ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
-
                     weekParity, auditorium, teacher, id);
             scheduleDatabase.addScheduleEntry(scheduleEntry);
             settings.saveTotalNumberOfScheduleEntries(++id);
@@ -172,23 +171,37 @@ public class Controller {
             scheduleDatabase.deleteScheduleEntryById(id);
         }
 
+        public static void editScheduleEntryById(int id, @NotNull String subject, int dayOfWeek,
+                                                 int hour, int minute, @NotNull WeekParityEnum weekParity,
+                                                 @NotNull String auditorium, @NotNull String teacher) {
+            deleteScheduleEntryById(id);
+            ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
+                    weekParity, auditorium, teacher, id);
+            scheduleDatabase.addScheduleEntry(scheduleEntry);
+        }
+
+        @NotNull
+        public static List<String> getScheduleEntryById(int id) {
+            List<ScheduleEntry> scheduleEntries = (scheduleDatabase.getScheduleEntryById(id));
+            return getEntriesDetailList(scheduleEntries).get(0);
+        }
     }
 
-    //TODO rename
+
     public static class ExamController {
         private static ExamDatabaseController examDatabase;
 
         @NotNull
-        public static List<List<String>> getWorksBySubject(@NotNull String subject) {
+        public static List<List<String>> getExamsBySubject(@NotNull String subject) {
             return getEntriesDetailList(examDatabase.getExamsBySubject(subject));
         }
 
         @NotNull
-        public static List<List<String>> getWorksByDay(@NotNull LocalDate date) {
+        public static List<List<String>> getExamsByDay(@NotNull LocalDate date) {
             return getEntriesDetailList(examDatabase.getExamsByDay(date));
         }
 
-        public static void addWork(@NotNull LocalDateTime date, @NotNull String subject,
+        public static void addExam(@NotNull LocalDateTime date, @NotNull String subject,
                                    @NotNull ExamEnum examEnum, String description) {
             int id = settings.getTotalNumberOfWorks();
             Exam exam = new Exam(subject, description, date, examEnum, id);
@@ -200,17 +213,17 @@ public class Controller {
             }
         }
 
-        public static void deleteWorkById(int id) {
+        public static void deleteExamsById(int id) {
             examDatabase.deleteExamById(id);
         }
 
-        public static void setWorkAcceptedById(int id, boolean isAccepted) {
+        public static void setExamAcceptedById(int id, boolean isAccepted) {
             examDatabase.setAcceptedById(id, isAccepted);
         }
 
-        public static void editWorkById(int id, @NotNull LocalDateTime date, @NotNull String subject,
+        public static void editExamById(int id, @NotNull LocalDateTime date, @NotNull String subject,
                                         @NotNull ExamEnum examEnum, String description) {
-            deleteWorkById(id);
+            examDatabase.deleteExamById(id);
             Exam exam = new Exam(subject, description, date, examEnum, id);
             examDatabase.addExam(exam);
 
@@ -220,7 +233,7 @@ public class Controller {
         }
 
         @NotNull
-        public static List<String> getWorkById(int id) {
+        public static List<String> getExamById(int id) {
             return getEntriesDetailList(examDatabase.getExamById(id)).get(0);
         }
     }
