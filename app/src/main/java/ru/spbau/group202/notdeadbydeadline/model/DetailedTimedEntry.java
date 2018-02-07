@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalTime;
 
 
-//TODO rename
 public abstract class DetailedTimedEntry implements DetailedEntry, Comparable<DetailedTimedEntry> {
     @NotNull
     protected abstract LocalTime getTime();

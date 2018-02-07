@@ -20,7 +20,7 @@ public class SubjectCredit {
         HashMap<ExamEnum, Integer> numberOfPassed = new HashMap<>();
 
         for (Exam exam : exams) {
-            ExamEnum kind = exam.getKind();
+            ExamEnum kind = exam.getExamType();
             totalNumber.put(kind, totalNumber.get(kind) + 1);
             if (exam.isAccepted()) {
                 numberOfPassed.put(kind, numberOfPassed.get(kind) + 1);

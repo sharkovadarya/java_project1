@@ -10,7 +10,6 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;

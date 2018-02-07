@@ -13,15 +13,15 @@ public class Exam extends DetailedTimedEntry {
     private String subject, description;
     private LocalDateTime date;
     private boolean isAccepted = false;
-    private ExamEnum kind;
+    private ExamEnum examType;
     private int id;
 
     public Exam(@NotNull String subject, String description, @NotNull LocalDateTime date,
-                @NotNull ExamEnum kind, int id) {
+                @NotNull ExamEnum examType, int id) {
         this.subject = subject;
         this.description = description;
         this.date = date;
-        this.kind = kind;
+        this.examType = examType;
         this.id = id;
     }
 
@@ -63,8 +63,8 @@ public class Exam extends DetailedTimedEntry {
     }
 
     @NotNull
-    public ExamEnum getKind() {
-        return kind;
+    public ExamEnum getExamType() {
+        return examType;
     }
 
     public int getId() {
@@ -77,7 +77,7 @@ public class Exam extends DetailedTimedEntry {
         ArrayList<String> workDetails = new ArrayList<>();
         workDetails.add(subject);
         workDetails.add(DateTimeFormat.forPattern("HH:mm").print(date));
-        workDetails.add(kind.getDescription());
+        workDetails.add(examType.getDescription());
         workDetails.add(description);
         workDetails.add(Integer.toString(id));
         return workDetails;

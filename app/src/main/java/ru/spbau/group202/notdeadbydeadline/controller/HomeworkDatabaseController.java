@@ -57,7 +57,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 COLUMN_NAME_ACTUAL_SCORE + " INTEGER, " +
                 COLUMN_NAME_DESCRIPTION + " TEXT, " +
                 COLUMN_NAME_HOW_TO_SEND + " TEXT, " +
-                COLUMN_NAME_MATERIALS + " TEXT"+ ");");
+                COLUMN_NAME_MATERIALS + " TEXT" + ");");
     }
 
     @Override
@@ -82,7 +82,8 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
         String gsonMaterials = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_MATERIALS));
         ArrayList<String> materials = new Gson().fromJson(gsonMaterials,
-                new TypeToken<ArrayList<String>>() {}.getType());
+                new TypeToken<ArrayList<String>>() {
+                }.getType());
 
 
         LocalDateTime deadline = new LocalDateTime(year, month, day, hour, minute);

@@ -19,7 +19,7 @@ import ru.spbau.group202.notdeadbydeadline.model.Exam;
 import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
 
 
-class ExamDatabaseController extends SQLiteOpenHelper {
+public class ExamDatabaseController extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Exams";
     private static final int DATABASE_VERSION = 1;
     private static final String COLUMN_NAME_ID = "ID";
@@ -30,7 +30,7 @@ class ExamDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_HOUR = "HOUR";
     private static final String COLUMN_NAME_MINUTE = "MINUTE";
     private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
-    private static final String COLUMN_NAME_KIND = "KIND";
+    private static final String COLUMN_NAME_EXAM_TYPE = "EXAM_TYPE";
     private static final String COLUMN_NAME_IS_ACCEPTED = "IS_ACCEPTED";
 
     public ExamDatabaseController(@NotNull Context context) {
@@ -49,7 +49,7 @@ class ExamDatabaseController extends SQLiteOpenHelper {
                 COLUMN_NAME_HOUR + " INTEGER, " +
                 COLUMN_NAME_MINUTE + " INTEGER, " +
                 COLUMN_NAME_DESCRIPTION + " TEXT, " +
-                COLUMN_NAME_KIND + " INTEGER, " +
+                COLUMN_NAME_EXAM_TYPE + " INTEGER, " +
                 COLUMN_NAME_IS_ACCEPTED + " INTEGER" + ");");
     }
 
@@ -69,11 +69,11 @@ class ExamDatabaseController extends SQLiteOpenHelper {
         int hour = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_HOUR));
         int minute = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_MINUTE));
         String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
-        int kind = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_KIND));
+        int examType = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_EXAM_TYPE));
         boolean isAccepted = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_IS_ACCEPTED)) == 1;
 
         LocalDateTime date = new LocalDateTime(year, month, day, hour, minute);
-        Exam exam = new Exam(subject, description, date, ExamEnum.values()[kind], id);
+        Exam exam = new Exam(subject, description, date, ExamEnum.values()[examType], id);
         exam.setAccepted(isAccepted);
         return exam;
     }
@@ -89,7 +89,7 @@ class ExamDatabaseController extends SQLiteOpenHelper {
             values.put(COLUMN_NAME_HOUR, exam.getHour());
             values.put(COLUMN_NAME_MINUTE, exam.getMinute());
             values.put(COLUMN_NAME_DESCRIPTION, exam.getDescription());
-            values.put(COLUMN_NAME_KIND, exam.getKind().ordinal());
+            values.put(COLUMN_NAME_EXAM_TYPE, exam.getExamType().ordinal());
             values.put(COLUMN_NAME_IS_ACCEPTED, exam.isAccepted() ? 1 : 0);
             long rowId = database.insert(DATABASE_NAME, null, values);
             Log.d("Database", "inserted row number " + rowId);
