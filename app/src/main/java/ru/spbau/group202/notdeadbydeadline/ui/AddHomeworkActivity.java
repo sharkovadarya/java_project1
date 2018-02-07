@@ -18,9 +18,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
@@ -34,6 +34,14 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public static final HomeworkFieldsAccumulator HFA = new HomeworkFieldsAccumulator();
     private static boolean isSetTime = false;
     private static boolean isSetDate = false;
+    private static boolean isSetSubject = false;
+    private static boolean isSetDescription = false;
+    private static boolean isSetExpectedScore = false;
+    private static boolean isSetHowToSend = false;
+
+    private static List<String> homeworkEntry = new ArrayList<>();
+
+    private int id = -1;
 
     public void processSubject() {
 
@@ -42,6 +50,13 @@ public class AddHomeworkActivity extends AppCompatActivity {
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
         actv.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, source));
+
+
+        HFA.storeSubject(actv.getText().toString());
+
+        if (id != -1 && !isSetSubject) {
+            actv.setText(homeworkEntry.get(0));
+        }
 
         actv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -81,25 +96,33 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 }
             }
         });
-
-        HFA.storeSubject(actv.getText().toString());
     }
 
     public void getSubject() {
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
+
         HFA.storeSubject(actv.getText().toString());
     }
 
     public void getDescription() {
         final EditText editText = findViewById(R.id.getDescriptionEditText);
+
         HFA.storeDescription(editText.getText().toString());
+
+        if (id != -1 && !isSetDescription) {
+            editText.setText(homeworkEntry.get(1));
+        }
     }
 
     public void getExpectedScore() {
         final EditText editText = findViewById(R.id.expectedScore);
 
+        if (id != -1 && !isSetExpectedScore) {
+            editText.setText(homeworkEntry.get(4));
+        }
+
         String expectedScore = editText.getText().toString();
-        if (!expectedScore.equals("")) {
+        if (!expectedScore.equals("") && isParseableDouble(expectedScore)) {
             HFA.storeExpectedScore(Double.parseDouble(expectedScore));
         } else {
             HFA.storeExpectedScore(-1.0);
@@ -138,21 +161,38 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
+        if (id != -1 && !isSetHowToSend) {
+            editText.setText(homeworkEntry.get(3));
+        }
     }
 
     public void getHowToSend() {
         final EditText editText = findViewById(R.id.submitWayEditText);
+
         HFA.storeHowToSend(editText.getText().toString());
     }
 
     public void setTime(View view) {
         TimePickerFragment timePickerFragment = new TimePickerFragment();
+        if (id != -1 && !isSetTime) {
+            String[] date = homeworkEntry.get(2).split("[\\s:.]+");
+            timePickerFragment.setValues(Integer.parseInt(date[3]),
+                                        Integer.parseInt(date[4]));
+        }
 
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     public void setDate(View view) {
         DatePickerFragment datePickerFragment = new DatePickerFragment();
+        if (id != -1 && !isSetDate) {
+            String[] date = homeworkEntry.get(2).split("[\\s:.]+");
+            datePickerFragment.setValues(Integer.parseInt(date[2]),
+                                         Integer.parseInt(date[1]) - 1,
+                                         Integer.parseInt(date[0]));
+        }
 
         datePickerFragment.show(getSupportFragmentManager(), "datePicker");
     }
@@ -167,14 +207,21 @@ public class AddHomeworkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_homework);
 
+        id = getIntent().getIntExtra("id", -1);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Add h/w entry");
+        }
+
+        if (id != -1) {
+            TextView header = findViewById(R.id.addNewHWHeader);
+            header.setText(getResources().getString(R.string.edit_hw_entry));
+            homeworkEntry = Controller.HomeworkController.getHomeworkById(id);
         }
 
         processSubject();
-        /*getDescription();
-        getExpectedScore();*/
+        getDescription();
+        getExpectedScore();
         processHowToSend();
 
         Button addHomeworkButton = findViewById(R.id.finishButton);
@@ -182,23 +229,40 @@ public class AddHomeworkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // TODO fix this; there should not be code duplication
                 getDescription();
-                //getSubject();
                 processSubject();
+                getSubject();
                 getExpectedScore();
                 getHowToSend();
 
-                if (!HFA.isValidHomework()) {
+                if (id == -1 && !HFA.isValidForAdding()) {
                     Toast.makeText(getApplicationContext(),
-                            "Fill 'subject' and input correct date", Toast.LENGTH_LONG).show();
+                            "Fill 'subject' and input correct date",
+                            Toast.LENGTH_LONG).show();
+                } else if (id != -1 && !HFA.isValidForEditing()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Fill 'subject'",
+                            Toast.LENGTH_LONG).show();
                 } else {
-                    HFA.addNewHomework();
+                    if (id == -1) {
+                        HFA.addNewHomework();
+                    } else {
+                        HFA.editHomework(id);
+                    }
                     HFA.clear();
                     finish();
                 }
             }
         });
+    }
+
+    private boolean isParseableDouble(String string) {
+        try {
+            Double.parseDouble(string);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
     }
 
     public static class HomeworkFieldsAccumulator {
@@ -214,14 +278,23 @@ public class AddHomeworkActivity extends AppCompatActivity {
         private String howToSend;
 
         public void storeSubject(String subject) {
+            if (this.subject != null && !this.subject.equals(subject)) {
+                isSetSubject = true;
+            }
             this.subject = subject == null ? "" : subject;
         }
 
         public void storeDescription(String description) {
+            if (this.description != null && !this.description.equals(description)) {
+                isSetDescription = true;
+            }
             this.description = description == null ? "" : description;
         }
 
         public void storeExpectedScore(double expectedScore) {
+            if (this.expectedScore != expectedScore) { //expectedScore != -1.0 &&
+                isSetExpectedScore = true;
+            }
             this.expectedScore = expectedScore;
         }
 
@@ -241,6 +314,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
     }*/
 
         public void storeHowToSend(String howToSend) {
+            if (this.howToSend != null && !this.howToSend.equals(howToSend)) {
+                isSetHowToSend = true;
+            }
             this.howToSend = howToSend == null ? "" : howToSend;
         }
 
@@ -254,13 +330,46 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 howToSend = " ";
             }
 
+            // TODO add lists
             Controller.HomeworkController.addHomework(new LocalDateTime(year, month, day, hour, minutes),
                     subject, 0, description,
-                    howToSend, expectedScore);
+                    howToSend, expectedScore, new ArrayList<>());
         }
 
-        public boolean isValidHomework() {
+        public void editHomework( int id ) {
+            if (description == null) {
+                description = " ";
+            }
+
+            if (howToSend == null) {
+                howToSend = " ";
+            }
+
+            if (!isSetDate) {
+                String[] date = AddHomeworkActivity.homeworkEntry.get(2).split("[\\s:.]+");
+                year = Integer.parseInt(date[2]);
+                month = Integer.parseInt(date[1]);
+                day = Integer.parseInt(date[0]);
+            }
+
+            if (!isSetTime) {
+                String[] date = AddHomeworkActivity.homeworkEntry.get(2).split("[\\s:.]+");
+                hour = Integer.parseInt(date[3]);
+                minutes = Integer.parseInt(date[4]);
+            }
+
+            Controller.HomeworkController.editHomeworkById(id, new LocalDateTime(year, month, day, hour, minutes),
+                    subject, 0, description,
+                    howToSend, expectedScore, new ArrayList<>());
+
+            }
+
+        public boolean isValidForAdding() {
             return subject != null && isSetDate && isSetTime;
+        }
+
+        public boolean isValidForEditing() {
+            return subject.trim().length() > 0;
         }
 
         public void clear() {
@@ -273,18 +382,25 @@ public class AddHomeworkActivity extends AppCompatActivity {
             day = 0;
             hour = 0;
             minutes = 0;
+
             isSetTime = false;
             isSetDate = false;
+            isSetExpectedScore = false;
+            isSetSubject = false;
+            isSetDescription = false;
+            isSetHowToSend = false;
         }
 
     }
 
     public static class TimePickerFragment extends AbstractTimePicker {
+
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             isSetTime = true;
             HFA.storeTime(hourOfDay, minute);
         }
+
     }
 
     public static class DatePickerFragment extends AbstractDatePicker {

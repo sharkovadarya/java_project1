@@ -46,8 +46,9 @@ public class ScheduleActivity extends AppCompatActivity
     private LocalDate localDate;
 
     private void outputScheduleByDay(int dayNumber) {
-        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
-                WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
+        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDay(localDate.plusDays(dayNumber));
+        //List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
+                //WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
 
         /*ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
         for (int i = 0; i < scheduleDetails.size(); i++) {

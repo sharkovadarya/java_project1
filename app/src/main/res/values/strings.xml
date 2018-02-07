@@ -25,7 +25,7 @@
     <string name="description">Description</string>
     <string name="expected_score">Expected Score</string>
     <string name="is_regular">Regular</string>
-    <string name="finish_button">Add</string>
+    <string name="finish_button">Finish</string>
     <string name="submit_way">How to submit</string>
     <string name="title_activity_display_homework">DisplayHomeworkActivity</string>
     <string name="title_activity_study_materials">StudyMaterialsActivity</string>
@@ -63,5 +63,7 @@
     <string name="parity_checkbox">is on even week</string>
     <string name="lv_entry_edit">Edit</string>
     <string name="lv_entry_delete">Delete</string>
+
+    <string name="edit_hw_entry">Edit this h/w entry</string>
 
 </resources>

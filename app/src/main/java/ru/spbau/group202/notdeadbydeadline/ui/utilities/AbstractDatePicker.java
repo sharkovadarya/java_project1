@@ -10,15 +10,28 @@ import org.joda.time.LocalDate;
 
 public abstract class AbstractDatePicker extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
+    private int year;
+    private int month;
+    private int day;
+
+    public AbstractDatePicker() {
+
+        // Use the current date as the default date in the picker
+        LocalDate localDate = new LocalDate();
+        year = localDate.getYear();
+        month = localDate.getMonthOfYear() - 1;
+        day = localDate.getDayOfMonth();
+    }
+
+    public void setValues(int year, int month, int day) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+    }
 
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current date as the default date in the picker
-        LocalDate localDate = new LocalDate();
-        int year = localDate.getYear();
-        int month = localDate.getMonthOfYear() - 1;
-        int day = localDate.getDayOfMonth();
 
         // Create a new instance of DatePickerDialog and return it
         return new DatePickerDialog(getActivity(), this, year, month, day);

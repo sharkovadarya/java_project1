@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import org.joda.time.LocalDate;
 
 import java.util.List;
 
@@ -40,8 +43,11 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getTitle().toString().equals(getResources()
                                         .getString(R.string.lv_entry_edit))) {
-                            // TODO call edit (which is yet nonexistent)
-
+                            List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
+                            int id = Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1));
+                            Intent intent = new Intent(DisplayHomeworkActivity.this, AddHomeworkActivity.class);
+                            intent.putExtra("id", id);
+                            startActivityForResult(intent, 1);
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_delete))) {
@@ -68,6 +74,11 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
         setTitle(subject);
 
         outputHomeworksBySubject(subject);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        outputHomeworks();
     }
 
     @Override

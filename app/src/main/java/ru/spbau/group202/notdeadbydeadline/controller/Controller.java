@@ -106,7 +106,10 @@ public class Controller {
 
         @NotNull
         public static List<String> getHomeworkById(int id) {
-            return getEntriesDetailList(homeworkDatabase.getHomeworkById(id)).get(0);
+            List<Homework> homeworks = (homeworkDatabase.getHomeworkById(id));
+            List<String> entriesDetailList = getEntriesDetailList(homeworks).get(0);
+            entriesDetailList.add(0, homeworks.get(0).getSubject());
+            return entriesDetailList;
         }
 
         @NotNull
