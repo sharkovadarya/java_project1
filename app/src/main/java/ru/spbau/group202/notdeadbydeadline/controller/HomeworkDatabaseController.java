@@ -35,6 +35,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_ACTUAL_SCORE = "ACTUAL_SCORE";
     private static final String COLUMN_NAME_DESCRIPTION = "DESCRIPTION";
     private static final String COLUMN_NAME_HOW_TO_SEND = "HOW_TO_SEND";
+    private static final String COLUMN_NAME_DEFERRAL = "DEFERRAL";
     private static final String COLUMN_NAME_MATERIALS = "MATERIALS";
 
     public HomeworkDatabaseController(@NotNull Context context) {
@@ -57,6 +58,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
                 COLUMN_NAME_ACTUAL_SCORE + " INTEGER, " +
                 COLUMN_NAME_DESCRIPTION + " TEXT, " +
                 COLUMN_NAME_HOW_TO_SEND + " TEXT, " +
+                COLUMN_NAME_DEFERRAL + " INTEGER, " +
                 COLUMN_NAME_MATERIALS + " TEXT" + ");");
     }
 
@@ -80,6 +82,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         int actualScore = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ACTUAL_SCORE));
         String description = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DESCRIPTION));
         String howToSend = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_HOW_TO_SEND));
+        int deferral = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DEFERRAL));
         String gsonMaterials = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_MATERIALS));
         ArrayList<String> materials = new Gson().fromJson(gsonMaterials,
                 new TypeToken<ArrayList<String>>() {
@@ -90,6 +93,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         Homework homework = new Homework(deadline, subject, regularity, description, howToSend,
                 expectedScore, id, materials);
         homework.setActualScore(actualScore);
+        homework.assignDeferral(deferral);
         return homework;
     }
 
@@ -108,28 +112,11 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             values.put(COLUMN_NAME_ACTUAL_SCORE, homework.getActualScore());
             values.put(COLUMN_NAME_DESCRIPTION, homework.getDescription());
             values.put(COLUMN_NAME_HOW_TO_SEND, homework.getHowToSend());
+            values.put(COLUMN_NAME_DEFERRAL, homework.getDeferral());
             values.put(COLUMN_NAME_MATERIALS, new Gson().toJson(homework.getMaterials()));
             long rowId = database.insert(DATABASE_NAME, null, values);
             Log.d("Database", "inserted row number " + rowId);
         }
-    }
-
-    @NotNull
-    public List<Homework> getActualHomeworks() {
-        List<Homework> homeworks = new ArrayList<>();
-        try (SQLiteDatabase database = this.getReadableDatabase();
-             Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    Homework homework = getHomeworkByCursor(cursor);
-                    if (!homework.hasPassed()) {
-                        homeworks.add(homework);
-                    }
-                } while (cursor.moveToNext());
-            }
-        }
-
-        return homeworks;
     }
 
     @NotNull
@@ -186,25 +173,6 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
         return homeworks;
     }
 
-    @NotNull
-    public List<Homework> getHomeworksBetweenDates(int year1, int month1, int day1,
-                                                   int year2, int month2, int day2) {
-        List<Homework> homeworks = new ArrayList<>();
-        try (SQLiteDatabase database = this.getReadableDatabase();
-             Cursor cursor = database.rawQuery("SELECT * FROM " + DATABASE_NAME, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    Homework homework = getHomeworkByCursor(cursor);
-                    if (homework.isBetween(year1, month1, day1, year2, month2, day2)) {
-                        homeworks.add(homework);
-                    }
-                } while (cursor.moveToNext());
-            }
-        }
-
-        return homeworks;
-    }
-
     public void deleteHomeworkById(int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             database.delete(DATABASE_NAME, COLUMN_NAME_ID + " = ?",
@@ -219,6 +187,13 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(id)});
         }
+    }
+
+    public void setDeferralById(int id, int deferral) {
+        Homework homework = getHomeworkById(id).get(0);
+        deleteHomeworkById(id);
+        homework.setDeferral(deferral);
+        addHomework(homework);
     }
 
     @NotNull
@@ -239,4 +214,5 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
 
         return homeworks;
     }
+
 }

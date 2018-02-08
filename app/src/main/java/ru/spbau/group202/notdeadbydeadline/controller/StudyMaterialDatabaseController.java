@@ -52,8 +52,7 @@ public class StudyMaterialDatabaseController extends SQLiteOpenHelper {
         int term = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_TERM));
         String path = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_PATH));
         String URL = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_URL));
-        StudyMaterial studyMaterial = new StudyMaterial(subject, term, path, URL, id);
-        return studyMaterial;
+        return new StudyMaterial(subject, term, path, URL, id);
     }
 
     public void addStudyMaterial(@NotNull StudyMaterial studyMaterial) {
@@ -126,6 +125,25 @@ public class StudyMaterialDatabaseController extends SQLiteOpenHelper {
                 do {
                     StudyMaterial studyMaterial = getStudyMaterialByCursor(cursor);
                     studyMaterials.add(studyMaterial);
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return studyMaterials;
+    }
+
+    @NotNull
+    public List<StudyMaterial> getUpdatableStudyMaterials() {
+        String query = "SELECT * FROM " + DATABASE_NAME +
+                " WHERE " + COLUMN_NAME_URL + "!=" + "?";
+        List<StudyMaterial> studyMaterials = new ArrayList<>();
+        String[] selectionArgs = new String[]{""};
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, selectionArgs)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    studyMaterials.add(getStudyMaterialByCursor(cursor));
                 } while (cursor.moveToNext());
             }
         }

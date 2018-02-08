@@ -111,4 +111,22 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
                     new String[]{String.valueOf(id)});
         }
     }
+
+    public List<ScheduleEntry> getScheduleEntryById(int id) {
+        String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(id)};
+        List<ScheduleEntry> scheduleEntries = new ArrayList<>();
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, selectionArgs)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    ScheduleEntry scheduleEntry = getScheduleEntryByCursor(cursor);
+                    scheduleEntries.add(scheduleEntry);
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return scheduleEntries;
+    }
 }

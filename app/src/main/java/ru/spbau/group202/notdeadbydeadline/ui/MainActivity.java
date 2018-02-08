@@ -32,6 +32,8 @@ import java.util.List;
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourceAccessException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialsUpdatingException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -144,7 +146,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Controller.createDatabases(this);
+        // TODO handle this exception sensibly!
+        try {
+            Controller.createDatabases(this);
+        } catch(StudyMaterialSourceAccessException e) {
+
+        } catch(StudyMaterialsUpdatingException e) {
+
+        }
 
         outputCurrentDate();
         outputDeadlines();

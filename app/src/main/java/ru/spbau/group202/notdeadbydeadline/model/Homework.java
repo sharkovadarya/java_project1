@@ -1,5 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +13,7 @@ import org.joda.time.format.*;
 public class Homework extends DetailedTimedEntry {
     private Deadline deadline;
     private String subject, description, howToSend;
-    private int regularity;
+    private int regularity, deferral = 0;
     private double expectedScore, actualScore = -1;
     private int id;
     private ArrayList<String> materials;
@@ -30,6 +32,15 @@ public class Homework extends DetailedTimedEntry {
 
     public void setActualScore(double score) {
         actualScore = score;
+    }
+
+    public void setDeferral(int deferral) {
+        deadline.deadline.plusDays(deferral);
+        assignDeferral(deferral);
+    }
+
+    public void assignDeferral(int deferral) {
+        this.deferral = deferral;
     }
 
     public boolean isAccepted() {
@@ -51,6 +62,23 @@ public class Homework extends DetailedTimedEntry {
         homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
+    }
+
+    @NotNull
+    @Override
+    public Bundle getDeconstructed() {
+        Bundle bundle = new Bundle();
+        bundle.putString("subject", subject);
+        bundle.putString("description", description);
+        bundle.putString("howToSend", howToSend);
+        bundle.putInt("id", id);
+        bundle.putInt("regularity", regularity);
+        bundle.putInt("deferral", deferral);
+        bundle.putDouble("expectedScore", expectedScore);
+        bundle.putDouble("actualScore", actualScore);
+        bundle.putStringArrayList("materials", materials);
+        bundle.putSerializable("deadline", deadline.deadline);
+        return bundle;
     }
 
     @NotNull
@@ -108,6 +136,10 @@ public class Homework extends DetailedTimedEntry {
         return deadline.deadline.getMinuteOfHour();
     }
 
+    public int getDeferral() {
+        return deferral;
+    }
+
     public boolean hasPassed() {
         return deadline.hasPassed();
     }
@@ -128,7 +160,8 @@ public class Homework extends DetailedTimedEntry {
 
     @NotNull
     public Homework generateNewHomeworkById(int id) {
-        LocalDateTime newDeadline = deadline.deadline.plusWeeks(regularity);
+        LocalDateTime newDeadline = deadline.deadline.minusDays(deferral);
+        deadline.deadline.plusWeeks(regularity);
         return new Homework(newDeadline, subject, regularity, " ", howToSend,
                 -1, id, new ArrayList<>());
     }
@@ -158,6 +191,14 @@ public class Homework extends DetailedTimedEntry {
             deadlineDetails.add(getFormattedDeadline());
 
             return deadlineDetails;
+        }
+
+        @NotNull
+        @Override
+        public Bundle getDeconstructed() {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("deadline", deadline);
+            return bundle;
         }
 
         @NotNull
