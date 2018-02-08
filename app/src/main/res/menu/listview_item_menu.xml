@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/listview_entry_edit"
+        android:title="@string/lv_entry_edit"/>
+
+    <item
+        android:id="@+id/listview_entry_delete"
+        android:title="@string/lv_entry_delete"/>
+
+</menu>

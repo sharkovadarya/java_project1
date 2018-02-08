@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ru.spbau.group202.notdeadbydeadline.ui.DeadlinesActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:showIn="@layout/app_bar_deadlines">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_above="@id/nextWeekButton"
+            android:layout_below="@+id/deadlinesHeader2">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="392dp">
+
+                <TableLayout
+                    android:id="@+id/deadlinesTableLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="bottom|end"
+                    android:shrinkColumns="*">
+
+
+                    <TableRow
+                        android:id="@+id/deadlinesMondayThursdayHeaders"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+
+                        <!--android:layout_width="wrap_content"-->
+
+                        <TextView
+                            android:id="@+id/deadlinesMondayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:text="@string/monday_for_deadlines"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/deadlinesThursdayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:text="@string/thursday_for_deadlines"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesMondayThursdayEntries"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+                        <ListView
+                            android:id="@+id/deadlinesMondayList"
+                            android:layout_width="2dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true" />
+
+                        <ListView
+                            android:id="@+id/deadlinesThursdayList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesTuesdayFridayHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+                        <TextView
+                            android:id="@+id/deadlinesTuesdayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:text="@string/tuesday_for_deadlines"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/deadlinesFridayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:text="@string/friday_for_deadlines"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesTuesdayFridayEntries"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+                        <ListView
+                            android:id="@+id/deadlinesTuesdayList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true" />
+
+                        <ListView
+                            android:id="@+id/deadlinesFridayList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesWednesdaySaturdayHeaders"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+                        <TextView
+                            android:id="@+id/deadlinesWednesdayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:text="@string/wednesday_for_deadlines"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/deadlinesSaturdayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:text="@string/saturday_for_deadlines"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesWednesdaySaturdayEntries"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+
+                        <ListView
+                            android:id="@+id/deadlinesWednesdayList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true">
+
+                        </ListView>
+
+                        <ListView
+                            android:id="@+id/deadlinesSaturdayList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true"
+                            tools:layout_editor_absoluteX="184dp"
+                            tools:layout_editor_absoluteY="8dp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesSundayHeaders"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="1.0">
+
+                        <TextView
+                            android:id="@+id/deadlinesDummyHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/deadlinesSundayHeader"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:text="@string/sunday_for_deadlines"
+                            android:textStyle="bold" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/deadlinesSundayEntries"
+                        android:layout_width="match_parent"
+                        android:layout_height="93dp"
+                        android:weightSum="1.0">
+
+                        <ListView
+                            android:id="@+id/deadlinesDummyList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:layout_editor_absoluteY="72dp" />
+
+                        <ListView
+                            android:id="@+id/deadlinesSundayList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_weight="0.5"
+                            android:nestedScrollingEnabled="true" />
+                    </TableRow>
+
+                </TableLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/previousWeekButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="14dp"
+            android:layout_marginStart="15dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/previous_week" />
+
+        <Button
+            android:id="@+id/nextWeekButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/previousWeekButton"
+            android:layout_alignBottom="@+id/previousWeekButton"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="26dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="@string/next_week" />
+
+        <TextView
+            android:id="@+id/deadlinesHeader2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="34dp"
+            android:layout_marginTop="11dp"
+            android:stretchColumns="*"
+            android:text="@string/deadlineHeader"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>
