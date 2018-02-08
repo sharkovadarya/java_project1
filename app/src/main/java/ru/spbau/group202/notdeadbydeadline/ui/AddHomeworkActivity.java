@@ -1,6 +1,8 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,13 +22,17 @@ import android.widget.Toast;
 
 import org.joda.time.LocalDateTime;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractDatePicker;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractTimePicker;
+
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 public class AddHomeworkActivity extends AppCompatActivity {
 
@@ -38,8 +44,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
     private static boolean isSetDescription = false;
     private static boolean isSetExpectedScore = false;
     private static boolean isSetHowToSend = false;
+    private static boolean isSetRegularity = false;
 
-    private static List<String> homeworkEntry = new ArrayList<>();
+    private static Bundle homeworkEntry;
 
     private int id = -1;
 
@@ -55,7 +62,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         HFA.storeSubject(actv.getText().toString());
 
         if (id != -1 && !isSetSubject) {
-            actv.setText(homeworkEntry.get(0));
+            actv.setText(homeworkEntry.getString("subject"));
         }
 
         actv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -110,19 +117,29 @@ public class AddHomeworkActivity extends AppCompatActivity {
         HFA.storeDescription(editText.getText().toString());
 
         if (id != -1 && !isSetDescription) {
-            editText.setText(homeworkEntry.get(1));
+            editText.setText(homeworkEntry.getString("description"));
+        }
+    }
+
+    public void processExpectedScore() {
+        final EditText editText = findViewById(R.id.expectedScore);
+
+        if (id != -1 && !isSetExpectedScore) {
+            editText.setText(String.format(Locale.getDefault(),
+                    "%s", homeworkEntry.getDouble("expectedScore")));
+        }
+
+        String expectedScore = editText.getText().toString();
+        if (isParseableDouble(expectedScore)) {
+            HFA.storeExpectedScore(Double.parseDouble(expectedScore));
         }
     }
 
     public void getExpectedScore() {
         final EditText editText = findViewById(R.id.expectedScore);
 
-        if (id != -1 && !isSetExpectedScore) {
-            editText.setText(homeworkEntry.get(4));
-        }
-
         String expectedScore = editText.getText().toString();
-        if (!expectedScore.equals("") && isParseableDouble(expectedScore)) {
+        if (isParseableDouble(expectedScore)) {
             HFA.storeExpectedScore(Double.parseDouble(expectedScore));
         } else {
             HFA.storeExpectedScore(-1.0);
@@ -164,7 +181,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
 
         if (id != -1 && !isSetHowToSend) {
-            editText.setText(homeworkEntry.get(3));
+            editText.setText(homeworkEntry.getString("howToSend"));
         }
     }
 
@@ -177,9 +194,8 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public void setTime(View view) {
         TimePickerFragment timePickerFragment = new TimePickerFragment();
         if (id != -1 && !isSetTime) {
-            String[] date = homeworkEntry.get(2).split("[\\s:.]+");
-            timePickerFragment.setValues(Integer.parseInt(date[3]),
-                                        Integer.parseInt(date[4]));
+            timePickerFragment.setValues(homeworkEntry.getInt("hour"),
+                                        homeworkEntry.getInt("minute"));
         }
 
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
@@ -188,41 +204,85 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public void setDate(View view) {
         DatePickerFragment datePickerFragment = new DatePickerFragment();
         if (id != -1 && !isSetDate) {
-            String[] date = homeworkEntry.get(2).split("[\\s:.]+");
-            datePickerFragment.setValues(Integer.parseInt(date[2]),
-                                         Integer.parseInt(date[1]) - 1,
-                                         Integer.parseInt(date[0]));
+            datePickerFragment.setValues(homeworkEntry.getInt("year"),
+                                         homeworkEntry.getInt("month") - 1,
+                                         homeworkEntry.getInt("day"));
         }
 
         datePickerFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
-    /*public void getRegularity() {
-        CheckBox checkBox = findViewById(R.id.isRegularCheckBox);
+    public void processRegularity() {
+        EditText editText = findViewById(R.id.setRegularityEditText);
 
-    }*/
+        if (id != -1 && !isSetRegularity) {
+            editText.setText(String.format(Locale.getDefault(),
+                    "%d", homeworkEntry.getInt("regularity")));
+        }
+
+        String regularity = editText.getText().toString();
+        if (isParseableInteger(regularity)) {
+            HFA.storeRegularity(Integer.parseInt(regularity));
+        }
+    }
+
+    public void getRegularity() {
+        EditText editText = findViewById(R.id.setRegularityEditText);
+        String regularity = editText.getText().toString();
+        if (regularity.isEmpty()) {
+            HFA.storeRegularity(0);
+        } else if (isParseableInteger(regularity)) {
+            HFA.storeRegularity(Integer.parseInt(regularity));
+        }
+    }
+
+    public void setFiles(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType("*/*");
+        startActivityForResult(Intent.createChooser(intent, "Choose File"), 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == RESULT_OK) {
+            HFA.storeFiles(data.getDataString());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_homework);
 
-        id = getIntent().getIntExtra("id", -1);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        HFA.clear();
+
+        id = getIntent().getIntExtra("id", -1);
 
         if (id != -1) {
             TextView header = findViewById(R.id.addNewHWHeader);
             header.setText(getResources().getString(R.string.edit_hw_entry));
             homeworkEntry = Controller.HomeworkController.getHomeworkById(id);
+
+            ArrayList<String> files = homeworkEntry.getStringArrayList("materials");
+            if (files != null) {
+                for (String file : files) {
+                    HFA.storeFiles(file);
+                }
+            }
+
         }
 
         processSubject();
         getDescription();
-        getExpectedScore();
+        processExpectedScore();
         processHowToSend();
+        processRegularity();
 
         Button addHomeworkButton = findViewById(R.id.finishButton);
         addHomeworkButton.setOnClickListener(new View.OnClickListener() {
@@ -234,6 +294,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 getSubject();
                 getExpectedScore();
                 getHowToSend();
+                getRegularity();
 
                 if (id == -1 && !HFA.isValidForAdding()) {
                     Toast.makeText(getApplicationContext(),
@@ -265,6 +326,15 @@ public class AddHomeworkActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isParseableInteger(String string) {
+        try {
+            Integer.parseInt(string);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
+
     public static class HomeworkFieldsAccumulator {
         private String subject;
         private String description;
@@ -273,9 +343,10 @@ public class AddHomeworkActivity extends AppCompatActivity {
         private int day;
         private int hour;
         private int minutes;
-        private double expectedScore;
-        private boolean isRegular;
+        private double expectedScore = Double.MIN_VALUE;
+        private int regularity = 0;
         private String howToSend;
+        private ArrayList<String> files = new ArrayList<>();
 
         public void storeSubject(String subject) {
             if (this.subject != null && !this.subject.equals(subject)) {
@@ -292,7 +363,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         }
 
         public void storeExpectedScore(double expectedScore) {
-            if (this.expectedScore != expectedScore) { //expectedScore != -1.0 &&
+            if (this.expectedScore != expectedScore) {
                 isSetExpectedScore = true;
             }
             this.expectedScore = expectedScore;
@@ -309,15 +380,22 @@ public class AddHomeworkActivity extends AppCompatActivity {
             this.minutes = minutes;
         }
 
-    /*public void storeRegularity(boolean isRegular) {
-        this.isRegular = isRegular;
-    }*/
+        public void storeRegularity(int regularity) {
+            if (this.regularity != regularity) {
+                isSetRegularity = true;
+            }
+            this.regularity = regularity;
+        }
 
         public void storeHowToSend(String howToSend) {
             if (this.howToSend != null && !this.howToSend.equals(howToSend)) {
                 isSetHowToSend = true;
             }
             this.howToSend = howToSend == null ? "" : howToSend;
+        }
+
+        public void storeFiles(String filepath) {
+            files.add(filepath);
         }
 
         public void addNewHomework() {
@@ -330,10 +408,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 howToSend = " ";
             }
 
-            // TODO add lists
             Controller.HomeworkController.addHomework(new LocalDateTime(year, month, day, hour, minutes),
-                    subject, 0, description,
-                    howToSend, expectedScore, new ArrayList<>());
+                    subject, regularity, description,
+                    howToSend, expectedScore, files);
         }
 
         public void editHomework( int id ) {
@@ -346,21 +423,19 @@ public class AddHomeworkActivity extends AppCompatActivity {
             }
 
             if (!isSetDate) {
-                String[] date = AddHomeworkActivity.homeworkEntry.get(2).split("[\\s:.]+");
-                year = Integer.parseInt(date[2]);
-                month = Integer.parseInt(date[1]);
-                day = Integer.parseInt(date[0]);
+                year = homeworkEntry.getInt("year");
+                month = homeworkEntry.getInt("month");
+                day = homeworkEntry.getInt("day");
             }
 
             if (!isSetTime) {
-                String[] date = AddHomeworkActivity.homeworkEntry.get(2).split("[\\s:.]+");
-                hour = Integer.parseInt(date[3]);
-                minutes = Integer.parseInt(date[4]);
+                hour = homeworkEntry.getInt("hour");
+                minutes = homeworkEntry.getInt("minute");
             }
 
             Controller.HomeworkController.editHomeworkById(id, new LocalDateTime(year, month, day, hour, minutes),
-                    subject, 0, description,
-                    howToSend, expectedScore, new ArrayList<>());
+                    subject, regularity, description,
+                    howToSend, expectedScore, files);
 
             }
 
@@ -376,12 +451,14 @@ public class AddHomeworkActivity extends AppCompatActivity {
             subject = null;
             description = null;
             howToSend = null;
-            expectedScore = 0;
+            expectedScore = Double.MIN_VALUE;
             year = 0;
             month= 0;
             day = 0;
             hour = 0;
             minutes = 0;
+            regularity = 0;
+            files.clear();
 
             isSetTime = false;
             isSetDate = false;
@@ -389,6 +466,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
             isSetSubject = false;
             isSetDescription = false;
             isSetHowToSend = false;
+            isSetRegularity = false;
         }
 
     }

@@ -65,5 +65,10 @@
     <string name="lv_entry_delete">Delete</string>
 
     <string name="edit_hw_entry">Edit this h/w entry</string>
+    <string name="regularity">Regularity: </string>
+    <string name="weeks">weeks</string>
+    <string name="zero">0</string>
+    <string name="attach_files">Attach files</string>
+    <string name="lv_entry_open_attached">Open attachment</string>
 
 </resources>

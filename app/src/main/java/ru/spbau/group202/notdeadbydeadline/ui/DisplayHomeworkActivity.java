@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +11,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.joda.time.LocalDate;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.CustomDialogFragment;
 
 
 public class DisplayHomeworkActivity extends AppCompatActivity {
@@ -37,7 +38,7 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 PopupMenu popup = new PopupMenu(DisplayHomeworkActivity.this, view);
                 popup.getMenuInflater()
-                        .inflate(R.menu.listview_item_menu, popup.getMenu());
+                        .inflate(R.menu.homework_listview_item_menu, popup.getMenu());
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
@@ -55,6 +56,16 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                             Controller.HomeworkController.deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
                             recreate();
                             return true;
+                        } else if (item.getTitle().toString().equals(getResources()
+                                .getString(R.string.lv_entry_open_attached))) {
+                            List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
+                            CustomDialogFragment cdf = new CustomDialogFragment();
+                            Bundle homeworkEntry = Controller.HomeworkController
+                                    .getHomeworkById(Integer.parseInt(detailedEntryList
+                                            .get(detailedEntryList.size() - 1)));
+                            ArrayList<String> src = homeworkEntry.getStringArrayList("materials");
+                            cdf.setFilepaths(src);
+                            cdf.show(getSupportFragmentManager(), "files");
                         }
 
                         return false;
@@ -65,9 +76,9 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
+
+
 
     private void outputHomeworks() {
         String subject = getIntent().getStringExtra("SUBJECT_NAME");

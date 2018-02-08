@@ -1,5 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
+import android.os.Bundle;
+
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -32,6 +34,20 @@ public class ScheduleEntry extends DetailedTimedEntry {
         classDetails.add(auditorium);
         classDetails.add(Integer.toString(id));
         return classDetails;
+    }
+
+    @NotNull
+    @Override
+    public Bundle getDeconstructed() {
+        Bundle bundle = new Bundle();
+        bundle.putString("subject", subject);
+        bundle.putString("auditorium", auditorium);
+        bundle.putString("teacher", teacher);
+        bundle.putInt("id", id);
+        bundle.putInt("dayOfWeek", dayOfWeek);
+        bundle.putSerializable("weekParity", weekParity);
+        bundle.putSerializable("time", time);
+        return bundle;
     }
 
     @NotNull

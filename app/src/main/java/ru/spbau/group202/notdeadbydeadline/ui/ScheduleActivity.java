@@ -1,13 +1,9 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.PopupMenu;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TableLayout;
@@ -29,13 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
-import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.ui.utilities.ListViewUtility;
 
 public class ScheduleActivity extends AppCompatActivity
@@ -153,13 +145,14 @@ public class ScheduleActivity extends AppCompatActivity
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 PopupMenu popup = new PopupMenu(ScheduleActivity.this, view);
                 popup.getMenuInflater()
-                        .inflate(R.menu.listview_item_menu, popup.getMenu());
+                        .inflate(R.menu.schedule_listview_item_menu, popup.getMenu());
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_edit))) {
                             // TODO call edit (which is yet nonexistent)
+
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_delete))) {

@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="8dp"
         android:onClick="setDate"
         android:text="@string/set_date"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,8 +49,8 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="31dp"
-        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="56dp"
+        android:layout_marginEnd="24dp"
         android:onClick="setTime"
         android:text="@string/set_time"
         app:layout_constraintBottom_toTopOf="@+id/getDescriptionEditText"
@@ -62,7 +62,7 @@
         android:layout_width="341dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="56dp"
         android:ems="10"
         android:hint="@string/description"
         android:inputType="textMultiLine"
@@ -87,12 +87,13 @@
 
     <Button
         android:id="@+id/finishButton"
-        style="@style/Widget.AppCompat.Button.Borderless"
+        android:background="@drawable/button_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="17dp"
         android:layout_marginEnd="17dp"
         android:text="@string/finish_button"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -107,6 +108,51 @@
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/expectedScore" />
+
+    <EditText
+        android:id="@+id/setRegularityEditText"
+        android:layout_width="81dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/zero"
+        android:inputType="numberSigned"
+        app:layout_constraintStart_toStartOf="@+id/setDateButton"
+        app:layout_constraintTop_toBottomOf="@+id/setDateButton" />
+
+    <TextView
+        android:id="@+id/regularity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/regularity"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/setDateButton"
+        app:layout_constraintTop_toBottomOf="@+id/setDateButton" />
+
+    <TextView
+        android:id="@+id/weeks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/weeks"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/setRegularityEditText"
+        app:layout_constraintTop_toBottomOf="@+id/setTimeButton" />
+
+    <Button
+        android:id="@+id/attach_files_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/attach_files"
+        android:onClick="setFiles"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
