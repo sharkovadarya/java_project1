@@ -28,7 +28,7 @@ import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.model.Exam;
 import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourceAccessException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourcseAccessException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialsUpdatingException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
@@ -311,14 +311,14 @@ public class Controller {
             return getEntriesDeconstructedList(studyMaterialDatabase.getStudyMaterialById(id)).get(0);
         }
 
-        public static void updateStudyMaterials() throws StudyMaterialSourceAccessException,
+        public static void updateStudyMaterials() throws StudyMaterialSourcseAccessException,
                 StudyMaterialsUpdatingException {
             try {
                 URL url = new URL(studyMaterialResource);
                 FileUtils.copyURLToFile(url, new File(appDirectory, studyMaterialResource));
                 urlContent = FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
             } catch (Exception exception) {
-                throw new StudyMaterialSourceAccessException();
+                throw new StudyMaterialSourcseAccessException();
             }
 
             List<StudyMaterial> studyMaterials = studyMaterialDatabase.getUpdatableStudyMaterials();
@@ -358,7 +358,7 @@ public class Controller {
         }
     }
 
-    public static void createDatabases(@NotNull Context context) throws StudyMaterialSourceAccessException,
+    public static void createDatabases(@NotNull Context context) throws StudyMaterialSourcseAccessException,
             StudyMaterialsUpdatingException {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);

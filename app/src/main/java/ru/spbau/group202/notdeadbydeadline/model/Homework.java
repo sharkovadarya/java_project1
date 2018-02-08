@@ -77,12 +77,7 @@ public class Homework extends DetailedTimedEntry {
         bundle.putDouble("expectedScore", expectedScore);
         bundle.putDouble("actualScore", actualScore);
         bundle.putStringArrayList("materials", materials);
-        //bundle.putSerializable("deadline", deadline.deadline);
-        bundle.putInt("year", deadline.deadline.getYear());
-        bundle.putInt("month", deadline.deadline.getMonthOfYear());
-        bundle.putInt("day", deadline.deadline.getDayOfMonth());
-        bundle.putInt("hour", deadline.deadline.getHourOfDay());
-        bundle.putInt("minute", deadline.deadline.getMinuteOfHour());
+        bundle.putSerializable("deadline", deadline.deadline);
         return bundle;
     }
 
