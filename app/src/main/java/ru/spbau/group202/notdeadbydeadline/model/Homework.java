@@ -1,5 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,6 +62,23 @@ public class Homework extends DetailedTimedEntry {
         homeworkDetails.add(Integer.toString(id));
 
         return homeworkDetails;
+    }
+
+    @NotNull
+    @Override
+    public Bundle getDeconstructed() {
+        Bundle bundle = new Bundle();
+        bundle.putString("subject", subject);
+        bundle.putString("description", description);
+        bundle.putString("howToSend", howToSend);
+        bundle.putInt("id", id);
+        bundle.putInt("regularity", regularity);
+        bundle.putInt("deferral", deferral);
+        bundle.putDouble("expectedScore", expectedScore);
+        bundle.putDouble("actualScore", actualScore);
+        bundle.putStringArrayList("materials", materials);
+        bundle.putSerializable("deadline", deadline.deadline);
+        return bundle;
     }
 
     @NotNull
@@ -172,6 +191,14 @@ public class Homework extends DetailedTimedEntry {
             deadlineDetails.add(getFormattedDeadline());
 
             return deadlineDetails;
+        }
+
+        @NotNull
+        @Override
+        public Bundle getDeconstructed() {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("deadline", deadline);
+            return bundle;
         }
 
         @NotNull

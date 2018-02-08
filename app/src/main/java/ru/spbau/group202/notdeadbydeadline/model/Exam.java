@@ -1,6 +1,8 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
 
+import android.os.Bundle;
+
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -81,6 +83,19 @@ public class Exam extends DetailedTimedEntry {
         workDetails.add(description);
         workDetails.add(Integer.toString(id));
         return workDetails;
+    }
+
+    @NotNull
+    @Override
+    public Bundle getDeconstructed() {
+        Bundle bundle = new Bundle();
+        bundle.putString("subject", subject);
+        bundle.putString("description", description);
+        bundle.putSerializable("type", examType);
+        bundle.putBoolean("isAccepted", isAccepted);
+        bundle.putInt("id", id);
+        bundle.putSerializable("date", date);
+        return bundle;
     }
 
     @NotNull
