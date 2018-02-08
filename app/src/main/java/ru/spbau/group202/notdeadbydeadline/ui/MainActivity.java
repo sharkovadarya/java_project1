@@ -146,12 +146,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TODO handle this exception sensibly!
+        // TODO handle this exceptions sensibly!
         try {
             Controller.createDatabases(this);
-        } catch(StudyMaterialSourceAccessException e) {
-
-        } catch(StudyMaterialsUpdatingException e) {
+        } catch(Exception exception) {
 
         }
 
