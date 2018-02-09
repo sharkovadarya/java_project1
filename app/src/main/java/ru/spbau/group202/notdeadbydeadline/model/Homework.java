@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -17,9 +18,11 @@ public class Homework extends DetailedTimedEntry {
     private double expectedScore, actualScore = -1;
     private int id;
     private ArrayList<String> materials;
+    private ArrayList<Uri> files;
 
     public Homework(LocalDateTime deadline, @NotNull String subject, int regularity, String description,
-                    String howToSend, double expectedScore, int id, @NotNull ArrayList<String> materials) {
+                    String howToSend, double expectedScore, int id, @NotNull ArrayList<String> materials,
+                                                                    @NotNull ArrayList<Uri> files) {
         this.deadline = new Deadline(deadline);
         this.subject = subject;
         this.regularity = regularity;
@@ -28,6 +31,7 @@ public class Homework extends DetailedTimedEntry {
         this.expectedScore = expectedScore;
         this.id = id;
         this.materials = materials;
+        this.files = files;
     }
 
     public void setActualScore(double score) {
@@ -78,6 +82,12 @@ public class Homework extends DetailedTimedEntry {
         bundle.putDouble("actualScore", actualScore);
         bundle.putStringArrayList("materials", materials);
         bundle.putSerializable("deadline", deadline.deadline);
+        bundle.putInt("year", deadline.deadline.getYear());
+        bundle.putInt("month", deadline.deadline.getMonthOfYear());
+        bundle.putInt("day", deadline.deadline.getDayOfMonth());
+        bundle.putInt("hour", deadline.deadline.getHourOfDay());
+        bundle.putInt("minute", deadline.deadline.getMinuteOfHour());
+        bundle.putParcelableArrayList("files", files);
         return bundle;
     }
 
@@ -163,7 +173,7 @@ public class Homework extends DetailedTimedEntry {
         LocalDateTime newDeadline = deadline.deadline.minusDays(deferral);
         deadline.deadline.plusWeeks(regularity);
         return new Homework(newDeadline, subject, regularity, " ", howToSend,
-                -1, id, new ArrayList<>());
+                -1, id, new ArrayList<>(), new ArrayList<>());
     }
 
     public class Deadline extends DetailedTimedEntry {

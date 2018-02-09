@@ -1,7 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
-import android.app.DialogFragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
-import ru.spbau.group202.notdeadbydeadline.ui.utilities.CustomDialogFragment;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.AttachmentsDialogFragment;
 
 
 public class DisplayHomeworkActivity extends AppCompatActivity {
@@ -59,7 +59,7 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_open_attached))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
-                            CustomDialogFragment cdf = new CustomDialogFragment();
+                            AttachmentsDialogFragment cdf = new AttachmentsDialogFragment();
                             Bundle homeworkEntry = Controller.HomeworkController
                                     .getHomeworkById(Integer.parseInt(detailedEntryList
                                             .get(detailedEntryList.size() - 1)));
