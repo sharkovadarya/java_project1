@@ -14,14 +14,16 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
+import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
 import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
 import ru.spbau.group202.notdeadbydeadline.model.DetailedTimedEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
@@ -61,7 +63,7 @@ public class Controller {
                     ExamController.examDatabase.getExamsBySubject(subject));
         }
 
-        public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditEnum credit) {
+        public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditFormEnum credit) {
             subjectDatabase.setSubjectCreditForm(subject, credit);
         }
     }
@@ -84,7 +86,7 @@ public class Controller {
             settings.saveTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -106,7 +108,7 @@ public class Controller {
             homeworkDatabase.editHomeworkById(deadline, subject, regularity, description, howToSend,
                     expectedScore, id, materials);
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -208,7 +210,7 @@ public class Controller {
             settings.saveTotalNumberOfWorks(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -224,7 +226,7 @@ public class Controller {
                                         @NotNull ExamEnum examEnum, String description) {
             examDatabase.editExamById(subject, description, date, examEnum, id);
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -258,7 +260,7 @@ public class Controller {
             settings.saveTotalNumberOfStudyMaterials(++id);
 
             if (!subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -270,7 +272,7 @@ public class Controller {
             settings.saveTotalNumberOfStudyMaterials(++id);
 
             if (!subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -297,7 +299,7 @@ public class Controller {
                 throws MalformedURLException, UrlDownloadingException {
             studyMaterialDatabase.editStudyMaterialById(id, subject, term);
             if (!subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 

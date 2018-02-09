@@ -9,8 +9,7 @@ import java.util.List;
 public class CreditByPercent extends SubjectCredit {
     private double percentForCredit;
 
-    public CreditByPercent(@NotNull String subject, double percentForCredit) {
-        super(subject);
+    public CreditByPercent(double percentForCredit) {
         this.percentForCredit = percentForCredit;
     }
 

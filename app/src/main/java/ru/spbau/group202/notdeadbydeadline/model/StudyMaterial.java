@@ -4,15 +4,9 @@ package ru.spbau.group202.notdeadbydeadline.model;
 import android.os.Bundle;
 
 import org.jetbrains.annotations.NotNull;
-import org.apache.commons.io.FileUtils;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.io.File;
-import java.net.URL;
 
-import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
 
 public class StudyMaterial implements DetailedEntry {
     private String subject, path, name;
@@ -58,19 +52,6 @@ public class StudyMaterial implements DetailedEntry {
     public void setVersion(int version) {
         this.version = version;
     }
-
-/*
-    public void update() throws MalformedURLException, UrlDownloadingException {
-        URL url = new URL(URL);
-        File file = new File(path);
-
-        try{
-            FileUtils.copyURLToFile(url, file);
-        } catch (IOException exception) {
-            throw new UrlDownloadingException();
-        }
-
-    }*/
 
     @NotNull
     @Override

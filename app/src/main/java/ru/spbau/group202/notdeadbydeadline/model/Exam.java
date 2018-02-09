@@ -103,9 +103,4 @@ public class Exam extends DetailedTimedEntry {
     protected LocalTime getTime() {
         return date.toLocalTime();
     }
-
-    public boolean hasPassed() {
-        return LocalDateTime.now().compareTo(date) > 0;
-    }
-
 }
