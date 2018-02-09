@@ -190,29 +190,41 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     }
 
     public void setDeferralById(int id, int deferral) {
-        Homework homework = getHomeworkById(id).get(0);
+        Homework homework = getHomeworkById(id);
         deleteHomeworkById(id);
         homework.setDeferral(deferral);
         addHomework(homework);
     }
 
     @NotNull
-    public List<Homework> getHomeworkById(int id) {
+    public Homework getHomeworkById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
-        List<Homework> homeworks = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    Homework homework = getHomeworkByCursor(cursor);
-                    homeworks.add(homework);
-                } while (cursor.moveToNext());
-            }
+            return getHomeworkByCursor(cursor);
         }
-
-        return homeworks;
     }
 
+    public void editHomeworkById(LocalDateTime deadline, @NotNull String subject, int regularity,
+                                 @NotNull String description, @NotNull String howToSend,
+                                 double expectedScore, int id, @NotNull ArrayList<String> materials) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_SUBJECT, subject);
+            values.put(COLUMN_NAME_YEAR, deadline.getYear());
+            values.put(COLUMN_NAME_MONTH, deadline.getMonthOfYear());
+            values.put(COLUMN_NAME_DAY, deadline.getDayOfMonth());
+            values.put(COLUMN_NAME_HOUR, deadline.getHourOfDay());
+            values.put(COLUMN_NAME_MINUTE, deadline.getMinuteOfHour());
+            values.put(COLUMN_NAME_REGULARITY, regularity);
+            values.put(COLUMN_NAME_EXPECTED_SCORE, expectedScore);
+            values.put(COLUMN_NAME_DESCRIPTION, description);
+            values.put(COLUMN_NAME_HOW_TO_SEND, howToSend);
+            values.put(COLUMN_NAME_MATERIALS, new Gson().toJson(materials));
+            database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+        }
+    }
 }

@@ -8,14 +8,29 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SubjectCredit {
-    private String subject;
-
-    public SubjectCredit(@NotNull String subject) {
-        this.subject = subject;
+    @NotNull
+    public List<String> calculateProgress(@NotNull List<Homework> homeworks, @NotNull List<Exam> exams) {
+        return ListUtils.union(calculateHomeworkProgress(homeworks), calculateExamProgress(exams));
     }
 
     @NotNull
-    public List<String> calculateProgress(@NotNull List<Homework> homeworks, @NotNull List<Exam> exams) {
+    protected List<String> calculateHomeworkProgress(@NotNull List<Homework> homeworks) {
+        double totalPoints = 0;
+        double earnedPoints = 0;
+
+        for (Homework homework : homeworks) {
+            if (homework.getActualScore() != -1) {
+                earnedPoints += homework.getActualScore();
+                totalPoints += homework.getExpectedScore();
+            }
+        }
+
+        double percent = totalPoints == 0 ? 1 : earnedPoints / totalPoints;
+        return Arrays.asList("not stated", Double.toString(percent));
+    }
+
+    @NotNull
+    private List<String> calculateExamProgress(@NotNull List<Exam> exams) {
         HashMap<ExamEnum, Integer> totalNumber = new HashMap<>();
         HashMap<ExamEnum, Integer> numberOfPassed = new HashMap<>();
 
@@ -36,25 +51,8 @@ public class SubjectCredit {
         int numberOfNotPassedTests = totalNumber.get(ExamEnum.TEST) - numberOfPassed.get(ExamEnum.TEST);
         int numberOfNotPassedExams = totalNumber.get(ExamEnum.FINAL_EXAM) - numberOfPassed.get(ExamEnum.FINAL_EXAM);
 
-        List<String> result = Arrays.asList(Double.toString(passedTestsPercent), testCredit,
+        return Arrays.asList(Double.toString(passedTestsPercent), testCredit,
                 Integer.toString(numberOfNotPassedTests), Double.toString(passedExamsPercent), examsCredit,
                 Integer.toString(numberOfNotPassedExams));
-        return ListUtils.union(calculateHomeworkProgress(homeworks), result);
-    }
-
-    @NotNull
-    protected List<String> calculateHomeworkProgress(@NotNull List<Homework> homeworks) {
-        double totalPoints = 0;
-        double earnedPoints = 0;
-
-        for (Homework homework : homeworks) {
-            if (homework.getActualScore() != -1) {
-                earnedPoints += homework.getActualScore();
-                totalPoints += homework.getExpectedScore();
-            }
-        }
-
-        double percent = totalPoints == 0 ? 1 : earnedPoints / totalPoints;
-        return Arrays.asList("not stated", Double.toString(percent));
     }
 }

@@ -144,12 +144,6 @@ public class Homework extends DetailedTimedEntry {
         return deadline.hasPassed();
     }
 
-    public boolean isBetween(int year1, int month1, int day1,
-                             int year2, int month2, int day2) {
-        return (new LocalDate(year1, month1, day1)).isAfter(deadline.deadline.toLocalDate()) &&
-                (new LocalDate(year2, month2, day2)).isBefore(deadline.deadline.toLocalDate());
-    }
-
     public int getId() {
         return id;
     }

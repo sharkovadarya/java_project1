@@ -112,21 +112,31 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public List<ScheduleEntry> getScheduleEntryById(int id) {
+    public ScheduleEntry getScheduleEntryById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
-        List<ScheduleEntry> scheduleEntries = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    ScheduleEntry scheduleEntry = getScheduleEntryByCursor(cursor);
-                    scheduleEntries.add(scheduleEntry);
-                } while (cursor.moveToNext());
-            }
-        }
+            return getScheduleEntryByCursor(cursor);
 
-        return scheduleEntries;
+        }
+    }
+
+    public void editScheduleEntryById(@NotNull String subject, int dayOfWeek, int hour, int minute,
+                                      @NotNull WeekParityEnum weekParity, @NotNull String auditorium,
+                                      @NotNull String teacher, int id) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_SUBJECT, subject);
+            values.put(COLUMN_NAME_DAY_OF_WEEK, dayOfWeek);
+            values.put(COLUMN_NAME_HOUR, hour);
+            values.put(COLUMN_NAME_MINUTE, minute);
+            values.put(COLUMN_NAME_WEEK_PARITY, weekParity.ordinal());
+            values.put(COLUMN_NAME_AUDITORIUM, auditorium);
+            values.put(COLUMN_NAME_TEACHER, teacher);
+            database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+        }
     }
 }

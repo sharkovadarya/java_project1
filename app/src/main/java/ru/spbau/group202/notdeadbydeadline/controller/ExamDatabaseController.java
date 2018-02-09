@@ -155,21 +155,30 @@ public class ExamDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public List<Exam> getExamById(int id) {
+    public Exam getExamById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
-        List<Exam> exams = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    Exam exam = getExamByCursor(cursor);
-                    exams.add(exam);
-                } while (cursor.moveToNext());
+                return getExamByCursor(cursor);
             }
-        }
+    }
 
-        return exams;
+    public void editExamById(@NotNull String subject, @NotNull String description,
+                             @NotNull LocalDateTime date, @NotNull ExamEnum examEnum, int id) {
+        try (SQLiteDatabase database = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME_SUBJECT, subject);
+            values.put(COLUMN_NAME_YEAR, date.getYear());
+            values.put(COLUMN_NAME_MONTH, date.getMonthOfYear());
+            values.put(COLUMN_NAME_DAY, date.getDayOfMonth());
+            values.put(COLUMN_NAME_HOUR, date.getHourOfDay());
+            values.put(COLUMN_NAME_MINUTE, date.getMinuteOfHour());
+            values.put(COLUMN_NAME_DESCRIPTION, description);
+            values.put(COLUMN_NAME_EXAM_TYPE, examEnum.ordinal());
+            database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+        }
     }
 }

@@ -10,15 +10,20 @@ import org.joda.time.LocalDateTime;
 import org.apache.commons.collections4.ListUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
+import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
 import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
 import ru.spbau.group202.notdeadbydeadline.model.DetailedTimedEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
@@ -28,7 +33,9 @@ import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.model.Exam;
 import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourcseAccessException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.NoSuchStudyMaterialException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialExistsException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourceAccessException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialsUpdatingException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
@@ -56,7 +63,7 @@ public class Controller {
                     ExamController.examDatabase.getExamsBySubject(subject));
         }
 
-        public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditEnum credit) {
+        public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditFormEnum credit) {
             subjectDatabase.setSubjectCreditForm(subject, credit);
         }
     }
@@ -69,16 +76,6 @@ public class Controller {
             return getEntriesDetailList(homeworkDatabase.getHomeworksBySubject(subject));
         }
 
-        @NotNull
-        public static List<List<String>> getPassedHomeworksBySubject(@NotNull String subject) {
-            return getEntriesDetailList(homeworkDatabase.getPassedHomeworksBySubject(subject));
-        }
-
-        @NotNull
-        public static List<List<String>> getHomeworksByDay(@NotNull LocalDate date) {
-            return getEntriesDetailList(homeworkDatabase.getHomeworksByDay(date));
-        }
-
         public static void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
                                        int regularity, String description, String howToSend,
                                        double expectedScore, @NotNull ArrayList<String> materials) {
@@ -89,7 +86,7 @@ public class Controller {
             settings.saveTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -108,20 +105,16 @@ public class Controller {
         public static void editHomeworkById(int id, @NotNull LocalDateTime deadline, @NotNull String subject,
                                             int regularity, String description, String howToSend,
                                             double expectedScore, @NotNull ArrayList<String> materials) {
-            deleteHomeworkById(id);
-            Homework homework = new Homework(deadline, subject, regularity, description,
-                    howToSend, expectedScore, id, materials);
-            homeworkDatabase.addHomework(homework);
-
+            homeworkDatabase.editHomeworkById(deadline, subject, regularity, description, howToSend,
+                    expectedScore, id, materials);
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
         @NotNull
         public static Bundle getHomeworkById(int id) {
-            List<Homework> homeworks = homeworkDatabase.getHomeworkById(id);
-            return getEntriesDeconstructedList(homeworks).get(0);
+            return homeworkDatabase.getHomeworkById(id).getDeconstructed();
         }
 
         @NotNull
@@ -186,16 +179,13 @@ public class Controller {
         public static void editScheduleEntryById(int id, @NotNull String subject, int dayOfWeek,
                                                  int hour, int minute, @NotNull WeekParityEnum weekParity,
                                                  @NotNull String auditorium, @NotNull String teacher) {
-            deleteScheduleEntryById(id);
-            ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
+            scheduleDatabase.editScheduleEntryById(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
-            scheduleDatabase.addScheduleEntry(scheduleEntry);
         }
 
         @NotNull
         public static Bundle getScheduleEntryById(int id) {
-            List<ScheduleEntry> scheduleEntries = (scheduleDatabase.getScheduleEntryById(id));
-            return getEntriesDeconstructedList(scheduleEntries).get(0);
+            return scheduleDatabase.getScheduleEntryById(id).getDeconstructed();
         }
     }
 
@@ -220,7 +210,7 @@ public class Controller {
             settings.saveTotalNumberOfWorks(++id);
 
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
@@ -234,25 +224,57 @@ public class Controller {
 
         public static void editExamById(int id, @NotNull LocalDateTime date, @NotNull String subject,
                                         @NotNull ExamEnum examEnum, String description) {
-            examDatabase.deleteExamById(id);
-            Exam exam = new Exam(subject, description, date, examEnum, id);
-            examDatabase.addExam(exam);
-
+            examDatabase.editExamById(subject, description, date, examEnum, id);
             if (subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
         @NotNull
         public static Bundle getExamById(int id) {
-            return getEntriesDeconstructedList(examDatabase.getExamById(id)).get(0);
+            return examDatabase.getExamById(id).getDeconstructed();
         }
     }
 
     public static class StudyMaterialsController {
-        private static String studyMaterialResource = "https://cdkrot.me/";
+        private static String studyMaterialResource = "https://cdkrot.me";
         private static String urlContent;
         private static StudyMaterialDatabaseController studyMaterialDatabase;
+
+        public static void addUpdatableStudyMaterial(@NotNull String name, @NotNull String subject, int term)
+                throws UrlDownloadingException, MalformedURLException, NoSuchStudyMaterialException,
+                StudyMaterialSourceAccessException, StudyMaterialExistsException {
+            String subjectDirectory = appDirectory.getAbsolutePath() + File.separator + subject;
+            new File(subjectDirectory).mkdir();
+            File studyMaterialFile = new File(subjectDirectory, name);
+            if (studyMaterialFile.exists()) {
+                throw new StudyMaterialExistsException();
+            }
+
+            int id = settings.getTotalNumberOfStudyMaterials();
+            StudyMaterial studyMaterial = new StudyMaterial(name, subject, term,
+                    appDirectory.getAbsolutePath(), 0, id);
+            updateUrlContent();
+            updateStudyMaterial(studyMaterial);
+            studyMaterialDatabase.addStudyMaterial(studyMaterial);
+            settings.saveTotalNumberOfStudyMaterials(++id);
+
+            if (!subjectList.add(subject)) {
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
+            }
+        }
+
+        public static void addLocalStudyMaterial(@NotNull String name, @NotNull String subject,
+                                                 int term, @NotNull String path) {
+            int id = settings.getTotalNumberOfStudyMaterials();
+            StudyMaterial studyMaterial = new StudyMaterial(name, subject, term, path, -1, id);
+            studyMaterialDatabase.addStudyMaterial(studyMaterial);
+            settings.saveTotalNumberOfStudyMaterials(++id);
+
+            if (!subjectList.add(subject)) {
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
+            }
+        }
 
         @NotNull
         public static List<List<String>> getStudyMaterialsBySubject(@NotNull String subject) {
@@ -264,74 +286,35 @@ public class Controller {
             return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsByTerm(term));
         }
 
-        //TODO path
-        public static void addStudyMaterialByURL(@NotNull String subject, int term, @NotNull String URL)
-                throws MalformedURLException, UrlDownloadingException {
-            int id = settings.getTotalNumberOfStudyMaterials();
-            StudyMaterial studyMaterial = new StudyMaterial(subject, term, URL, "", id);
-            studyMaterialDatabase.addStudyMaterial(studyMaterial);
-            settings.saveTotalNumberOfStudyMaterials(++id);
-
-            if (!subject.equals("Not stated") && subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
-            }
-            studyMaterial.update();
-        }
-
-        public static void addLocalStudyMaterial(@NotNull String subject, int term, @NotNull String path) {
-            int id = settings.getTotalNumberOfStudyMaterials();
-            StudyMaterial studyMaterial = new StudyMaterial(subject, term, "", path, id);
-            studyMaterialDatabase.addStudyMaterial(studyMaterial);
-            settings.saveTotalNumberOfStudyMaterials(++id);
-
-            if (!subject.equals("Not stated") && subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
-            }
+        @NotNull
+        public static Bundle getStudyMaterialById(int id) {
+            return studyMaterialDatabase.getStudyMaterialById(id).getDeconstructed();
         }
 
         public static void deleteStudyMaterialById(int id) {
             studyMaterialDatabase.deleteStudyMaterialById(id);
         }
 
-        public static void editStudyMaterialById(int id, @NotNull String subject, int term,
-                                                 @NotNull String URL, @NotNull String path)
+        public static void editStudyMaterialById(int id, @NotNull String subject, int term)
                 throws MalformedURLException, UrlDownloadingException {
-            deleteStudyMaterialById(id);
-            StudyMaterial studyMaterial = new StudyMaterial(subject, term, URL, path, id);
-            studyMaterialDatabase.addStudyMaterial(studyMaterial);
-
-            if (!subject.equals("Not stated") && subjectList.add(subject)) {
-                subjectDatabase.addSubject(subject, CreditEnum.NOT_STATED, -1);
+            studyMaterialDatabase.editStudyMaterialById(id, subject, term);
+            if (!subjectList.add(subject)) {
+                subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
-            studyMaterial.update();
         }
 
-        @NotNull
-        public static Bundle getStudyMaterialById(int id) {
-            return getEntriesDeconstructedList(studyMaterialDatabase.getStudyMaterialById(id)).get(0);
-        }
-
-        public static void updateStudyMaterials() throws StudyMaterialSourcseAccessException,
+        public static void updateStudyMaterials() throws StudyMaterialSourceAccessException,
                 StudyMaterialsUpdatingException {
-            try {
-                URL url = new URL(studyMaterialResource);
-                FileUtils.copyURLToFile(url, new File(appDirectory, studyMaterialResource));
-                urlContent = FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
-            } catch (Exception exception) {
-                throw new StudyMaterialSourcseAccessException();
-            }
-
+            updateUrlContent();
             List<StudyMaterial> studyMaterials = studyMaterialDatabase.getUpdatableStudyMaterials();
             boolean allUpdated = true;
             ArrayList<StudyMaterial> failedToUpdate = new ArrayList<>();
             for (StudyMaterial studyMaterial : studyMaterials) {
-                if (isOutdated(studyMaterial)) {
-                    try {
-                        studyMaterial.update();
-                    } catch (Exception exception) {
-                        allUpdated = false;
-                        failedToUpdate.add(studyMaterial);
-                    }
+                try {
+                    updateStudyMaterial(studyMaterial);
+                } catch (Exception exception) {
+                    allUpdated = false;
+                    failedToUpdate.add(studyMaterial);
                 }
             }
 
@@ -341,9 +324,16 @@ public class Controller {
         }
 
         @NotNull
-        //TODO cdkrot parsing
-        public List<List<String>> getAvaibleStudyMaterialsList() {
-            return new ArrayList<>();
+        public static List<List<String>> getAvailableStudyMaterials() throws StudyMaterialSourceAccessException {
+            updateUrlContent();
+            String[] splitByTerms = urlContent.split("<h.>.+семестр.*</h.>");
+
+            ArrayList<List<String>> availableStudyMaterials = new ArrayList<>();
+            for (int term = 1; term < splitByTerms.length; term++) {
+                availableStudyMaterials.add(getAvailableTermStudyMaterials(splitByTerms[term]));
+            }
+
+            return availableStudyMaterials;
         }
 
         @NotNull
@@ -352,13 +342,53 @@ public class Controller {
             return new ArrayList<>();
         }
 
-        //TODO cdkrot parsing
-        private static boolean isOutdated(StudyMaterial studyMaterial) {
-            return true;
+        private static void updateStudyMaterial(StudyMaterial studyMaterial)
+                throws NoSuchStudyMaterialException, MalformedURLException, UrlDownloadingException {
+            Pattern urlPattern = Pattern.compile("href=\"(/.+/" + studyMaterial.getName() +
+                    "/(\\d+)\\.pdf)\"");
+            Matcher urlMatcher = urlPattern.matcher(urlContent);
+
+            if (!urlMatcher.find()) {
+                throw new NoSuchStudyMaterialException();
+            }
+            int newVersion = Integer.valueOf(urlMatcher.group(2));
+            if (newVersion > studyMaterial.getVersion()) {
+                URL studyMaterialUrl = new URL(studyMaterialResource + urlMatcher.group(1));
+                File studyMaterialFile = new File(studyMaterial.getPath(), studyMaterial.getName());
+                try {
+                    FileUtils.copyURLToFile(studyMaterialUrl, studyMaterialFile);
+                } catch (IOException exception) {
+                    throw new UrlDownloadingException();
+                }
+                studyMaterial.setVersion(Integer.valueOf(urlMatcher.group(2)));
+            }
+        }
+
+        private static void updateUrlContent() throws StudyMaterialSourceAccessException {
+            try {
+                URL url = new URL(studyMaterialResource);
+                FileUtils.copyURLToFile(url, new File(appDirectory, studyMaterialResource));
+                urlContent = FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
+            } catch (Exception exception) {
+                throw new StudyMaterialSourceAccessException();
+            }
+        }
+
+        @NotNull
+        private static List<String> getAvailableTermStudyMaterials(String URLTerm) {
+            Pattern URLPattern = Pattern.compile("href=\".+/(.+)/\\d+\\.pdf\"");
+            Matcher URLMatcher = URLPattern.matcher(URLTerm);
+            ArrayList<String> studyMaterialsNames = new ArrayList<>();
+
+            while (URLMatcher.find()) {
+                studyMaterialsNames.add(URLMatcher.group(1));
+            }
+
+            return studyMaterialsNames;
         }
     }
 
-    public static void createDatabases(@NotNull Context context) throws StudyMaterialSourcseAccessException,
+    public static void createDatabases(@NotNull Context context) throws StudyMaterialSourceAccessException,
             StudyMaterialsUpdatingException {
         HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
         subjectDatabase = new SubjectDatabaseController(context);
