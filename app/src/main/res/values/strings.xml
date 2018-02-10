@@ -65,6 +65,7 @@
     <string name="lv_entry_delete">Delete</string>
 
     <string name="edit_hw_entry">Edit this h/w entry</string>
+    <string name="edit_schedule_entry">Edit this schedule entry</string>
     <string name="regularity">Regularity: </string>
     <string name="weeks">weeks</string>
     <string name="zero">0</string>
