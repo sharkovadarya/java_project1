@@ -61,7 +61,7 @@ public class ScheduleListViewAdapter extends BaseAdapter {
         stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                 pos, stringBuilder.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if (!detailedEntry.get(2).isEmpty() && !detailedEntry.get(3).isEmpty()) {
+        if (!detailedEntry.get(2).isEmpty() || !detailedEntry.get(3).isEmpty()) {
             stringBuilder.append(", \n");
             if (!detailedEntry.get(2).isEmpty()) {
                 stringBuilder.append(detailedEntry.get(2));

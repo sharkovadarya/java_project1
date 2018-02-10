@@ -45,7 +45,7 @@ public class ScheduleActivity extends AppCompatActivity
     private void outputScheduleByDay(int dayNumber) {
         List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDay(localDate.plusDays(dayNumber));
         //List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
-                //WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
+        //WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
 
         /*ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
         for (int i = 0; i < scheduleDetails.size(); i++) {
@@ -68,7 +68,7 @@ public class ScheduleActivity extends AppCompatActivity
         }*/
 
         ListView lv;
-        switch (dayNumber + 1) {
+        switch ((localDate.getDayOfWeek() + dayNumber) % 7) {
             case DateTimeConstants.MONDAY:
                 lv = findViewById(R.id.scheduleMondayList);
                 break;
@@ -87,6 +87,8 @@ public class ScheduleActivity extends AppCompatActivity
             case DateTimeConstants.SATURDAY:
                 lv = findViewById(R.id.scheduleSaturdayList);
                 break;
+            case DateTimeConstants.SUNDAY:
+                return;
             default:
                 Log.e(TAG, "Wrong dayNumber parameter in OutputScheduleByDay");
                 return;
@@ -137,7 +139,7 @@ public class ScheduleActivity extends AppCompatActivity
         table.setColumnShrinkable(0, true);
         table.setColumnShrinkable(1, true);
 
-        for (int i = 0; i <= 5; ++i)
+        for (int i = 0; i < 7; ++i)
             outputScheduleByDay(i);
 
         setListViewsHeightAllDays();
