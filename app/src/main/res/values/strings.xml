@@ -70,5 +70,6 @@
     <string name="zero">0</string>
     <string name="attach_files">Attach files</string>
     <string name="lv_entry_open_attached">Open attachment</string>
+    <string name="not_specified">Not specified</string>
 
 </resources>
