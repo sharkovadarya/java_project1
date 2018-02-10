@@ -148,8 +148,6 @@ public class MainActivity extends AppCompatActivity
             Controller.createDatabases(this);
         } catch(Exception e) {
 
-        } catch(Exception e) {
-
         }
 
         outputCurrentDate();
