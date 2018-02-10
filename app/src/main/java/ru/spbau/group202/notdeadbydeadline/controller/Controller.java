@@ -8,15 +8,17 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.apache.commons.collections4.ListUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -237,16 +239,16 @@ public class Controller {
     }
 
     public static class StudyMaterialsController {
-        private static String studyMaterialResource = "https://cdkrot.me";
+        private static final String STUDY_MATERIAL_SOURCE = "https://cdkrot.me/";
+        private static final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
+        private static final int NUMBER_OF_SEARCH_TRIES = 5;
         private static String urlContent;
         private static StudyMaterialDatabaseController studyMaterialDatabase;
 
         public static void addUpdatableStudyMaterial(@NotNull String name, @NotNull String subject, int term)
                 throws UrlDownloadingException, MalformedURLException, NoSuchStudyMaterialException,
                 StudyMaterialSourceAccessException, StudyMaterialExistsException {
-            String subjectDirectory = appDirectory.getAbsolutePath() + File.separator + subject;
-            new File(subjectDirectory).mkdir();
-            File studyMaterialFile = new File(subjectDirectory, name);
+            File studyMaterialFile = new File(appDirectory.getAbsolutePath(), name);
             if (studyMaterialFile.exists()) {
                 throw new StudyMaterialExistsException();
             }
@@ -324,22 +326,64 @@ public class Controller {
         }
 
         @NotNull
-        public static List<List<String>> getAvailableStudyMaterials() throws StudyMaterialSourceAccessException {
-            updateUrlContent();
-            String[] splitByTerms = urlContent.split("<h.>.+семестр.*</h.>");
-
-            ArrayList<List<String>> availableStudyMaterials = new ArrayList<>();
-            for (int term = 1; term < splitByTerms.length; term++) {
-                availableStudyMaterials.add(getAvailableTermStudyMaterials(splitByTerms[term]));
+        public static List<String>[] getAvailableStudyMaterials() throws StudyMaterialSourceAccessException {
+            @SuppressWarnings("unchecked")
+            ArrayList<String>[] materialsByTerms = new ArrayList[7];
+            for (int term = 0; term < materialsByTerms.length; term++) {
+                materialsByTerms[term] = new ArrayList<>();
             }
 
-            return availableStudyMaterials;
+            try {
+                Document html = Jsoup.connect(STUDY_MATERIAL_SOURCE).get();
+                Elements materialsUrl = html.select("a[href$=.pdf]");
+
+                Pattern urlPattern = Pattern.compile(".+/(.+/.*?term(\\d).+)/\\d+\\.pdf");
+                Pattern noTermPattern = Pattern.compile(STUDY_MATERIAL_SOURCE + "(.+)/\\d+\\.pdf");
+                for (Element materialUrl : materialsUrl) {
+                    String absUrl = materialUrl.attr("abs:href");
+                    Matcher urlMatcher = urlPattern.matcher(absUrl);
+                    if (urlMatcher.find()) {
+                        materialsByTerms[Integer.valueOf(urlMatcher.group(2))].add(urlMatcher.group(1));
+                    } else {
+                        Matcher noTermMatcher = noTermPattern.matcher(absUrl);
+                        if(noTermMatcher.find()) {
+                            materialsByTerms[0].add(noTermMatcher.group(1));
+                        }
+
+                    }
+                }
+            } catch (IOException exception) {
+                throw new StudyMaterialSourceAccessException();
+            }
+
+            return materialsByTerms;
         }
 
         @NotNull
-        //TODO google parsing
-        public static List<File> searchForStudyMaterials(String query) {
-            return new ArrayList<>();
+        public static List<File> searchForStudyMaterials(String query) throws UrlDownloadingException {
+            ArrayList<File> results = new ArrayList<>();
+            String searchURL = GOOGLE_SEARCH_URL + "?q=" + "filetype:pdf " + "+"
+                    + query.replace(" ", "+") + "&num="
+                    + Integer.toString(NUMBER_OF_SEARCH_TRIES);
+
+            try {
+                Document html = Jsoup.connect(searchURL).userAgent("Mozilla").timeout(5000).get();
+                Elements links = html.select("h3.r > a");
+                for(Element link : links) {
+                    String stringUrl = link.attr("href").replace("/url?q=", "").replaceAll("\\.pdf.*", ".pdf");
+                    URL url = new URL(link.attr("href").replace("/url?q=", ""));
+                    File searchResultsFolder = new File(appDirectory + File.separator + "search");
+                    searchResultsFolder.mkdir();
+                    File foundMaterial = new File(searchResultsFolder.getAbsolutePath(), link.text());
+                    FileUtils.copyURLToFile(url, foundMaterial);
+                    results.add(foundMaterial);
+                }
+            }
+            catch (IOException exception) {
+                throw new UrlDownloadingException();
+            }
+
+            return results;
         }
 
         private static void updateStudyMaterial(StudyMaterial studyMaterial)
@@ -353,7 +397,7 @@ public class Controller {
             }
             int newVersion = Integer.valueOf(urlMatcher.group(2));
             if (newVersion > studyMaterial.getVersion()) {
-                URL studyMaterialUrl = new URL(studyMaterialResource + urlMatcher.group(1));
+                URL studyMaterialUrl = new URL(STUDY_MATERIAL_SOURCE + urlMatcher.group(1));
                 File studyMaterialFile = new File(studyMaterial.getPath(), studyMaterial.getName());
                 try {
                     FileUtils.copyURLToFile(studyMaterialUrl, studyMaterialFile);
@@ -366,25 +410,12 @@ public class Controller {
 
         private static void updateUrlContent() throws StudyMaterialSourceAccessException {
             try {
-                URL url = new URL(studyMaterialResource);
-                FileUtils.copyURLToFile(url, new File(appDirectory, studyMaterialResource));
+                URL url = new URL(STUDY_MATERIAL_SOURCE);
+                FileUtils.copyURLToFile(url, new File(appDirectory, STUDY_MATERIAL_SOURCE));
                 urlContent = FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
             } catch (Exception exception) {
                 throw new StudyMaterialSourceAccessException();
             }
-        }
-
-        @NotNull
-        private static List<String> getAvailableTermStudyMaterials(String URLTerm) {
-            Pattern URLPattern = Pattern.compile("href=\".+/(.+)/\\d+\\.pdf\"");
-            Matcher URLMatcher = URLPattern.matcher(URLTerm);
-            ArrayList<String> studyMaterialsNames = new ArrayList<>();
-
-            while (URLMatcher.find()) {
-                studyMaterialsNames.add(URLMatcher.group(1));
-            }
-
-            return studyMaterialsNames;
         }
     }
 
