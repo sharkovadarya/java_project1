@@ -130,8 +130,13 @@ public class AddHomeworkActivity extends AppCompatActivity {
         final EditText editText = findViewById(R.id.expectedScore);
 
         if (id != -1 && !isSetExpectedScore) {
-            editText.setText(String.format(Locale.getDefault(),
-                    "%s", homeworkEntry.getDouble("expectedScore")));
+            double score = homeworkEntry.getDouble("expectedScore");
+            if (score != -1) {
+                editText.setText(String.format(Locale.getDefault(),
+                        "%s", homeworkEntry.getDouble("expectedScore")));
+            } else {
+                editText.setText(getResources().getString(R.string.not_specified));
+            }
         }
 
         String expectedScore = editText.getText().toString();
@@ -255,7 +260,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
 
                     final Uri uri = data.getData();
-                    String path = "";
+                    String path;
 
                     // Get the File path from the Uri
                     path = FileUtils.getPath(this, uri);

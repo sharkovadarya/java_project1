@@ -84,7 +84,7 @@ public class Controller {
                                        double expectedScore, @NotNull ArrayList<String> materials) {
             int id = settings.getTotalNumberOfHW();
             Homework homework = new Homework(deadline, subject, regularity, description,
-                    howToSend, expectedScore, id, materials, new ArrayList<>());
+                    howToSend, expectedScore, id, materials);
             homeworkDatabase.addHomework(homework);
             settings.saveTotalNumberOfHW(++id);
 
@@ -110,7 +110,7 @@ public class Controller {
                                             double expectedScore, @NotNull ArrayList<String> materials) {
             deleteHomeworkById(id);
             Homework homework = new Homework(deadline, subject, regularity, description,
-                    howToSend, expectedScore, id, materials, new ArrayList<>());
+                    howToSend, expectedScore, id, materials);
             homeworkDatabase.addHomework(homework);
 
             if (subjectList.add(subject)) {

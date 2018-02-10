@@ -91,7 +91,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
 
         LocalDateTime deadline = new LocalDateTime(year, month, day, hour, minute);
         Homework homework = new Homework(deadline, subject, regularity, description, howToSend,
-                expectedScore, id, materials, new ArrayList<>());
+                expectedScore, id, materials);
         homework.setActualScore(actualScore);
         homework.assignDeferral(deferral);
         return homework;
