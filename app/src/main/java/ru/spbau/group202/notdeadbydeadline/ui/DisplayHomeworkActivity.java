@@ -54,7 +54,7 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
                             Controller.HomeworkController.deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
-                            recreate();
+                            outputHomeworks();
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_open_attached))) {

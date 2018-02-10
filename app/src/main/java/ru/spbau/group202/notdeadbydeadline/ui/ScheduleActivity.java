@@ -159,6 +159,13 @@ public class ScheduleActivity extends AppCompatActivity
                         if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_edit))) {
                             // TODO call edit (which is yet nonexistent)
+                            List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
+                            Intent intent = new Intent(ScheduleActivity.this,
+                                    AddScheduleEntryActivity.class);
+                            int id = Integer.parseInt(detailedEntryList
+                                    .get(detailedEntryList.size() - 1));
+                            intent.putExtra("id", id);
+                            startActivityForResult(intent, 1);
 
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
@@ -166,7 +173,7 @@ public class ScheduleActivity extends AppCompatActivity
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
                             Controller.ScheduleController.deleteScheduleEntryById(
                                     Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
-                            recreate();
+                            outputSchedule();
                             return true;
                         }
 
