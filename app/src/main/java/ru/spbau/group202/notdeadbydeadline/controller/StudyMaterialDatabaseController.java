@@ -132,7 +132,7 @@ public class StudyMaterialDatabaseController extends SQLiteOpenHelper {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, subject);
-            values.put(COLUMN_NAME_TERM, true);
+            values.put(COLUMN_NAME_TERM, term);
             database.update(DATABASE_NAME, values, COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(id)});
         }
