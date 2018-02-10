@@ -4,26 +4,21 @@ package ru.spbau.group202.notdeadbydeadline.model;
 import android.os.Bundle;
 
 import org.jetbrains.annotations.NotNull;
-import org.apache.commons.io.FileUtils;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.io.File;
-import java.net.URL;
 
-import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
 
 public class StudyMaterial implements DetailedEntry {
-    private String subject, path, URL;
-    private int term, id;
+    private String subject, path, name;
+    private int term, version, id;
 
-    public StudyMaterial(@NotNull String subject, int term, @NotNull String URL,
-                         @NotNull String path, int id) {
+    public StudyMaterial(@NotNull String name, @NotNull String subject, int term,
+                         @NotNull String path, int version, int id) {
         this.subject = subject;
         this.term = term;
-        this.URL = URL;
+        this.name = name;
         this.path = path;
+        this.version = version;
         this.id = id;
     }
 
@@ -33,8 +28,8 @@ public class StudyMaterial implements DetailedEntry {
     }
 
     @NotNull
-    public String getURL() {
-        return URL;
+    public String getName() {
+        return name;
     }
 
     public int getTerm() {
@@ -50,17 +45,12 @@ public class StudyMaterial implements DetailedEntry {
         return id;
     }
 
+    public int getVersion() {
+        return version;
+    }
 
-    public void update() throws MalformedURLException, UrlDownloadingException {
-        URL url = new URL(URL);
-        File file = new File(path);
-
-        try{
-            FileUtils.copyURLToFile(url, file);
-        } catch (IOException exception) {
-            throw new UrlDownloadingException();
-        }
-
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     @NotNull
@@ -70,7 +60,7 @@ public class StudyMaterial implements DetailedEntry {
         studyMaterialDetails.add(subject);
         studyMaterialDetails.add(Integer.toString(term));
         studyMaterialDetails.add(path);
-        studyMaterialDetails.add(URL);
+        studyMaterialDetails.add(name);
         studyMaterialDetails.add(Integer.toString(id));
         return studyMaterialDetails;
     }
@@ -81,7 +71,7 @@ public class StudyMaterial implements DetailedEntry {
         Bundle bundle = new Bundle();
         bundle.putString("subject", subject);
         bundle.putString("path", path);
-        bundle.putString("URL", URL);
+        bundle.putString("name", name);
         bundle.putInt("id", id);
         bundle.putInt("term", term);
         return bundle;

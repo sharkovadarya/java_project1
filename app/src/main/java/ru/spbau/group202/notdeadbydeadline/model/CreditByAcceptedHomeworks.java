@@ -7,10 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CreditByAcceptedHomeworks extends SubjectCredit {
-    public CreditByAcceptedHomeworks(@NotNull String subject) {
-        super(subject);
-    }
-
     @NotNull
     @Override
     protected List<String> calculateHomeworkProgress(@NotNull List<Homework> homeworks) {

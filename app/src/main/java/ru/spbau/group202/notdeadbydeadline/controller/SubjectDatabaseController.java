@@ -14,7 +14,7 @@ import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.model.CreditByAcceptedHomeworks;
 import ru.spbau.group202.notdeadbydeadline.model.CreditByPercent;
-import ru.spbau.group202.notdeadbydeadline.model.CreditEnum;
+import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
 
@@ -45,7 +45,7 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addSubject(@NotNull String subject, @NotNull CreditEnum creditForm, double percentForCredit) {
+    public void addSubject(@NotNull String subject, @NotNull CreditFormEnum creditForm, double percentForCredit) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, subject);
@@ -75,17 +75,16 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
 
     @NotNull
     private SubjectCredit getSubjectCreditByCursor(@NotNull Cursor cursor) throws UnrecognizedCreditFormException {
-        String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int creditForm = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_CREDIT_FORM));
         double percentForCredit = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_PERCENT_FOR_CREDIT));
 
-        switch (CreditEnum.values()[creditForm]) {
+        switch (CreditFormEnum.values()[creditForm]) {
             case BY_PERCENT:
-                return new CreditByPercent(subject, percentForCredit);
+                return new CreditByPercent(percentForCredit);
             case BY_ACCEPTED_HOMEWORKS:
-                return new CreditByAcceptedHomeworks(subject);
+                return new CreditByAcceptedHomeworks();
             case NOT_STATED:
-                return new SubjectCredit(subject);
+                return new SubjectCredit();
             default:
                 throw new UnrecognizedCreditFormException();
         }
@@ -102,7 +101,7 @@ public class SubjectDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditEnum credit) {
+    public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditFormEnum credit) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_CREDIT_FORM, credit.ordinal());

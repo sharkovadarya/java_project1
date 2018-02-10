@@ -153,6 +153,8 @@ public class MainActivity extends AppCompatActivity
 
         } catch(StudyMaterialsUpdatingException e) {
 
+        } catch(Exception e) {
+
         }
 
         outputCurrentDate();
