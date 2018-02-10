@@ -124,6 +124,7 @@ public class StudyMaterialDatabaseController extends SQLiteOpenHelper {
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
+            cursor.moveToFirst();
             return getStudyMaterialByCursor(cursor);
         }
     }
