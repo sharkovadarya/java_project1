@@ -59,6 +59,8 @@ public class Homework extends DetailedTimedEntry {
         } else {
             homeworkDetails.add(Double.toString(getExpectedScore()));
         }
+        homeworkDetails.add(Integer.toString(regularity));
+        // TODO is the following line necessary
         homeworkDetails.addAll(materials);
         homeworkDetails.add(Integer.toString(id));
 
