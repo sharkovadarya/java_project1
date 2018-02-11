@@ -9,9 +9,12 @@ import org.joda.time.format.DateTimeFormat;
 import java.util.ArrayList;
 
 public class ScheduleEntry extends DetailedTimedEntry {
-    private String subject, auditorium, teacher;
+    private String subject;
+    private String auditorium;
+    private String teacher;
     private LocalTime time;
-    private int dayOfWeek, id;
+    private int dayOfWeek;
+    private int id;
     private WeekParityEnum weekParity;
 
     public ScheduleEntry(@NotNull String subject, int dayOfWeek, int hour, int minute,

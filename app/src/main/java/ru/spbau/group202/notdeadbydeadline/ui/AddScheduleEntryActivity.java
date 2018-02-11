@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -58,7 +59,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         }
 
         if (id != -1) {
-            scheduleEntry = Controller.ScheduleController.getScheduleEntryById(id);
+            scheduleEntry = Controller.getInstance(this).scheduleController().getScheduleEntryById(id);
             SEFA.dayOfWeek = scheduleEntry.getInt("dayOfWeek");
             LocalTime localTime = (LocalTime) scheduleEntry.getSerializable("time");
             if (localTime != null) {
@@ -89,11 +90,11 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
                 getParity();
 
                 if (id == -1 && SEFA.isValidForAddingSE()) {
-                    SEFA.addScheduleEntry();
+                    SEFA.addScheduleEntry(AddScheduleEntryActivity.this);
                     SEFA.clear();
                     finish();
                 } else if (id != -1 && SEFA.isValidForEditing()){
-                    SEFA.editScheduleEntry(id);
+                    SEFA.editScheduleEntry(id, AddScheduleEntryActivity.this);
                     SEFA.clear();
                     finish();
                 } else {
@@ -315,14 +316,14 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
             return subject != null && subject.trim().length() > 0;
         }
 
-        public void addScheduleEntry() {
-            Controller.ScheduleController.addScheduleEntry(subject,
+        public void addScheduleEntry(Context context) {
+            Controller.getInstance(context).scheduleController().addScheduleEntry(subject,
                     WeekDayEnum.valueOf(weekDay).ordinal(), hour, minute,
                     parity, auditorium, teacher);
         }
 
-        public void editScheduleEntry(int id) {
-            Controller.ScheduleController.editScheduleEntryById(id, subject,
+        public void editScheduleEntry(int id, Context context) {
+            Controller.getInstance(context).scheduleController().editScheduleEntryById(id, subject,
                     weekDay == null ? dayOfWeek :
                             WeekDayEnum.valueOf(weekDay).ordinal(), hour, minute,
                     parity, auditorium, teacher);

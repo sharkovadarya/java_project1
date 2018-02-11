@@ -1,21 +1,24 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
-import android.net.Uri;
+
 import android.os.Bundle;
 
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
 public class Homework extends DetailedTimedEntry {
     private Deadline deadline;
-    private String subject, description, howToSend;
-    private int regularity, deferral = 0;
-    private double expectedScore, actualScore = -1;
+    private String subject;
+    private String description;
+    private String howToSend;
+    private int regularity;
+    private int deferral = 0;
+    private double expectedScore;
+    private double actualScore = -1;
     private int id;
     private ArrayList<String> materials;
 
@@ -159,7 +162,7 @@ public class Homework extends DetailedTimedEntry {
     public Homework generateNewHomeworkById(int id) {
         LocalDateTime newDeadline = deadline.deadline.minusDays(deferral);
         deadline.deadline.plusWeeks(regularity);
-        return new Homework(newDeadline, subject, regularity, " ", howToSend,
+        return new Homework(newDeadline, subject, regularity, "", howToSend,
                 -1, id, new ArrayList<>());
     }
 

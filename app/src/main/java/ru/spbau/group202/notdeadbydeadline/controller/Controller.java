@@ -43,70 +43,113 @@ import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingExcepti
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
 
 public class Controller {
-    private static File appDirectory;
-    private static StoredDataController settings;
-    private static SubjectDatabaseController subjectDatabase;
-    private static Set<String> subjectList;
+    private static Controller instance;
+    private File appDirectory;
+    private StoredDataController settingsDatabase;
+    private SubjectDatabaseController subjectDatabase;
+    private ExamController examController;
+    private HomeworkController homeworkController;
+    private ScheduleController scheduleController;
+    private StudyMaterialController studyMaterialController;
+    private Set<String> subjectList;
+
+    private Controller(@NotNull Context context) {
+        homeworkController = new HomeworkController(context);
+        subjectDatabase = new SubjectDatabaseController(context);
+        scheduleController = new ScheduleController(context);
+        examController = new ExamController(context);
+        studyMaterialController = new StudyMaterialController(context);
+        settingsDatabase = new StoredDataController(context);
+        subjectList = new HashSet<>();
+        subjectList.addAll(subjectDatabase.getAllSubjects());
+        appDirectory = context.getApplicationContext().getFilesDir();
+    }
+
+    public static Controller getInstance(Context context) {
+        if (instance == null) {
+            instance = new Controller(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    public ExamController examController() {
+        return examController;
+    }
+
+    public HomeworkController homeworkController() {
+        return homeworkController;
+    }
+
+    public ScheduleController scheduleController() {
+        return scheduleController;
+    }
+
+    public StudyMaterialController studyMaterialController() {
+        return studyMaterialController;
+    }
 
     @NotNull
-    public static List<String> getSubjectList() {
+    public List<String> getSubjectList() {
         return new ArrayList<>(subjectList);
     }
 
-    public static void setWeekPairity(boolean isInversed) {
-        settings.saveWeekPairity(isInversed);
+    public void setWeekPairity(boolean isInversed) {
+        settingsDatabase.saveWeekPairity(isInversed);
     }
 
-    public static class AcademicProgressController {
-        @NotNull
-        public List<String> calculateProgress(@NotNull String subject) throws UnrecognizedCreditFormException {
-            SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
-            return subjectCredit.calculateProgress(HomeworkController.homeworkDatabase.getPassedHomeworksBySubject(subject),
-                    ExamController.examDatabase.getExamsBySubject(subject));
-        }
-
-        public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditFormEnum credit) {
-            subjectDatabase.setSubjectCreditForm(subject, credit);
-        }
+    @NotNull
+    public List<String> calculateProgress(@NotNull String subject) throws UnrecognizedCreditFormException {
+        SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
+        return subjectCredit.calculateProgress(homeworkController.homeworkDatabase.getPassedHomeworksBySubject(subject),
+                examController.examDatabase.getExamsBySubject(subject));
     }
 
-    public static class HomeworkController {
-        private static HomeworkDatabaseController homeworkDatabase;
+    public void setSubjectCreditForm(@NotNull String subject, @NotNull CreditFormEnum credit) {
+        subjectDatabase.setSubjectCreditForm(subject, credit);
+    }
+
+
+    public class HomeworkController {
+        private HomeworkDatabaseController homeworkDatabase;
+
+        public HomeworkController(Context context) {
+            homeworkDatabase = new HomeworkDatabaseController(context);
+        }
 
         @NotNull
-        public static List<List<String>> getHomeworksBySubject(@NotNull String subject) {
+        public List<List<String>> getHomeworksBySubject(@NotNull String subject) {
             return getEntriesDetailList(homeworkDatabase.getHomeworksBySubject(subject));
         }
 
-        public static void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
-                                       int regularity, String description, String howToSend,
-                                       double expectedScore, @NotNull ArrayList<String> materials) {
-            int id = settings.getTotalNumberOfHW();
+        public void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
+                                int regularity, String description, String howToSend,
+                                double expectedScore, @NotNull ArrayList<String> materials) {
+            int id = settingsDatabase.getTotalNumberOfHW();
             Homework homework = new Homework(deadline, subject, regularity, description,
                     howToSend, expectedScore, id, materials);
             homeworkDatabase.addHomework(homework);
-            settings.saveTotalNumberOfHW(++id);
+            settingsDatabase.saveTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
-        public static void deleteHomeworkById(int id) {
+        public void deleteHomeworkById(int id) {
             homeworkDatabase.deleteHomeworkById(id);
         }
 
-        public static void setHomeworkScoreById(int id, int score) {
+        public void setHomeworkScoreById(int id, int score) {
             homeworkDatabase.setScoreById(id, score);
         }
 
-        public static void setHomeworkDeferralById(int id, int deferral) {
+        public void setHomeworkDeferralById(int id, int deferral) {
             homeworkDatabase.setDeferralById(id, deferral);
         }
 
-        public static void editHomeworkById(int id, @NotNull LocalDateTime deadline, @NotNull String subject,
-                                            int regularity, String description, String howToSend,
-                                            double expectedScore, @NotNull ArrayList<String> materials) {
+        public void editHomeworkById(int id, @NotNull LocalDateTime deadline, @NotNull String subject,
+                                     int regularity, String description, String howToSend,
+                                     double expectedScore, @NotNull ArrayList<String> materials) {
             homeworkDatabase.editHomeworkById(deadline, subject, regularity, description, howToSend,
                     expectedScore, id, materials);
             if (subjectList.add(subject)) {
@@ -115,28 +158,28 @@ public class Controller {
         }
 
         @NotNull
-        public static Bundle getHomeworkById(int id) {
+        public Bundle getHomeworkById(int id) {
             return homeworkDatabase.getHomeworkById(id).getDeconstructed();
         }
 
         @NotNull
-        public static List<List<String>> getDeadlinesByDay(@NotNull LocalDate date) {
+        public List<List<String>> getDeadlinesByDay(@NotNull LocalDate date) {
             return getEntriesDetailList(toDeadlines(homeworkDatabase.getHomeworksByDay(date)));
         }
 
-        public static void generateHomeworks() {
+        public void generateHomeworks() {
             LocalDate today = LocalDate.now();
             for (Homework homework : homeworkDatabase.getHomeworksByDay(today)) {
                 if (homework.getRegularity() != 0) {
-                    int id = settings.getTotalNumberOfHW();
+                    int id = settingsDatabase.getTotalNumberOfHW();
                     homeworkDatabase.addHomework(homework.generateNewHomeworkById(id));
-                    settings.saveTotalNumberOfHW(++id);
+                    settingsDatabase.saveTotalNumberOfHW(++id);
                 }
             }
         }
 
         @NotNull
-        private static List<Homework.Deadline> toDeadlines(@NotNull List<Homework> homeworks) {
+        private List<Homework.Deadline> toDeadlines(@NotNull List<Homework> homeworks) {
             List<Homework.Deadline> deadlines = new ArrayList<>();
             for (Homework homework : homeworks) {
                 deadlines.add(homework.getDeadline());
@@ -145,87 +188,95 @@ public class Controller {
         }
     }
 
-    public static class ScheduleController {
-        private static ScheduleDatabaseController scheduleDatabase;
+    public class ScheduleController {
+        private ScheduleDatabaseController scheduleDatabase;
+
+        public ScheduleController(Context context) {
+            scheduleDatabase = new ScheduleDatabaseController(context);
+        }
 
         @NotNull
-        public static List<List<String>> getScheduleByDay(LocalDate day) {
+        public List<List<String>> getScheduleByDay(LocalDate day) {
             WeekParityEnum weekParity = WeekParityEnum.values()[day.getWeekOfWeekyear() % 2];
-            if (settings.getParityOfWeek()) {
+            if (settingsDatabase.getParityOfWeek()) {
                 weekParity = weekParity.inverse();
             }
 
             List<ScheduleEntry> classes = scheduleDatabase.getDaySchedule(day.getDayOfWeek() - 1,
                     weekParity);
-            List<Exam> exams = ExamController.examDatabase.getExamsByDay(day);
+            List<Exam> exams = examController.examDatabase.getExamsByDay(day);
             List<DetailedTimedEntry> detailedEntryList = ListUtils.union(exams, classes);
             Collections.sort(detailedEntryList);
 
             return getEntriesDetailList(detailedEntryList);
         }
 
-        public static void addScheduleEntry(@NotNull String subject, int dayOfWeek, int hour,
-                                            int minute, @NotNull WeekParityEnum weekParity,
-                                            @NotNull String auditorium, @NotNull String teacher) {
-            int id = settings.getTotalNumberOfScheduleEntries();
+        public void addScheduleEntry(@NotNull String subject, int dayOfWeek, int hour,
+                                     int minute, @NotNull WeekParityEnum weekParity,
+                                     @NotNull String auditorium, @NotNull String teacher) {
+            int id = settingsDatabase.getTotalNumberOfScheduleEntries();
             ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
             scheduleDatabase.addScheduleEntry(scheduleEntry);
-            settings.saveTotalNumberOfScheduleEntries(++id);
+            settingsDatabase.saveTotalNumberOfScheduleEntries(++id);
         }
 
-        public static void deleteScheduleEntryById(int id) {
+        public void deleteScheduleEntryById(int id) {
             scheduleDatabase.deleteScheduleEntryById(id);
         }
 
-        public static void editScheduleEntryById(int id, @NotNull String subject, int dayOfWeek,
-                                                 int hour, int minute, @NotNull WeekParityEnum weekParity,
-                                                 @NotNull String auditorium, @NotNull String teacher) {
+        public void editScheduleEntryById(int id, @NotNull String subject, int dayOfWeek,
+                                          int hour, int minute, @NotNull WeekParityEnum weekParity,
+                                          @NotNull String auditorium, @NotNull String teacher) {
             scheduleDatabase.editScheduleEntryById(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
         }
 
         @NotNull
-        public static Bundle getScheduleEntryById(int id) {
+        public Bundle getScheduleEntryById(int id) {
             return scheduleDatabase.getScheduleEntryById(id).getDeconstructed();
         }
     }
 
-    public static class ExamController {
-        private static ExamDatabaseController examDatabase;
+    public class ExamController {
+        private ExamDatabaseController examDatabase;
+
+        public ExamController(Context context) {
+            examDatabase = new ExamDatabaseController(context);
+        }
 
         @NotNull
-        public static List<List<String>> getExamsBySubject(@NotNull String subject) {
+        public List<List<String>> getExamsBySubject(@NotNull String subject) {
             return getEntriesDetailList(examDatabase.getExamsBySubject(subject));
         }
 
         @NotNull
-        public static List<List<String>> getExamsByDay(@NotNull LocalDate date) {
+        public List<List<String>> getExamsByDay(@NotNull LocalDate date) {
             return getEntriesDetailList(examDatabase.getExamsByDay(date));
         }
 
-        public static void addExam(@NotNull LocalDateTime date, @NotNull String subject,
-                                   @NotNull ExamEnum examEnum, String description) {
-            int id = settings.getTotalNumberOfWorks();
+        public void addExam(@NotNull LocalDateTime date, @NotNull String subject,
+                            @NotNull ExamEnum examEnum, String description) {
+            int id = settingsDatabase.getTotalNumberOfWorks();
             Exam exam = new Exam(subject, description, date, examEnum, id);
             examDatabase.addExam(exam);
-            settings.saveTotalNumberOfWorks(++id);
+            settingsDatabase.saveTotalNumberOfWorks(++id);
 
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
-        public static void deleteExamsById(int id) {
+        public void deleteExamsById(int id) {
             examDatabase.deleteExamById(id);
         }
 
-        public static void setExamAcceptedById(int id, boolean isAccepted) {
+        public void setExamAcceptedById(int id, boolean isAccepted) {
             examDatabase.setAcceptedById(id, isAccepted);
         }
 
-        public static void editExamById(int id, @NotNull LocalDateTime date, @NotNull String subject,
-                                        @NotNull ExamEnum examEnum, String description) {
+        public void editExamById(int id, @NotNull LocalDateTime date, @NotNull String subject,
+                                 @NotNull ExamEnum examEnum, String description) {
             examDatabase.editExamById(subject, description, date, examEnum, id);
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
@@ -233,19 +284,23 @@ public class Controller {
         }
 
         @NotNull
-        public static Bundle getExamById(int id) {
+        public Bundle getExamById(int id) {
             return examDatabase.getExamById(id).getDeconstructed();
         }
     }
 
-    public static class StudyMaterialsController {
-        private static final String STUDY_MATERIAL_SOURCE = "https://cdkrot.me/";
-        private static final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
-        private static final int NUMBER_OF_SEARCH_TRIES = 5;
-        private static String urlContent;
-        private static StudyMaterialDatabaseController studyMaterialDatabase;
+    public class StudyMaterialController {
+        private final String STUDY_MATERIAL_SOURCE = "https://cdkrot.me/";
+        private final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
+        private final int NUMBER_OF_SEARCH_TRIES = 5;
+        private String urlContent;
+        private StudyMaterialDatabaseController studyMaterialDatabase;
 
-        public static void addUpdatableStudyMaterial(@NotNull String name, @NotNull String subject, int term)
+        public StudyMaterialController(Context context) {
+            studyMaterialDatabase = new StudyMaterialDatabaseController(context);
+        }
+
+        public void addUpdatableStudyMaterial(@NotNull String name, @NotNull String subject, int term)
                 throws UrlDownloadingException, MalformedURLException, NoSuchStudyMaterialException,
                 StudyMaterialSourceAccessException, StudyMaterialExistsException {
             File studyMaterialFile = new File(appDirectory.getAbsolutePath(), name);
@@ -253,25 +308,25 @@ public class Controller {
                 throw new StudyMaterialExistsException();
             }
 
-            int id = settings.getTotalNumberOfStudyMaterials();
+            int id = settingsDatabase.getTotalNumberOfStudyMaterials();
             StudyMaterial studyMaterial = new StudyMaterial(name, subject, term,
                     appDirectory.getAbsolutePath(), 0, id);
             updateUrlContent();
             updateStudyMaterial(studyMaterial);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
-            settings.saveTotalNumberOfStudyMaterials(++id);
+            settingsDatabase.saveTotalNumberOfStudyMaterials(++id);
 
             if (!subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
-        public static void addLocalStudyMaterial(@NotNull String name, @NotNull String subject,
-                                                 int term, @NotNull String path) {
-            int id = settings.getTotalNumberOfStudyMaterials();
+        public void addLocalStudyMaterial(@NotNull String name, @NotNull String subject,
+                                          int term, @NotNull String path) {
+            int id = settingsDatabase.getTotalNumberOfStudyMaterials();
             StudyMaterial studyMaterial = new StudyMaterial(name, subject, term, path, -1, id);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
-            settings.saveTotalNumberOfStudyMaterials(++id);
+            settingsDatabase.saveTotalNumberOfStudyMaterials(++id);
 
             if (!subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
@@ -279,25 +334,25 @@ public class Controller {
         }
 
         @NotNull
-        public static List<List<String>> getStudyMaterialsBySubject(@NotNull String subject) {
+        public List<List<String>> getStudyMaterialsBySubject(@NotNull String subject) {
             return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsBySubject(subject));
         }
 
         @NotNull
-        public static List<List<String>> getStudyMaterialsByTerm(int term) {
+        public List<List<String>> getStudyMaterialsByTerm(int term) {
             return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsByTerm(term));
         }
 
         @NotNull
-        public static Bundle getStudyMaterialById(int id) {
+        public Bundle getStudyMaterialById(int id) {
             return studyMaterialDatabase.getStudyMaterialById(id).getDeconstructed();
         }
 
-        public static void deleteStudyMaterialById(int id) {
+        public void deleteStudyMaterialById(int id) {
             studyMaterialDatabase.deleteStudyMaterialById(id);
         }
 
-        public static void editStudyMaterialById(int id, @NotNull String subject, int term)
+        public void editStudyMaterialById(int id, @NotNull String subject, int term)
                 throws MalformedURLException, UrlDownloadingException {
             studyMaterialDatabase.editStudyMaterialById(id, subject, term);
             if (!subjectList.add(subject)) {
@@ -305,7 +360,7 @@ public class Controller {
             }
         }
 
-        public static void updateStudyMaterials() throws StudyMaterialSourceAccessException,
+        public void updateStudyMaterials() throws StudyMaterialSourceAccessException,
                 StudyMaterialsUpdatingException {
             updateUrlContent();
             List<StudyMaterial> studyMaterials = studyMaterialDatabase.getUpdatableStudyMaterials();
@@ -326,7 +381,7 @@ public class Controller {
         }
 
         @NotNull
-        public static List<String>[] getAvailableStudyMaterials() throws StudyMaterialSourceAccessException {
+        public List<String>[] getAvailableStudyMaterials() throws StudyMaterialSourceAccessException {
             @SuppressWarnings("unchecked")
             ArrayList<String>[] materialsByTerms = new ArrayList[7];
             for (int term = 0; term < materialsByTerms.length; term++) {
@@ -346,7 +401,7 @@ public class Controller {
                         materialsByTerms[Integer.valueOf(urlMatcher.group(2))].add(urlMatcher.group(1));
                     } else {
                         Matcher noTermMatcher = noTermPattern.matcher(absUrl);
-                        if(noTermMatcher.find()) {
+                        if (noTermMatcher.find()) {
                             materialsByTerms[0].add(noTermMatcher.group(1));
                         }
 
@@ -360,7 +415,7 @@ public class Controller {
         }
 
         @NotNull
-        public static List<File> searchForStudyMaterials(String query) throws UrlDownloadingException {
+        public List<File> searchForStudyMaterials(String query) throws UrlDownloadingException {
             ArrayList<File> results = new ArrayList<>();
             String searchURL = GOOGLE_SEARCH_URL + "?q=" + "filetype:pdf " + "+"
                     + query.replace(" ", "+") + "&num="
@@ -369,24 +424,23 @@ public class Controller {
             try {
                 Document html = Jsoup.connect(searchURL).userAgent("Mozilla").timeout(5000).get();
                 Elements links = html.select("h3.r > a");
-                for(Element link : links) {
+                for (Element link : links) {
                     String stringUrl = link.attr("href").replace("/url?q=", "").replaceAll("\\.pdf.*", ".pdf");
-                    URL url = new URL(link.attr("href").replace("/url?q=", ""));
+                    URL url = new URL(stringUrl);
                     File searchResultsFolder = new File(appDirectory + File.separator + "search");
                     searchResultsFolder.mkdir();
                     File foundMaterial = new File(searchResultsFolder.getAbsolutePath(), link.text());
                     FileUtils.copyURLToFile(url, foundMaterial);
                     results.add(foundMaterial);
                 }
-            }
-            catch (IOException exception) {
+            } catch (IOException exception) {
                 throw new UrlDownloadingException();
             }
 
             return results;
         }
 
-        private static void updateStudyMaterial(StudyMaterial studyMaterial)
+        private void updateStudyMaterial(StudyMaterial studyMaterial)
                 throws NoSuchStudyMaterialException, MalformedURLException, UrlDownloadingException {
             Pattern urlPattern = Pattern.compile("href=\"(/.+/" + studyMaterial.getName() +
                     "/(\\d+)\\.pdf)\"");
@@ -408,7 +462,7 @@ public class Controller {
             }
         }
 
-        private static void updateUrlContent() throws StudyMaterialSourceAccessException {
+        private void updateUrlContent() throws StudyMaterialSourceAccessException {
             try {
                 URL url = new URL(STUDY_MATERIAL_SOURCE);
                 FileUtils.copyURLToFile(url, new File(appDirectory, STUDY_MATERIAL_SOURCE));
@@ -419,39 +473,13 @@ public class Controller {
         }
     }
 
-    public static void createDatabases(@NotNull Context context) throws StudyMaterialSourceAccessException,
-            StudyMaterialsUpdatingException {
-        HomeworkController.homeworkDatabase = new HomeworkDatabaseController(context);
-        subjectDatabase = new SubjectDatabaseController(context);
-        ScheduleController.scheduleDatabase = new ScheduleDatabaseController(context);
-        ExamController.examDatabase = new ExamDatabaseController(context);
-        StudyMaterialsController.studyMaterialDatabase = new StudyMaterialDatabaseController(context);
-        settings = new StoredDataController(context);
-        subjectList = new HashSet<>();
-        subjectList.addAll(subjectDatabase.getAllSubjects());
-        appDirectory = context.getApplicationContext().getFilesDir();
-
-        HomeworkController.generateHomeworks();
-        StudyMaterialsController.updateStudyMaterials();
-    }
-
     @NotNull
-    private static <T extends DetailedEntry> List<List<String>> getEntriesDetailList(@NotNull List<T> entries) {
+    private <T extends DetailedEntry> List<List<String>> getEntriesDetailList(@NotNull List<T> entries) {
         List<List<String>> entriesDetails = new ArrayList<>();
         for (T entry : entries) {
             entriesDetails.add(entry.getDetails());
         }
         return entriesDetails;
     }
-
-    @NotNull
-    private static <T extends DetailedEntry> List<Bundle> getEntriesDeconstructedList(@NotNull List<T> entries) {
-        List<Bundle> deconstructedEntries = new ArrayList<>();
-        for (T entry : entries) {
-            deconstructedEntries.add(entry.getDeconstructed());
-        }
-        return deconstructedEntries;
-    }
-
 
 }

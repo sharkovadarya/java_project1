@@ -9,8 +9,12 @@ import java.util.ArrayList;
 
 
 public class StudyMaterial implements DetailedEntry {
-    private String subject, path, name;
-    private int term, version, id;
+    private String subject;
+    private String path;
+    private String name;
+    private int term;
+    private int version;
+    private int id;
 
     public StudyMaterial(@NotNull String name, @NotNull String subject, int term,
                          @NotNull String path, int version, int id) {

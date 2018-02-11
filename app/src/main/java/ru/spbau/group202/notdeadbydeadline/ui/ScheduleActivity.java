@@ -43,7 +43,8 @@ public class ScheduleActivity extends AppCompatActivity
     private LocalDate localDate;
 
     private void outputScheduleByDay(int dayNumber) {
-        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDay(localDate.plusDays(dayNumber));
+        List<List<String>> scheduleDetails = Controller.getInstance(this).scheduleController()
+                .getScheduleByDay(localDate.plusDays(dayNumber));
         //List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
         //WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
 
@@ -171,8 +172,9 @@ public class ScheduleActivity extends AppCompatActivity
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
-                            Controller.ScheduleController.deleteScheduleEntryById(
-                                    Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
+                            Controller.getInstance(ScheduleActivity.this).scheduleController()
+                                    .deleteScheduleEntryById(Integer
+                                            .parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
                             outputSchedule();
                             return true;
                         }

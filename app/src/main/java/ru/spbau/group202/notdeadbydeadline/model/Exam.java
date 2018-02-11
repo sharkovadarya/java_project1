@@ -12,7 +12,8 @@ import java.util.ArrayList;
 
 
 public class Exam extends DetailedTimedEntry {
-    private String subject, description;
+    private String subject;
+    private String description;
     private LocalDateTime date;
     private boolean isAccepted = false;
     private ExamEnum examType;
