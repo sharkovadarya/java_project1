@@ -383,6 +383,7 @@ public class Controller {
         return entriesDetails;
     }
 
+
     @NotNull
     private static <T extends DetailedEntry> List<Bundle> getEntriesDeconstructedList(@NotNull List<T> entries) {
         List<Bundle> deconstructedEntries = new ArrayList<>();

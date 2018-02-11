@@ -63,6 +63,12 @@ public class ScheduleActivity extends AppCompatActivity
         }*/
 
         ListView lv;
+        /*
+        см. DeadlinesActivity. Все это в хешмапу.
+        Второй момент - какие то мутные преобразования day +- 1.
+        Зачем день таскать день как int? Если это нужно для записи в базу, то
+         лучше изолировать это в коде записи чтения и везде оперировать DateTimeConstants
+         */
         switch (dayNumber + 1) {
             case DateTimeConstants.MONDAY:
                 lv = findViewById(R.id.scheduleMondayList);
@@ -132,12 +138,23 @@ public class ScheduleActivity extends AppCompatActivity
         table.setColumnShrinkable(0, true);
         table.setColumnShrinkable(1, true);
 
+        /*
+        Крайне мутная манипуляция. Особенно учитывая прибавление/убавление еденицы.
+        Пара статических листов/массивов типа DateTimeConstants с рабочими/всемы днями недели
+        должна решить все проблемы
+         */
         for (int i = 0; i <= 5; ++i)
             outputScheduleByDay(i);
 
         setListViewsHeightAllDays();
     }
 
+    /*
+    Крайне мутное название. Тут добавляется некий onClickListener, а называется process
+
+    Выглядит функция, конечно, крайне сложно. Три уровня вложенности обычно допустимый максимум.
+    Но никто не хочет работать на пределе, по этому реальная цифра - 2.
+     */
     private void processOnLongTapScheduleEntry(int listViewId) {
         ListView scheduleListView = findViewById(listViewId);
         scheduleListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -149,6 +166,10 @@ public class ScheduleActivity extends AppCompatActivity
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
+                        /*
+                        Принимать решение по тексту заголовка - похоже на грязных хак.
+                        Кажется, что должна быть какая то система id для этого.
+                         */
                         if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_edit))) {
                             // TODO call edit (which is yet nonexistent)
@@ -217,6 +238,10 @@ public class ScheduleActivity extends AppCompatActivity
         outputSchedule();
 
         Button nextWeekButton = findViewById(R.id.scheduleNextWeekButton);
+
+        /*
+        Текст - в xml
+         */
         nextWeekButton.setText(R.string.next_week);
         nextWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,6 +300,9 @@ public class ScheduleActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+    Где то я уже видел этот код. Копипаста во все активити?
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NotNull MenuItem item) {

@@ -15,6 +15,10 @@ import java.net.URL;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
 
 public class StudyMaterial implements DetailedEntry {
+    /*
+    Несколько полей на строку - дурацкая привычка олимпиадного програмирования
+    Изжить на корню.
+     */
     private String subject, path, URL;
     private int term, id;
 

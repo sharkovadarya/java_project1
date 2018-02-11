@@ -54,6 +54,10 @@ public class HomeworkListViewAdapter extends BaseAdapter {
 
         ArrayList<String> detailedEntry = (ArrayList<String>) getItem(position);
 
+        /*
+        Код формирования строчки явно просится в отдельную функцию.
+        Еще энтеров не мешает расставить немного. Все сливается.
+         */
         String deadlinesField = "\nDeadline: ";
         String descriptionFiled = "\nDescription: ";
         String submitField = "\nSubmit: ";

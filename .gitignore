@@ -54,3 +54,11 @@ fabric.properties
 **.bin
 **.lock
 **.rawproto
+
+
+
+#custom
+.gradle/
+.idea/
+build/
+java_project1.iml

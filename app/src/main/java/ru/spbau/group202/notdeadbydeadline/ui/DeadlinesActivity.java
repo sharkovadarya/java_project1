@@ -43,6 +43,9 @@ public class DeadlinesActivity extends AppCompatActivity
 
     private LocalDate localDate;
 
+    /*
+    Тут те же претензии как в MainActivity - сложно понять откуда данные приходят и куда уходят
+     */
     private void outputDeadlineByDay( int dayNumber ) {
 
         List<List<String>> deadlinesDetails;
@@ -71,6 +74,10 @@ public class DeadlinesActivity extends AppCompatActivity
         }
 
         ListView lv;
+        /*
+        Тут бы я просто сделал статическую хешмапу из DateTimeConstants в R.id
+        Тогда в этом месте switch/case выродится в одну строчку.
+         */
         switch (dayNumber) {
             case DateTimeConstants.MONDAY:
                 lv = findViewById(R.id.deadlinesMondayList);
@@ -129,6 +136,9 @@ public class DeadlinesActivity extends AppCompatActivity
         setListViewsHeightAllDays();
     }
 
+    /*
+    Гиганское дублирование кода. Вынести в утильную функцию
+     */
     private void setHeaders() {
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy");
@@ -200,6 +210,9 @@ public class DeadlinesActivity extends AppCompatActivity
         });
 
         Button button = findViewById(R.id.previousWeekButton);
+        /*
+        Зачем выставлять текст кнопки в java коде? Разве он меняется?
+         */
         button.setText(getResources().getString(R.string.previous_week));
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,6 +288,9 @@ public class DeadlinesActivity extends AppCompatActivity
         return true;
     }
 
+    /*
+    Та же история. Результат вообще никак не используется. outputDeadlines - место в onResume
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         outputDeadlines();
