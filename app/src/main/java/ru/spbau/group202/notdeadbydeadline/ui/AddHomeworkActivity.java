@@ -204,8 +204,11 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public void setTime(View view) {
         TimePickerFragment timePickerFragment = new TimePickerFragment();
         if (id != -1 && !isSetTime) {
-            timePickerFragment.setValues(homeworkEntry.getInt("hour"),
-                                        homeworkEntry.getInt("minute"));
+            LocalDateTime deadline = (LocalDateTime) homeworkEntry.getSerializable("deadline");
+            if (deadline != null) {
+                timePickerFragment.setValues(deadline.getHourOfDay(),
+                        deadline.getMinuteOfHour());
+            }
         }
 
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
@@ -214,9 +217,12 @@ public class AddHomeworkActivity extends AppCompatActivity {
     public void setDate(View view) {
         DatePickerFragment datePickerFragment = new DatePickerFragment();
         if (id != -1 && !isSetDate) {
-            datePickerFragment.setValues(homeworkEntry.getInt("year"),
-                                         homeworkEntry.getInt("month") - 1,
-                                         homeworkEntry.getInt("day"));
+            LocalDateTime deadline = (LocalDateTime) homeworkEntry.getSerializable("deadline");
+            if (deadline != null) {
+                datePickerFragment.setValues(deadline.getYear(),
+                        deadline.getMonthOfYear() - 1,
+                        deadline.getDayOfMonth());
+            }
         }
 
         datePickerFragment.show(getSupportFragmentManager(), "datePicker");
@@ -374,7 +380,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
         private int regularity = 0;
         private String howToSend;
         private ArrayList<String> materials = new ArrayList<>();
-        private ArrayList<Uri> files = new ArrayList<>();
 
         public void storeSubject(String subject) {
             if (this.subject != null && !this.subject.equals(subject)) {
@@ -426,10 +431,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
             materials.add(filepath);
         }
 
-        public void storeFiles(Uri uri) {
-            files.add(uri);
-        }
-
         public void addNewHomework() {
 
             if (description == null) {
@@ -455,14 +456,20 @@ public class AddHomeworkActivity extends AppCompatActivity {
             }
 
             if (!isSetDate) {
-                year = homeworkEntry.getInt("year");
-                month = homeworkEntry.getInt("month");
-                day = homeworkEntry.getInt("day");
+                LocalDateTime deadline = (LocalDateTime) homeworkEntry.getSerializable("deadline");
+                if (deadline != null) {
+                    year = deadline.getYear();
+                    month = deadline.getMonthOfYear();
+                    day = deadline.getDayOfMonth();
+                }
             }
 
             if (!isSetTime) {
-                hour = homeworkEntry.getInt("hour");
-                minutes = homeworkEntry.getInt("minute");
+                LocalDateTime deadline = (LocalDateTime) homeworkEntry.getSerializable("deadline");
+                if (deadline != null) {
+                    hour = deadline.getHourOfDay();
+                    minutes = deadline.getMinuteOfHour();
+                }
             }
 
             Controller.HomeworkController.editHomeworkById(id, new LocalDateTime(year, month, day, hour, minutes),
@@ -491,7 +498,6 @@ public class AddHomeworkActivity extends AppCompatActivity {
             minutes = 0;
             regularity = 0;
             materials.clear();
-            files.clear();
 
             isSetTime = false;
             isSetDate = false;
