@@ -26,15 +26,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
-import ru.spbau.group202.notdeadbydeadline.model.DetailedEntry;
-import ru.spbau.group202.notdeadbydeadline.model.DetailedTimedEntry;
-import ru.spbau.group202.notdeadbydeadline.model.Homework;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
+import ru.spbau.group202.notdeadbydeadline.model.Homework;
+import ru.spbau.group202.notdeadbydeadline.model.Class;
 import ru.spbau.group202.notdeadbydeadline.model.StudyMaterial;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.model.Exam;
 import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.Function;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.ModelUtils;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.NoSuchStudyMaterialException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialExistsException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourceAccessException;
@@ -118,7 +119,7 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getHomeworksBySubject(@NotNull String subject) {
-            return getEntriesDetailList(homeworkDatabase.getHomeworksBySubject(subject));
+            return map(homeworkDatabase.getHomeworksBySubject(subject), ModelUtils.HW_FIELDS_TO_STRING_LIST);
         }
 
         public void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
@@ -164,7 +165,7 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getDeadlinesByDay(@NotNull LocalDate date) {
-            return getEntriesDetailList(toDeadlines(homeworkDatabase.getHomeworksByDay(date)));
+            return map(homeworkDatabase.getHomeworksByDay(date), ModelUtils.HW_DEADLINE_FIELDS_TO_STRING_LIST);
         }
 
         public void generateHomeworks() {
@@ -177,22 +178,13 @@ public class Controller {
                 }
             }
         }
-
-        @NotNull
-        private List<Homework.Deadline> toDeadlines(@NotNull List<Homework> homeworks) {
-            List<Homework.Deadline> deadlines = new ArrayList<>();
-            for (Homework homework : homeworks) {
-                deadlines.add(homework.getDeadline());
-            }
-            return deadlines;
-        }
     }
 
     public class ScheduleController {
-        private ScheduleDatabaseController scheduleDatabase;
+        private ClassDatabaseController classDatabase;
 
         public ScheduleController(Context context) {
-            scheduleDatabase = new ScheduleDatabaseController(context);
+            classDatabase = new ClassDatabaseController(context);
         }
 
         @NotNull
@@ -202,39 +194,39 @@ public class Controller {
                 weekParity = weekParity.inverse();
             }
 
-            List<ScheduleEntry> classes = scheduleDatabase.getDaySchedule(day.getDayOfWeek() - 1,
+            List<Class> classes = classDatabase.getDaySchedule(day.getDayOfWeek() - 1,
                     weekParity);
             List<Exam> exams = examController.examDatabase.getExamsByDay(day);
-            List<DetailedTimedEntry> detailedEntryList = ListUtils.union(exams, classes);
-            Collections.sort(detailedEntryList);
+            List<ScheduleEntry> scheduleEntries = ListUtils.union(exams, classes);
+            Collections.sort(scheduleEntries);
 
-            return getEntriesDetailList(detailedEntryList);
+            return map(scheduleEntries, ModelUtils.SCHEDULE_ENTRY_TO_SCHEDULE_DESCRIPTION);
         }
 
-        public void addScheduleEntry(@NotNull String subject, int dayOfWeek, int hour,
+        public void addClass(@NotNull String subject, int dayOfWeek, int hour,
                                      int minute, @NotNull WeekParityEnum weekParity,
                                      @NotNull String auditorium, @NotNull String teacher) {
             int id = settingsDatabase.getTotalNumberOfScheduleEntries();
-            ScheduleEntry scheduleEntry = new ScheduleEntry(subject, dayOfWeek, hour, minute,
+            Class aClass = new Class(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
-            scheduleDatabase.addScheduleEntry(scheduleEntry);
+            classDatabase.addClass(aClass);
             settingsDatabase.saveTotalNumberOfScheduleEntries(++id);
         }
 
-        public void deleteScheduleEntryById(int id) {
-            scheduleDatabase.deleteScheduleEntryById(id);
+        public void deleteClassById(int id) {
+            classDatabase.deleteClassById(id);
         }
 
-        public void editScheduleEntryById(int id, @NotNull String subject, int dayOfWeek,
+        public void editClassById(int id, @NotNull String subject, int dayOfWeek,
                                           int hour, int minute, @NotNull WeekParityEnum weekParity,
                                           @NotNull String auditorium, @NotNull String teacher) {
-            scheduleDatabase.editScheduleEntryById(subject, dayOfWeek, hour, minute,
+            classDatabase.editClassById(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
         }
 
         @NotNull
-        public Bundle getScheduleEntryById(int id) {
-            return scheduleDatabase.getScheduleEntryById(id).getDeconstructed();
+        public Bundle getClassById(int id) {
+            return classDatabase.getClassById(id).getDeconstructed();
         }
     }
 
@@ -247,12 +239,12 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getExamsBySubject(@NotNull String subject) {
-            return getEntriesDetailList(examDatabase.getExamsBySubject(subject));
+            return map(examDatabase.getExamsBySubject(subject), ModelUtils.EXAM_FIELDS_TO_STRING_LIST);
         }
 
         @NotNull
         public List<List<String>> getExamsByDay(@NotNull LocalDate date) {
-            return getEntriesDetailList(examDatabase.getExamsByDay(date));
+            return map(examDatabase.getExamsByDay(date), ModelUtils.EXAM_FIELDS_TO_STRING_LIST);
         }
 
         public void addExam(@NotNull LocalDateTime date, @NotNull String subject,
@@ -335,12 +327,14 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getStudyMaterialsBySubject(@NotNull String subject) {
-            return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsBySubject(subject));
+            return map(studyMaterialDatabase.getStudyMaterialsBySubject(subject),
+                    ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST);
         }
 
         @NotNull
         public List<List<String>> getStudyMaterialsByTerm(int term) {
-            return getEntriesDetailList(studyMaterialDatabase.getStudyMaterialsByTerm(term));
+            return map(studyMaterialDatabase.getStudyMaterialsByTerm(term),
+                    ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST);
         }
 
         @NotNull
@@ -376,7 +370,8 @@ public class Controller {
             }
 
             if (!allUpdated) {
-                throw new StudyMaterialsUpdatingException(getEntriesDetailList(failedToUpdate));
+                throw new StudyMaterialsUpdatingException(map(failedToUpdate,
+                        ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST));
             }
         }
 
@@ -473,13 +468,13 @@ public class Controller {
         }
     }
 
-    @NotNull
-    private <T extends DetailedEntry> List<List<String>> getEntriesDetailList(@NotNull List<T> entries) {
-        List<List<String>> entriesDetails = new ArrayList<>();
-        for (T entry : entries) {
-            entriesDetails.add(entry.getDetails());
-        }
-        return entriesDetails;
-    }
 
+    @NotNull
+    private <T, U> List<U> map(@NotNull List<T> list, @NotNull Function<T, U> function) {
+        List<U> result = new ArrayList<>();
+        for(T element : list) {
+            result.add(function.apply(element));
+        }
+        return result;
+    }
 }

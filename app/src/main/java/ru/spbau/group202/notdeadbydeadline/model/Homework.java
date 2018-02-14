@@ -7,10 +7,9 @@ import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
-public class Homework extends DetailedTimedEntry {
+public class Homework {
     private Deadline deadline;
     private String subject;
     private String description;
@@ -52,6 +51,11 @@ public class Homework extends DetailedTimedEntry {
     }
 
     @NotNull
+    public String getFormattedDeadline() {
+        return deadline.getFormattedDeadline();
+    }
+
+    @NotNull
     public ArrayList<String> getDetails() {
         ArrayList<String> homeworkDetails = new ArrayList<>();
         homeworkDetails.add(getDescription());
@@ -71,7 +75,6 @@ public class Homework extends DetailedTimedEntry {
     }
 
     @NotNull
-    @Override
     public Bundle getDeconstructed() {
         Bundle bundle = new Bundle();
         bundle.putString("subject", subject);
@@ -85,12 +88,6 @@ public class Homework extends DetailedTimedEntry {
         bundle.putStringArrayList("materials", materials);
         bundle.putSerializable("deadline", deadline.deadline);
         return bundle;
-    }
-
-    @NotNull
-    @Override
-    protected LocalTime getTime() {
-        return deadline.deadline.toLocalTime();
     }
 
     public Deadline getDeadline() {
@@ -166,7 +163,7 @@ public class Homework extends DetailedTimedEntry {
                 -1, id, new ArrayList<>());
     }
 
-    public class Deadline extends DetailedTimedEntry {
+    public class Deadline {
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {
@@ -178,7 +175,7 @@ public class Homework extends DetailedTimedEntry {
         }
 
         @NotNull
-        private String getFormattedDeadline() {
+        public String getFormattedDeadline() {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
             return formatter.print(deadline);
         }
@@ -194,18 +191,10 @@ public class Homework extends DetailedTimedEntry {
         }
 
         @NotNull
-        @Override
         public Bundle getDeconstructed() {
             Bundle bundle = new Bundle();
             bundle.putSerializable("deadline", deadline);
             return bundle;
         }
-
-        @NotNull
-        @Override
-        protected LocalTime getTime() {
-            return deadline.toLocalTime();
-        }
-
     }
 }

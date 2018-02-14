@@ -8,10 +8,12 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import ru.spbau.group202.notdeadbydeadline.model.utilities.ModelUtils;
 
 
-public class Exam extends DetailedTimedEntry {
+public class Exam extends ScheduleEntry {
     private String subject;
     private String description;
     private LocalDateTime date;
@@ -74,20 +76,17 @@ public class Exam extends DetailedTimedEntry {
         return id;
     }
 
+    public String getFormattedTime() {
+        return DateTimeFormat.forPattern("HH:mm").print(date);
+    }
+
     @Override
     @NotNull
-    public ArrayList<String> getDetails() {
-        ArrayList<String> workDetails = new ArrayList<>();
-        workDetails.add(subject);
-        workDetails.add(DateTimeFormat.forPattern("HH:mm").print(date));
-        workDetails.add(examType.getDescription());
-        workDetails.add(description);
-        workDetails.add(Integer.toString(id));
-        return workDetails;
+    public List<String> getScheduleDescription() {
+        return ModelUtils.EXAM_FIELDS_TO_STRING_LIST.apply(this);
     }
 
     @NotNull
-    @Override
     public Bundle getDeconstructed() {
         Bundle bundle = new Bundle();
         bundle.putString("subject", subject);
