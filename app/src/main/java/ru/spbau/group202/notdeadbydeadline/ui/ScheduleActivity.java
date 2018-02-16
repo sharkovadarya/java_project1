@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.PopupMenu;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TableLayout;
@@ -24,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
@@ -38,9 +43,10 @@ public class ScheduleActivity extends AppCompatActivity
     private LocalDate localDate;
 
     private void outputScheduleByDay(int dayNumber) {
-        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDay(localDate.plusDays(dayNumber));
+        List<List<String>> scheduleDetails = Controller.getInstance(this).scheduleController()
+                .getScheduleByDay(localDate.plusDays(dayNumber));
         //List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(dayNumber,
-                //WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
+        //WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);
 
         /*ArrayList<SpannableStringBuilder> formattedSchedule = new ArrayList<>();
         for (int i = 0; i < scheduleDetails.size(); i++) {
@@ -51,7 +57,7 @@ public class ScheduleActivity extends AppCompatActivity
             stringBuilder.append("  ");
             int position = stringBuilder.length();
             stringBuilder.append(schDetails.get(0));
-            stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
+            stringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                     position, stringBuilder.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             stringBuilder.append(", \n");
@@ -63,7 +69,7 @@ public class ScheduleActivity extends AppCompatActivity
         }*/
 
         ListView lv;
-        switch (dayNumber + 1) {
+        switch ((localDate.getDayOfWeek() + dayNumber) % 7) {
             case DateTimeConstants.MONDAY:
                 lv = findViewById(R.id.scheduleMondayList);
                 break;
@@ -82,6 +88,8 @@ public class ScheduleActivity extends AppCompatActivity
             case DateTimeConstants.SATURDAY:
                 lv = findViewById(R.id.scheduleSaturdayList);
                 break;
+            case DateTimeConstants.SUNDAY:
+                return;
             default:
                 Log.e(TAG, "Wrong dayNumber parameter in OutputScheduleByDay");
                 return;
@@ -132,7 +140,7 @@ public class ScheduleActivity extends AppCompatActivity
         table.setColumnShrinkable(0, true);
         table.setColumnShrinkable(1, true);
 
-        for (int i = 0; i <= 5; ++i)
+        for (int i = 0; i < 7; ++i)
             outputScheduleByDay(i);
 
         setListViewsHeightAllDays();
@@ -152,14 +160,22 @@ public class ScheduleActivity extends AppCompatActivity
                         if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_edit))) {
                             // TODO call edit (which is yet nonexistent)
+                            List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
+                            Intent intent = new Intent(ScheduleActivity.this,
+                                    AddScheduleEntryActivity.class);
+                            int id = Integer.parseInt(detailedEntryList
+                                    .get(detailedEntryList.size() - 1));
+                            intent.putExtra("id", id);
+                            startActivityForResult(intent, 1);
 
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
-                            Controller.ScheduleController.deleteScheduleEntryById(
-                                    Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
-                            recreate();
+                            Controller.getInstance(ScheduleActivity.this).scheduleController()
+                                    .deleteClassById(Integer
+                                            .parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
+                            outputSchedule();
                             return true;
                         }
 

@@ -1,7 +1,7 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
-import android.app.DialogFragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -16,15 +16,16 @@ import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
 import ru.spbau.group202.notdeadbydeadline.R;
-import ru.spbau.group202.notdeadbydeadline.ui.utilities.CustomDialogFragment;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.AttachmentsDialogFragment;
 
 
 public class DisplayHomeworkActivity extends AppCompatActivity {
 
 
     private void outputHomeworksBySubject(String subject) {
+        Controller.getInstance(this).homeworkController().generateHomeworks();
         List<List<String>> formattedHomeworksDetails =
-                Controller.HomeworkController.getHomeworksBySubject(subject);
+                Controller.getInstance(this).homeworkController().getHomeworksBySubject(subject);
 
         ListView homeworksListView = findViewById(R.id.homeworksListView);
         HomeworkListViewAdapter adapter1 = new HomeworkListViewAdapter(this, formattedHomeworksDetails);
@@ -53,14 +54,15 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
-                            Controller.HomeworkController.deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
-                            recreate();
+                            Controller.getInstance(DisplayHomeworkActivity.this).homeworkController()
+                                    .deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
+                            outputHomeworks();
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_open_attached))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
-                            CustomDialogFragment cdf = new CustomDialogFragment();
-                            Bundle homeworkEntry = Controller.HomeworkController
+                            AttachmentsDialogFragment cdf = new AttachmentsDialogFragment();
+                            Bundle homeworkEntry = Controller.getInstance(DisplayHomeworkActivity.this).homeworkController()
                                     .getHomeworkById(Integer.parseInt(detailedEntryList
                                             .get(detailedEntryList.size() - 1)));
                             ArrayList<String> src = homeworkEntry.getStringArrayList("materials");

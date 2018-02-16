@@ -1,20 +1,24 @@
 package ru.spbau.group202.notdeadbydeadline.model;
 
+
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.joda.time.format.*;
 
-public class Homework extends DetailedTimedEntry {
+public class Homework implements Comparable<Homework> {
     private Deadline deadline;
-    private String subject, description, howToSend;
-    private int regularity, deferral = 0;
-    private double expectedScore, actualScore = -1;
+    private String subject;
+    private String description;
+    private String howToSend;
+    private int regularity;
+    private int deferral = 0;
+    private double expectedScore;
+    private double actualScore = -1;
     private int id;
     private ArrayList<String> materials;
 
@@ -48,6 +52,11 @@ public class Homework extends DetailedTimedEntry {
     }
 
     @NotNull
+    public String getFormattedDeadline() {
+        return deadline.getFormattedDeadline();
+    }
+
+    @NotNull
     public ArrayList<String> getDetails() {
         ArrayList<String> homeworkDetails = new ArrayList<>();
         homeworkDetails.add(getDescription());
@@ -58,6 +67,8 @@ public class Homework extends DetailedTimedEntry {
         } else {
             homeworkDetails.add(Double.toString(getExpectedScore()));
         }
+        homeworkDetails.add(Integer.toString(regularity));
+        // TODO is the following line necessary
         homeworkDetails.addAll(materials);
         homeworkDetails.add(Integer.toString(id));
 
@@ -65,7 +76,6 @@ public class Homework extends DetailedTimedEntry {
     }
 
     @NotNull
-    @Override
     public Bundle getDeconstructed() {
         Bundle bundle = new Bundle();
         bundle.putString("subject", subject);
@@ -79,12 +89,6 @@ public class Homework extends DetailedTimedEntry {
         bundle.putStringArrayList("materials", materials);
         bundle.putSerializable("deadline", deadline.deadline);
         return bundle;
-    }
-
-    @NotNull
-    @Override
-    protected LocalTime getTime() {
-        return deadline.deadline.toLocalTime();
     }
 
     public Deadline getDeadline() {
@@ -156,11 +160,16 @@ public class Homework extends DetailedTimedEntry {
     public Homework generateNewHomeworkById(int id) {
         LocalDateTime newDeadline = deadline.deadline.minusDays(deferral);
         deadline.deadline.plusWeeks(regularity);
-        return new Homework(newDeadline, subject, regularity, " ", howToSend,
+        return new Homework(newDeadline, subject, regularity, "", howToSend,
                 -1, id, new ArrayList<>());
     }
 
-    public class Deadline extends DetailedTimedEntry {
+    @Override
+    public int compareTo(@NonNull Homework homework) {
+        return deadline.deadline.compareTo(homework.deadline.deadline);
+    }
+
+    public class Deadline {
         private LocalDateTime deadline;
 
         private Deadline(@NotNull LocalDateTime deadline) {
@@ -172,34 +181,9 @@ public class Homework extends DetailedTimedEntry {
         }
 
         @NotNull
-        private String getFormattedDeadline() {
+        public String getFormattedDeadline() {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
             return formatter.print(deadline);
         }
-
-        @NotNull
-        public ArrayList<String> getDetails() {
-            ArrayList<String> deadlineDetails = new ArrayList<>();
-            deadlineDetails.add(getSubject());
-            deadlineDetails.add(getDescription());
-            deadlineDetails.add(getFormattedDeadline());
-
-            return deadlineDetails;
-        }
-
-        @NotNull
-        @Override
-        public Bundle getDeconstructed() {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("deadline", deadline);
-            return bundle;
-        }
-
-        @NotNull
-        @Override
-        protected LocalTime getTime() {
-            return deadline.toLocalTime();
-        }
-
     }
 }

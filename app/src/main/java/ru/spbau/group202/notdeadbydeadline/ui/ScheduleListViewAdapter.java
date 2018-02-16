@@ -49,7 +49,8 @@ public class ScheduleListViewAdapter extends BaseAdapter {
 
         View view = convertView;
         if (view == null) {
-            view = lInflater.inflate(R.layout.custom_schedule_listview_item, parent, false);
+            //view = lInflater.inflate(R.layout.custom_schedule_listview_item, parent, false);
+            view = lInflater.inflate(R.layout.custom_deadline_listview_entry, parent, false);
         }
 
         ArrayList<String> detailedEntry = (ArrayList<String>) getItem(position);
@@ -61,7 +62,7 @@ public class ScheduleListViewAdapter extends BaseAdapter {
         stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                 pos, stringBuilder.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if (!detailedEntry.get(2).isEmpty() && !detailedEntry.get(3).isEmpty()) {
+        if (!detailedEntry.get(2).isEmpty() || !detailedEntry.get(3).isEmpty()) {
             stringBuilder.append(", \n");
             if (!detailedEntry.get(2).isEmpty()) {
                 stringBuilder.append(detailedEntry.get(2));
@@ -70,7 +71,8 @@ public class ScheduleListViewAdapter extends BaseAdapter {
             stringBuilder.append(detailedEntry.get(3));
         }
 
-        ((TextView) view.findViewById(R.id.list_item_sch)).setText(stringBuilder);
+
+        ((TextView) view.findViewById(android.R.id.text2)).setText(stringBuilder);
 
         return view;
     }

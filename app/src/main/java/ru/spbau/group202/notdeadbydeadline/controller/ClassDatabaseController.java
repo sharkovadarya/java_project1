@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
+import ru.spbau.group202.notdeadbydeadline.model.Class;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 
-public class ScheduleDatabaseController extends SQLiteOpenHelper {
+public class ClassDatabaseController extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Schedule";
     private static final int DATABASE_VERSION = 1;
     private static final String COLUMN_NAME_ID = "ID";
@@ -27,7 +27,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_AUDITORIUM = "AUDITORIUM";
     private static final String COLUMN_NAME_TEACHER = "TEACHER";
 
-    public ScheduleDatabaseController(@NotNull Context context) {
+    public ClassDatabaseController(@NotNull Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -52,7 +52,7 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private ScheduleEntry getScheduleEntryByCursor(@NotNull Cursor cursor) {
+    private Class getClassByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int dayOfWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY_OF_WEEK));
@@ -62,42 +62,42 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         String auditorium = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_AUDITORIUM));
         String teacher = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TEACHER));
 
-        return new ScheduleEntry(subject, dayOfWeek, hour, minute,
+        return new Class(subject, dayOfWeek, hour, minute,
                 WeekParityEnum.values()[weekParity], auditorium, teacher, id);
     }
 
-    public void addScheduleEntry(@NotNull ScheduleEntry scheduleEntry) {
+    public void addClass(@NotNull Class aClass) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
-            values.put(COLUMN_NAME_ID, scheduleEntry.getId());
-            values.put(COLUMN_NAME_SUBJECT, scheduleEntry.getSubject());
-            values.put(COLUMN_NAME_DAY_OF_WEEK, scheduleEntry.getDayOfWeek());
-            values.put(COLUMN_NAME_HOUR, scheduleEntry.getHour());
-            values.put(COLUMN_NAME_MINUTE, scheduleEntry.getMinute());
-            values.put(COLUMN_NAME_WEEK_PARITY, scheduleEntry.getWeekParity().ordinal());
-            values.put(COLUMN_NAME_AUDITORIUM, scheduleEntry.getAuditorium());
-            values.put(COLUMN_NAME_TEACHER, scheduleEntry.getTeacher());
+            values.put(COLUMN_NAME_ID, aClass.getId());
+            values.put(COLUMN_NAME_SUBJECT, aClass.getSubject());
+            values.put(COLUMN_NAME_DAY_OF_WEEK, aClass.getDayOfWeek());
+            values.put(COLUMN_NAME_HOUR, aClass.getHour());
+            values.put(COLUMN_NAME_MINUTE, aClass.getMinute());
+            values.put(COLUMN_NAME_WEEK_PARITY, aClass.getWeekParity().ordinal());
+            values.put(COLUMN_NAME_AUDITORIUM, aClass.getAuditorium());
+            values.put(COLUMN_NAME_TEACHER, aClass.getTeacher());
             long rowId = database.insert(DATABASE_NAME, null, values);
             Log.d("Database", "inserted row number " + rowId);
         }
     }
 
     @NotNull
-    public List<ScheduleEntry> getDaySchedule(int dayOfWeek, WeekParityEnum weekParity) {
+    public List<Class> getDaySchedule(int dayOfWeek, WeekParityEnum weekParity) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_DAY_OF_WEEK + "=? " +
                 "AND (" + COLUMN_NAME_WEEK_PARITY + "=? " + " OR " + COLUMN_NAME_WEEK_PARITY + "=?) " +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
                 String.valueOf(weekParity.ordinal()), String.valueOf(WeekParityEnum.ALWAYS.ordinal())};
-        List<ScheduleEntry> daySchedule = new ArrayList<>();
+        List<Class> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    ScheduleEntry scheduleEntry = getScheduleEntryByCursor(cursor);
-                    daySchedule.add(scheduleEntry);
+                    Class aClass = getClassByCursor(cursor);
+                    daySchedule.add(aClass);
                 } while (cursor.moveToNext());
             }
         }
@@ -105,25 +105,25 @@ public class ScheduleDatabaseController extends SQLiteOpenHelper {
         return daySchedule;
     }
 
-    public void deleteScheduleEntryById(int id) {
+    public void deleteClassById(int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             database.delete(DATABASE_NAME, COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(id)});
         }
     }
 
-    public ScheduleEntry getScheduleEntryById(int id) {
+    public Class getClassById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
-            return getScheduleEntryByCursor(cursor);
-
+            cursor.moveToFirst();
+            return getClassByCursor(cursor);
         }
     }
 
-    public void editScheduleEntryById(@NotNull String subject, int dayOfWeek, int hour, int minute,
+    public void editClassById(@NotNull String subject, int dayOfWeek, int hour, int minute,
                                       @NotNull WeekParityEnum weekParity, @NotNull String auditorium,
                                       @NotNull String teacher, int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {

@@ -161,8 +161,9 @@ public class ExamDatabaseController extends SQLiteOpenHelper {
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
-                return getExamByCursor(cursor);
-            }
+            cursor.moveToFirst();
+            return getExamByCursor(cursor);
+        }
     }
 
     public void editExamById(@NotNull String subject, @NotNull String description,

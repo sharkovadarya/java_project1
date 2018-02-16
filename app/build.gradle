@@ -41,4 +41,6 @@ dependencies {
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'net.danlew:android.joda:2.9.9.1'
     implementation 'com.android.support:multidex:1.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(":aFileChooser")
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.support.design.widget.NavigationView;
@@ -25,6 +26,8 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +60,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void outputDeadlines() {
-        List<List<String>> deadlinesDetails = Controller.HomeworkController
+        Controller.getInstance(this).homeworkController().generateHomeworks();
+        List<List<String>> deadlinesDetails = Controller.getInstance(this).homeworkController()
                            .getDeadlinesByDay(LocalDate.now());
 
 
         LocalDateTime ldt = LocalDateTime.now().plusDays(1);
-        deadlinesDetails.addAll(Controller.HomeworkController
+        deadlinesDetails.addAll(Controller.getInstance(this).homeworkController()
                             .getDeadlinesByDay(ldt.toLocalDate()));
 
 
@@ -70,6 +74,15 @@ public class MainActivity extends AppCompatActivity
         for (List<String> deadlineDetails : deadlinesDetails) {
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder(
                     deadlineDetails.get(2));
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
+            LocalDateTime deadline = formatter.parseLocalDateTime(deadlineDetails.get(2));
+            LocalDate deadlineDate = new LocalDate(deadline);
+
+            if (deadlineDate.compareTo(LocalDate.now()) <= 0
+                    && deadline.compareTo(LocalDateTime.now()) < 0) {
+                stringBuilder.setSpan(new ForegroundColorSpan(android.graphics.Color.rgb(172, 7, 7)),
+                        0, stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
 
             int position = stringBuilder.length();
             stringBuilder.append(" ");
@@ -94,7 +107,8 @@ public class MainActivity extends AppCompatActivity
 
     private void outputTodaySchedule() {
         LocalDate localDate = LocalDate.now();
-        List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDay(localDate);
+        List<List<String>> scheduleDetails = Controller.getInstance(this).scheduleController()
+                .getScheduleByDay(localDate);
         /*List<List<String>> scheduleDetails = Controller.ScheduleController.getScheduleByDayOfWeek(localDate.getDayOfWeek() - 1,
                 WeekParityEnum.values()[localDate.getWeekOfWeekyear() % 2]);*/
 
@@ -142,13 +156,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        // TODO handle this exceptions sensibly!
-        try {
-            Controller.createDatabases(this);
-        } catch(Exception e) {
-
-        }
 
         outputCurrentDate();
         outputDeadlines();

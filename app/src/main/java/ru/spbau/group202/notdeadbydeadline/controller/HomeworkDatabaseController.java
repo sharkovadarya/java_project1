@@ -135,7 +135,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             }
         }
 
-        Collections.sort(homeworks, (h1, h2) -> h1.getDeadline().compareTo(h2.getDeadline()));
+        Collections.sort(homeworks, Homework::compareTo);
         return homeworks;
     }
 
@@ -203,6 +203,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
+            cursor.moveToFirst();
             return getHomeworkByCursor(cursor);
         }
     }

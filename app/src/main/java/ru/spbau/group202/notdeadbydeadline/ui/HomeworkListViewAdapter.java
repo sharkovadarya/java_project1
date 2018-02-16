@@ -58,6 +58,7 @@ public class HomeworkListViewAdapter extends BaseAdapter {
         String descriptionFiled = "\nDescription: ";
         String submitField = "\nSubmit: ";
         String expectedScoreField = "\nExpected Score: ";
+        String regularityField = "\nRegularity: ";
 
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(descriptionFiled);
         stringBuilder.setSpan(new StyleSpan(BOLD),
@@ -78,6 +79,19 @@ public class HomeworkListViewAdapter extends BaseAdapter {
                 stringBuilder.length() - expectedScoreField.length(),
                 stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         stringBuilder.append(detailedEntry.get(3));
+        stringBuilder.append(regularityField);
+        stringBuilder.setSpan(new StyleSpan(BOLD),
+                stringBuilder.length() - regularityField.length(),
+                stringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (detailedEntry.get(4).trim().equals("0")) {
+            stringBuilder.append("none");
+        } else if (detailedEntry.get(4).trim().equals("1")) {
+            stringBuilder.append(detailedEntry.get(4));
+            stringBuilder.append(" week");
+        } else {
+            stringBuilder.append(detailedEntry.get(4));
+            stringBuilder.append(" weeks");
+        }
 
 
         ((TextView) view.findViewById(R.id.list_item_hw)).setText(stringBuilder);
