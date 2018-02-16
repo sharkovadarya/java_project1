@@ -1,7 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.model.utilities;
 
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -2,6 +2,7 @@ package ru.spbau.group202.notdeadbydeadline.model;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.*;
 
-public class Homework {
+public class Homework implements Comparable<Homework> {
     private Deadline deadline;
     private String subject;
     private String description;
@@ -163,6 +164,11 @@ public class Homework {
                 -1, id, new ArrayList<>());
     }
 
+    @Override
+    public int compareTo(@NonNull Homework homework) {
+        return deadline.deadline.compareTo(homework.deadline.deadline);
+    }
+
     public class Deadline {
         private LocalDateTime deadline;
 
@@ -178,23 +184,6 @@ public class Homework {
         public String getFormattedDeadline() {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
             return formatter.print(deadline);
-        }
-
-        @NotNull
-        public ArrayList<String> getDetails() {
-            ArrayList<String> deadlineDetails = new ArrayList<>();
-            deadlineDetails.add(getSubject());
-            deadlineDetails.add(getDescription());
-            deadlineDetails.add(getFormattedDeadline());
-
-            return deadlineDetails;
-        }
-
-        @NotNull
-        public Bundle getDeconstructed() {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("deadline", deadline);
-            return bundle;
         }
     }
 }

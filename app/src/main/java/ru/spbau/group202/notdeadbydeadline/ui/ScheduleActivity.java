@@ -173,7 +173,7 @@ public class ScheduleActivity extends AppCompatActivity
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
                             Controller.getInstance(ScheduleActivity.this).scheduleController()
-                                    .deleteScheduleEntryById(Integer
+                                    .deleteClassById(Integer
                                             .parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
                             outputSchedule();
                             return true;
