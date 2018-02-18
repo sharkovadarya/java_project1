@@ -100,7 +100,7 @@ public class Exam extends ScheduleEntry {
 
     @NotNull
     @Override
-    protected LocalTime getTime() {
+    public LocalTime getTime() {
         return date.toLocalTime();
     }
 }

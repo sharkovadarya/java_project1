@@ -45,7 +45,7 @@ public class Class extends ScheduleEntry {
 
     @NotNull
     @Override
-    protected LocalTime getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
