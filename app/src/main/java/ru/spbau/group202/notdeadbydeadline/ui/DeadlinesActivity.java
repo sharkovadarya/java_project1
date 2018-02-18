@@ -48,7 +48,8 @@ public class DeadlinesActivity extends AppCompatActivity
         List<List<String>> deadlinesDetails;
 
         LocalDate weekDay = localDate.withDayOfWeek(dayNumber);
-        deadlinesDetails = Controller.HomeworkController
+        Controller.getInstance(this).homeworkController().generateHomeworks();
+        deadlinesDetails = Controller.getInstance(this).homeworkController()
                                      .getDeadlinesByDay(weekDay);
 
         ArrayList<SpannableStringBuilder> formattedDeadlines = new ArrayList<>();

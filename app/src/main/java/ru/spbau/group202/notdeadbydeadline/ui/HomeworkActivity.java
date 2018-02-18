@@ -28,7 +28,7 @@ public class HomeworkActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private void displaySubjects() {
-        List<String> subjects = Controller.getSubjectList();
+        List<String> subjects = Controller.getInstance(this).getSubjectList();
 
         final ListView lv = findViewById(R.id.subjectListView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,

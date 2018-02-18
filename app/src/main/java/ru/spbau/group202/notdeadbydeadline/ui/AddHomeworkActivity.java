@@ -57,7 +57,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
 
     public void processSubject() {
 
-        final List<String> source = Controller.getSubjectList();
+        final List<String> source = Controller.getInstance(this).getSubjectList();
 
         final AutoCompleteTextView actv = findViewById(R.id.getSubjectACTV);
         actv.setAdapter(new ArrayAdapter<>(this,
@@ -300,7 +300,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         if (id != -1) {
             TextView header = findViewById(R.id.addNewHWHeader);
             header.setText(getResources().getString(R.string.edit_hw_entry));
-            homeworkEntry = Controller.HomeworkController.getHomeworkById(id);
+            homeworkEntry = Controller.getInstance(this).homeworkController().getHomeworkById(id);
 
             ArrayList<String> files = homeworkEntry.getStringArrayList("materials");
             if (files != null) {
@@ -339,9 +339,9 @@ public class AddHomeworkActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 } else {
                     if (id == -1) {
-                        HFA.addNewHomework();
+                        HFA.addNewHomework(AddHomeworkActivity.this);
                     } else {
-                        HFA.editHomework(id);
+                        HFA.editHomework(id, AddHomeworkActivity.this);
                     }
                     HFA.clear();
                     finish();
@@ -354,7 +354,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         try {
             Double.parseDouble(string);
             return true;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -363,7 +363,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
         try {
             Integer.parseInt(string);
             return true;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -431,7 +431,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
             materials.add(filepath);
         }
 
-        public void addNewHomework() {
+        public void addNewHomework(Context context) {
 
             if (description == null) {
                 description = " ";
@@ -441,12 +441,12 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 howToSend = " ";
             }
 
-            Controller.HomeworkController.addHomework(new LocalDateTime(year, month, day, hour, minutes),
-                    subject, regularity, description,
-                    howToSend, expectedScore, materials);
+            Controller.getInstance(context).homeworkController()
+                    .addHomework(new LocalDateTime(year, month, day, hour, minutes), subject,
+                            regularity, description, howToSend, expectedScore, materials);
         }
 
-        public void editHomework( int id ) {
+        public void editHomework(int id, Context context) {
             if (description == null) {
                 description = " ";
             }
@@ -472,11 +472,11 @@ public class AddHomeworkActivity extends AppCompatActivity {
                 }
             }
 
-            Controller.HomeworkController.editHomeworkById(id, new LocalDateTime(year, month, day, hour, minutes),
-                    subject, regularity, description,
-                    howToSend, expectedScore, materials);
+            Controller.getInstance(context).homeworkController()
+                    .editHomeworkById(id, new LocalDateTime(year, month, day, hour, minutes),
+                            subject, regularity, description, howToSend, expectedScore, materials);
 
-            }
+        }
 
         public boolean isValidForAdding() {
             return subject != null && isSetDate && isSetTime;
@@ -492,7 +492,7 @@ public class AddHomeworkActivity extends AppCompatActivity {
             howToSend = null;
             expectedScore = Double.MIN_VALUE;
             year = 0;
-            month= 0;
+            month = 0;
             day = 0;
             hour = 0;
             minutes = 0;

@@ -8,9 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 
-public class StudyMaterial implements DetailedEntry {
-    private String subject, path, name;
-    private int term, version, id;
+public class StudyMaterial {
+    private String subject;
+    private String path;
+    private String name;
+    private int term;
+    private int version;
+    private int id;
 
     public StudyMaterial(@NotNull String name, @NotNull String subject, int term,
                          @NotNull String path, int version, int id) {
@@ -54,19 +58,6 @@ public class StudyMaterial implements DetailedEntry {
     }
 
     @NotNull
-    @Override
-    public ArrayList<String> getDetails() {
-        ArrayList<String> studyMaterialDetails = new ArrayList<>();
-        studyMaterialDetails.add(subject);
-        studyMaterialDetails.add(Integer.toString(term));
-        studyMaterialDetails.add(path);
-        studyMaterialDetails.add(name);
-        studyMaterialDetails.add(Integer.toString(id));
-        return studyMaterialDetails;
-    }
-
-    @NotNull
-    @Override
     public Bundle getDeconstructed() {
         Bundle bundle = new Bundle();
         bundle.putString("subject", subject);

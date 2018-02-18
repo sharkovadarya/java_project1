@@ -23,8 +23,9 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
 
 
     private void outputHomeworksBySubject(String subject) {
+        Controller.getInstance(this).homeworkController().generateHomeworks();
         List<List<String>> formattedHomeworksDetails =
-                Controller.HomeworkController.getHomeworksBySubject(subject);
+                Controller.getInstance(this).homeworkController().getHomeworksBySubject(subject);
 
         ListView homeworksListView = findViewById(R.id.homeworksListView);
         HomeworkListViewAdapter adapter1 = new HomeworkListViewAdapter(this, formattedHomeworksDetails);
@@ -53,14 +54,15 @@ public class DisplayHomeworkActivity extends AppCompatActivity {
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
-                            Controller.HomeworkController.deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
+                            Controller.getInstance(DisplayHomeworkActivity.this).homeworkController()
+                                    .deleteHomeworkById(Integer.parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
                             outputHomeworks();
                             return true;
                         } else if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_open_attached))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
                             AttachmentsDialogFragment cdf = new AttachmentsDialogFragment();
-                            Bundle homeworkEntry = Controller.HomeworkController
+                            Bundle homeworkEntry = Controller.getInstance(DisplayHomeworkActivity.this).homeworkController()
                                     .getHomeworkById(Integer.parseInt(detailedEntryList
                                             .get(detailedEntryList.size() - 1)));
                             ArrayList<String> src = homeworkEntry.getStringArrayList("materials");
