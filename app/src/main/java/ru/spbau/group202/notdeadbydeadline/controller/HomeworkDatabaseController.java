@@ -140,6 +140,26 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
+    public List<Homework> getActualHomeworks() {
+        String query = "SELECT * FROM " + DATABASE_NAME;
+        List<Homework> homeworks = new ArrayList<>();
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Homework homework = getHomeworkByCursor(cursor);
+                    if(!homework.hasPassed()) {
+                        homeworks.add(homework);
+                    }
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return homeworks;
+    }
+
+    @NotNull
     public List<Homework> getPassedHomeworksBySubject(@NotNull String subject) {
         List<Homework> passedHomeworks = new ArrayList<>();
         for (Homework homework : getHomeworksBySubject(subject)) {

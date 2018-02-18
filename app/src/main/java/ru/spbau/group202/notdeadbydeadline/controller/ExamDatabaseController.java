@@ -117,6 +117,23 @@ public class ExamDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
+    public List<Exam> getAllExams() {
+        String query = "SELECT * FROM " + DATABASE_NAME;
+        List<Exam> exams = new ArrayList<>();
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    exams.add(getExamByCursor(cursor));
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return exams;
+    }
+
+    @NotNull
     public List<Exam> getExamsByDay(LocalDate date) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_YEAR + "=? " +
                 "AND " + COLUMN_NAME_MONTH + "=? " + "AND " + COLUMN_NAME_DAY + "=?" +
