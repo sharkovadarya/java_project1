@@ -1,8 +1,14 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -30,6 +36,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
@@ -37,6 +44,10 @@ import ru.spbau.group202.notdeadbydeadline.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    // for Google Calendar
+    private boolean[] checkedOptions = new boolean[]{ false, false };
+
 
     private void outputCurrentDate() {
         LocalDateTime currentDate = LocalDateTime.now();
@@ -192,7 +203,38 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_google_calendar) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            String[] options = new String[]{ getResources().getString(R.string.gc_deadlines),
+                                            getResources().getString(R.string.gc_schedule) };
+            final List<String> optionsList = Arrays.asList(options);
+            builder.setMultiChoiceItems(options, checkedOptions, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                    // Update the current focused item's checked status
+                    checkedOptions[which] = isChecked;
+
+                    // Get the current focused item
+                    String currentItem = optionsList.get(which);
+
+                    // Notify the current action
+                    if (currentItem.equals(getResources().getString(R.string.gc_deadlines))) {
+
+                        // TODO create events for deadlines
+                    } else if (currentItem.equals(getResources().getString(R.string.gc_schedule))) {
+                        // TODO create events for schedule
+                    }
+                }
+            });
+
+            builder.setCancelable(true);
+
+            // Set a title for alert dialog
+            builder.setTitle("Google Calendar Connection Options");
+            AlertDialog dialog = builder.create();
+            // Display the alert dialog on interface
+            dialog.show();
             return true;
         }
 
