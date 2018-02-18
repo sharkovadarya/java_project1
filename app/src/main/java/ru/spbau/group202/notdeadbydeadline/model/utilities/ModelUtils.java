@@ -2,6 +2,8 @@ package ru.spbau.group202.notdeadbydeadline.model.utilities;
 
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,4 +44,13 @@ public class ModelUtils {
 
     public static final Function<ScheduleEntry, List<String>> SCHEDULE_ENTRY_TO_SCHEDULE_DESCRIPTION =
             ScheduleEntry::getScheduleDescription;
+
+    @NotNull
+    public static  <T, U> List<U> map(@NotNull List<T> list, @NotNull Function<T, U> function) {
+        List<U> result = new ArrayList<>();
+        for(T element : list) {
+            result.add(function.apply(element));
+        }
+        return result;
+    }
 }

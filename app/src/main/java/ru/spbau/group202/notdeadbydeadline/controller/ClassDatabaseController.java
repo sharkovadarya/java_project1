@@ -96,13 +96,29 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    Class aClass = getClassByCursor(cursor);
-                    daySchedule.add(aClass);
+                    daySchedule.add(getClassByCursor(cursor));
                 } while (cursor.moveToNext());
             }
         }
 
         return daySchedule;
+    }
+
+    @NotNull
+    public List<Class> getAllClasses() {
+        String query = "SELECT * FROM " + DATABASE_NAME;
+        List<Class> classes = new ArrayList<>();
+
+        try (SQLiteDatabase database = this.getReadableDatabase();
+             Cursor cursor = database.rawQuery(query, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    classes.add(getClassByCursor(cursor));
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return classes;
     }
 
     public void deleteClassById(int id) {

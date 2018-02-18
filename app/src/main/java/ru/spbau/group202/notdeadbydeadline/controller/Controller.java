@@ -3,27 +3,19 @@ package ru.spbau.group202.notdeadbydeadline.controller;
 import android.content.Context;
 import android.os.Bundle;
 
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.apache.commons.collections4.ListUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+
 
 import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
@@ -34,14 +26,13 @@ import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 import ru.spbau.group202.notdeadbydeadline.model.Exam;
 import ru.spbau.group202.notdeadbydeadline.model.ExamEnum;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.Function;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.AsyncTaskResult;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.ModelUtils;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.NoSuchStudyMaterialException;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialExistsException;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialSourceAccessException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialsSourceAccessException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.StudyMaterialsUpdatingException;
-import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
 import ru.spbau.group202.notdeadbydeadline.model.utilities.UnrecognizedCreditFormException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.UrlDownloadingException;
+import ru.spbau.group202.notdeadbydeadline.model.utilities.WebStudyMaterialException;
 
 public class Controller {
     private static Controller instance;
@@ -119,9 +110,9 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getHomeworksBySubject(@NotNull String subject) {
-            return map(homeworkDatabase.getHomeworksBySubject(subject), ModelUtils.HW_FIELDS_TO_STRING_LIST);
+            return ModelUtils.map(homeworkDatabase.getHomeworksBySubject(subject), ModelUtils.HW_FIELDS_TO_STRING_LIST);
         }
-
+        
         public void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
                                 int regularity, String description, String howToSend,
                                 double expectedScore, @NotNull ArrayList<String> materials) {
@@ -165,7 +156,7 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getDeadlinesByDay(@NotNull LocalDate date) {
-            return map(homeworkDatabase.getHomeworksByDay(date), ModelUtils.HW_DEADLINE_FIELDS_TO_STRING_LIST);
+            return ModelUtils.map(homeworkDatabase.getHomeworksByDay(date), ModelUtils.HW_DEADLINE_FIELDS_TO_STRING_LIST);
         }
 
         public void generateHomeworks() {
@@ -200,12 +191,12 @@ public class Controller {
             List<ScheduleEntry> scheduleEntries = ListUtils.union(exams, classes);
             Collections.sort(scheduleEntries);
 
-            return map(scheduleEntries, ModelUtils.SCHEDULE_ENTRY_TO_SCHEDULE_DESCRIPTION);
+            return ModelUtils.map(scheduleEntries, ModelUtils.SCHEDULE_ENTRY_TO_SCHEDULE_DESCRIPTION);
         }
 
         public void addClass(@NotNull String subject, int dayOfWeek, int hour,
-                                     int minute, @NotNull WeekParityEnum weekParity,
-                                     @NotNull String auditorium, @NotNull String teacher) {
+                             int minute, @NotNull WeekParityEnum weekParity,
+                             @NotNull String auditorium, @NotNull String teacher) {
             int id = settingsDatabase.getTotalNumberOfScheduleEntries();
             Class aClass = new Class(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
@@ -218,8 +209,8 @@ public class Controller {
         }
 
         public void editClassById(int id, @NotNull String subject, int dayOfWeek,
-                                          int hour, int minute, @NotNull WeekParityEnum weekParity,
-                                          @NotNull String auditorium, @NotNull String teacher) {
+                                  int hour, int minute, @NotNull WeekParityEnum weekParity,
+                                  @NotNull String auditorium, @NotNull String teacher) {
             classDatabase.editClassById(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
         }
@@ -239,12 +230,12 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getExamsBySubject(@NotNull String subject) {
-            return map(examDatabase.getExamsBySubject(subject), ModelUtils.EXAM_FIELDS_TO_STRING_LIST);
+            return ModelUtils.map(examDatabase.getExamsBySubject(subject), ModelUtils.EXAM_FIELDS_TO_STRING_LIST);
         }
 
         @NotNull
         public List<List<String>> getExamsByDay(@NotNull LocalDate date) {
-            return map(examDatabase.getExamsByDay(date), ModelUtils.EXAM_FIELDS_TO_STRING_LIST);
+            return ModelUtils.map(examDatabase.getExamsByDay(date), ModelUtils.EXAM_FIELDS_TO_STRING_LIST);
         }
 
         public void addExam(@NotNull LocalDateTime date, @NotNull String subject,
@@ -282,10 +273,6 @@ public class Controller {
     }
 
     public class StudyMaterialController {
-        private final String STUDY_MATERIAL_SOURCE = "https://cdkrot.me/";
-        private final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
-        private final int NUMBER_OF_SEARCH_TRIES = 5;
-        private String urlContent;
         private StudyMaterialDatabaseController studyMaterialDatabase;
 
         public StudyMaterialController(Context context) {
@@ -293,17 +280,16 @@ public class Controller {
         }
 
         public void addUpdatableStudyMaterial(@NotNull String name, @NotNull String subject, int term)
-                throws UrlDownloadingException, MalformedURLException, NoSuchStudyMaterialException,
-                StudyMaterialSourceAccessException, StudyMaterialExistsException {
-            File studyMaterialFile = new File(appDirectory.getAbsolutePath(), name);
-            if (studyMaterialFile.exists()) {
-                throw new StudyMaterialExistsException();
-            }
-
+                throws WebStudyMaterialException, StudyMaterialsSourceAccessException {
             int id = settingsDatabase.getTotalNumberOfStudyMaterials();
             StudyMaterial studyMaterial = new StudyMaterial(name, subject, term,
                     appDirectory.getAbsolutePath(), 0, id);
-            updateUrlContent();
+            File studyMaterialFile = new File(appDirectory.getAbsolutePath(), name);
+
+            if (studyMaterialFile.exists()) {
+                throw new WebStudyMaterialException("The study material already exists.",
+                        ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST.apply(studyMaterial));
+            }
             updateStudyMaterial(studyMaterial);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
             settingsDatabase.saveTotalNumberOfStudyMaterials(++id);
@@ -327,13 +313,13 @@ public class Controller {
 
         @NotNull
         public List<List<String>> getStudyMaterialsBySubject(@NotNull String subject) {
-            return map(studyMaterialDatabase.getStudyMaterialsBySubject(subject),
+            return ModelUtils.map(studyMaterialDatabase.getStudyMaterialsBySubject(subject),
                     ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST);
         }
 
         @NotNull
         public List<List<String>> getStudyMaterialsByTerm(int term) {
-            return map(studyMaterialDatabase.getStudyMaterialsByTerm(term),
+            return ModelUtils.map(studyMaterialDatabase.getStudyMaterialsByTerm(term),
                     ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST);
         }
 
@@ -346,135 +332,91 @@ public class Controller {
             studyMaterialDatabase.deleteStudyMaterialById(id);
         }
 
-        public void editStudyMaterialById(int id, @NotNull String subject, int term)
-                throws MalformedURLException, UrlDownloadingException {
+        public void editStudyMaterialById(int id, @NotNull String subject, int term) {
             studyMaterialDatabase.editStudyMaterialById(id, subject, term);
             if (!subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
         }
 
-        public void updateStudyMaterials() throws StudyMaterialSourceAccessException,
-                StudyMaterialsUpdatingException {
-            updateUrlContent();
-            List<StudyMaterial> studyMaterials = studyMaterialDatabase.getUpdatableStudyMaterials();
-            boolean allUpdated = true;
-            ArrayList<StudyMaterial> failedToUpdate = new ArrayList<>();
-            for (StudyMaterial studyMaterial : studyMaterials) {
-                try {
-                    updateStudyMaterial(studyMaterial);
-                } catch (Exception exception) {
-                    allUpdated = false;
-                    failedToUpdate.add(studyMaterial);
-                }
+        public void updateStudyMaterials() throws StudyMaterialsUpdatingException, UrlDownloadingException {
+            StudyMaterialsUpdater studyMaterialsUpdater;
+            StudyMaterial[] studyMaterials = studyMaterialDatabase.getUpdatableStudyMaterials()
+                    .toArray(new StudyMaterial[0]);
+
+            try {
+                studyMaterialsUpdater = new StudyMaterialsUpdater();
+                studyMaterialsUpdater.execute(studyMaterials);
+                studyMaterialsUpdater.get(1, TimeUnit.MINUTES);
+            } catch (Exception exception) {
+                throw new UrlDownloadingException();
             }
 
-            if (!allUpdated) {
-                throw new StudyMaterialsUpdatingException(map(failedToUpdate,
-                        ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST));
+            StudyMaterialsUpdatingException exception = studyMaterialsUpdater.getError();
+            if (exception != null) {
+                throw exception;
             }
         }
 
         @NotNull
-        public List<String>[] getAvailableStudyMaterials() throws StudyMaterialSourceAccessException {
-            @SuppressWarnings("unchecked")
-            ArrayList<String>[] materialsByTerms = new ArrayList[7];
-            for (int term = 0; term < materialsByTerms.length; term++) {
-                materialsByTerms[term] = new ArrayList<>();
-            }
+        public List<String>[] getAvailableStudyMaterialsList() throws StudyMaterialsSourceAccessException {
+            WebStudyMaterialsListGetter webStudyMaterialsListGetter = new WebStudyMaterialsListGetter();
+            webStudyMaterialsListGetter.execute();
+            AsyncTaskResult<List<String>[], StudyMaterialsSourceAccessException> result;
 
             try {
-                Document html = Jsoup.connect(STUDY_MATERIAL_SOURCE).get();
-                Elements materialsUrl = html.select("a[href$=.pdf]");
-
-                Pattern urlPattern = Pattern.compile(".+/(.+/.*?term(\\d).+)/\\d+\\.pdf");
-                Pattern noTermPattern = Pattern.compile(STUDY_MATERIAL_SOURCE + "(.+)/\\d+\\.pdf");
-                for (Element materialUrl : materialsUrl) {
-                    String absUrl = materialUrl.attr("abs:href");
-                    Matcher urlMatcher = urlPattern.matcher(absUrl);
-                    if (urlMatcher.find()) {
-                        materialsByTerms[Integer.valueOf(urlMatcher.group(2))].add(urlMatcher.group(1));
-                    } else {
-                        Matcher noTermMatcher = noTermPattern.matcher(absUrl);
-                        if (noTermMatcher.find()) {
-                            materialsByTerms[0].add(noTermMatcher.group(1));
-                        }
-
-                    }
-                }
-            } catch (IOException exception) {
-                throw new StudyMaterialSourceAccessException();
+                result = webStudyMaterialsListGetter.get(1, TimeUnit.MINUTES);
+            } catch (Exception exception) {
+                throw new StudyMaterialsSourceAccessException();
             }
 
-            return materialsByTerms;
+            StudyMaterialsSourceAccessException exception = result.getError();
+            if (exception == null) {
+                return result.getResult();
+            } else {
+                throw exception;
+            }
         }
 
         @NotNull
         public List<File> searchForStudyMaterials(String query) throws UrlDownloadingException {
-            ArrayList<File> results = new ArrayList<>();
-            String searchURL = GOOGLE_SEARCH_URL + "?q=" + "filetype:pdf " + "+"
-                    + query.replace(" ", "+") + "&num="
-                    + Integer.toString(NUMBER_OF_SEARCH_TRIES);
+            GoogleSearchRequester googleSearchRequester = new GoogleSearchRequester();
+            googleSearchRequester.execute(query, appDirectory.getAbsolutePath());
+            AsyncTaskResult<List<File>, UrlDownloadingException> result;
 
             try {
-                Document html = Jsoup.connect(searchURL).userAgent("Mozilla").timeout(5000).get();
-                Elements links = html.select("h3.r > a");
-                for (Element link : links) {
-                    String stringUrl = link.attr("href").replace("/url?q=", "").replaceAll("\\.pdf.*", ".pdf");
-                    URL url = new URL(stringUrl);
-                    File searchResultsFolder = new File(appDirectory + File.separator + "search");
-                    searchResultsFolder.mkdir();
-                    File foundMaterial = new File(searchResultsFolder.getAbsolutePath(), link.text());
-                    FileUtils.copyURLToFile(url, foundMaterial);
-                    results.add(foundMaterial);
-                }
-            } catch (IOException exception) {
+                result = googleSearchRequester.get(1, TimeUnit.MINUTES);
+            } catch (Exception exception) {
                 throw new UrlDownloadingException();
             }
 
-            return results;
+            UrlDownloadingException exception = result.getError();
+            if (exception == null) {
+                return result.getResult();
+            } else {
+                throw exception;
+            }
+
         }
 
         private void updateStudyMaterial(StudyMaterial studyMaterial)
-                throws NoSuchStudyMaterialException, MalformedURLException, UrlDownloadingException {
-            Pattern urlPattern = Pattern.compile("href=\"(/.+/" + studyMaterial.getName() +
-                    "/(\\d+)\\.pdf)\"");
-            Matcher urlMatcher = urlPattern.matcher(urlContent);
-
-            if (!urlMatcher.find()) {
-                throw new NoSuchStudyMaterialException();
-            }
-            int newVersion = Integer.valueOf(urlMatcher.group(2));
-            if (newVersion > studyMaterial.getVersion()) {
-                URL studyMaterialUrl = new URL(STUDY_MATERIAL_SOURCE + urlMatcher.group(1));
-                File studyMaterialFile = new File(studyMaterial.getPath(), studyMaterial.getName());
-                try {
-                    FileUtils.copyURLToFile(studyMaterialUrl, studyMaterialFile);
-                } catch (IOException exception) {
-                    throw new UrlDownloadingException();
-                }
-                studyMaterial.setVersion(Integer.valueOf(urlMatcher.group(2)));
-            }
-        }
-
-        private void updateUrlContent() throws StudyMaterialSourceAccessException {
+                throws StudyMaterialsSourceAccessException, WebStudyMaterialException {
+            StudyMaterialsUpdater studyMaterialsUpdater;
             try {
-                URL url = new URL(STUDY_MATERIAL_SOURCE);
-                FileUtils.copyURLToFile(url, new File(appDirectory, STUDY_MATERIAL_SOURCE));
-                urlContent = FileUtils.readFileToString(new File(url.toURI()), "UTF-8");
+                studyMaterialsUpdater = new StudyMaterialsUpdater();
+                studyMaterialsUpdater.execute(studyMaterial);
+                studyMaterialsUpdater.get(1, TimeUnit.MINUTES);
             } catch (Exception exception) {
-                throw new StudyMaterialSourceAccessException();
+                throw new WebStudyMaterialException("Unable to download study material.",
+                        ModelUtils.STUDY_MATERIAL_FIELDS_TO_STRING_LIST.apply(studyMaterial));
+            }
+
+            StudyMaterialsUpdatingException exception = studyMaterialsUpdater.getError();
+            if (exception != null) {
+                throw exception.getErrors().get(0);
             }
         }
     }
 
 
-    @NotNull
-    private <T, U> List<U> map(@NotNull List<T> list, @NotNull Function<T, U> function) {
-        List<U> result = new ArrayList<>();
-        for(T element : list) {
-            result.add(function.apply(element));
-        }
-        return result;
-    }
 }
