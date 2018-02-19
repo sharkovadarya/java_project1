@@ -2,11 +2,7 @@ package ru.spbau.group202.notdeadbydeadline.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +24,6 @@ import com.ipaulpro.afilechooser.utils.FileUtils;
 
 import org.joda.time.LocalDateTime;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
