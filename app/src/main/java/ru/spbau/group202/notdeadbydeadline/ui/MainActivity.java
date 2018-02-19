@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             endTermDate = new LocalDate(year, month + 1, dayOfMonth);
             Controller.getInstance(context).scheduleController()
-                    .addClassEntriesToGoogleCalendar(context, endTermDate);
+                    .resetClassEntriesInGoogleCalendar();
         }
 
         public void setContext(Context context) {
