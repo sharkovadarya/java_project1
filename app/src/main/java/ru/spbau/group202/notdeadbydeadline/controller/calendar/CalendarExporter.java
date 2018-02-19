@@ -49,7 +49,6 @@ public class CalendarExporter {
     }
 
     public void addClassEntries(List<ClassEntry> classes, LocalDate endTermDate) {
-        //LocalDate localDate = LocalDate.now().plusDays(ce.getDayOfWeek());
         classesEventsHandler.deleteAll();
         for (ClassEntry classEntry : classes) {
             LocalDate localDate = LocalDate.now().withDayOfWeek(DateTimeConstants.MONDAY);
@@ -68,11 +67,10 @@ public class CalendarExporter {
                     localDate = localDate.plusDays(classEntry.getDayOfWeek() + 7);
                 }
             }
-            classesEventsHandler.addClassEntry(classEntry, localDate);
             while (localDate.compareTo(endTermDate) < 0) {
+                classesEventsHandler.addClassEntry(classEntry, localDate);
                 localDate = localDate.plusDays(
                         classEntry.getWeekParity() == WeekParityEnum.ALWAYS ? 7 : 14);
-                classesEventsHandler.addClassEntry(classEntry, localDate);
             }
         }
     }

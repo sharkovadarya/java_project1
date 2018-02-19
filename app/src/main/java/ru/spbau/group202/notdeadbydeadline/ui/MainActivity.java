@@ -1,5 +1,6 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -221,6 +222,7 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 DatePickerFragment datePickerFragment = new DatePickerFragment();
+                                datePickerFragment.setContext(MainActivity.this);
                                 datePickerFragment.show(getSupportFragmentManager(), "datePicker");
                             }
                         });
@@ -280,16 +282,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static class DatePickerFragment extends AbstractDatePicker {
+
+        Context context;
+
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            endTermDate = new LocalDate(year, month, dayOfMonth);
-            // TODO fix this
-            /*
-            if (endTermDate != null) {
-                Controller.getInstance(MainActivity.this).scheduleController()
-                          .addClassEntriesToGoogleCalendar(getApplicationContext(),
-                           endTermDate);
-            }*/
+            endTermDate = new LocalDate(year, month + 1, dayOfMonth);
+            Controller.getInstance(context).scheduleController()
+                    .addClassEntriesToGoogleCalendar(context, endTermDate);
         }
+
+        public void setContext(Context context) {
+            this.context = context;
+        }
+
     }
 }
