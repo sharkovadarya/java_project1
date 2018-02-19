@@ -185,5 +185,9 @@ public class Homework implements Comparable<Homework> {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
             return formatter.print(deadline);
         }
+
+        public LocalDateTime getDateTime() {
+            return deadline;
+        }
     }
 }

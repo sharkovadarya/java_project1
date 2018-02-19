@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class ScheduleEntry implements Comparable<ScheduleEntry> {
     @NotNull
-    protected abstract LocalTime getTime();
+    public abstract LocalTime getTime();
 
     @NotNull
     public abstract List<String> getScheduleDescription();
