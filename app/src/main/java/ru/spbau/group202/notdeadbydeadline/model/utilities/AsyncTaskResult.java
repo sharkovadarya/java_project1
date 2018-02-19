@@ -1,7 +1,5 @@
 package ru.spbau.group202.notdeadbydeadline.model.utilities;
 
-import ru.spbau.group202.notdeadbydeadline.controller.Controller;
-
 
 public class AsyncTaskResult<T, E extends Exception> {
     private T result;

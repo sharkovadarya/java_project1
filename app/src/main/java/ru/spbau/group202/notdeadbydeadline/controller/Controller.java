@@ -112,7 +112,7 @@ public class Controller {
         public List<List<String>> getHomeworksBySubject(@NotNull String subject) {
             return ModelUtils.map(homeworkDatabase.getHomeworksBySubject(subject), ModelUtils.HW_FIELDS_TO_STRING_LIST);
         }
-        
+
         public void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
                                 int regularity, String description, String howToSend,
                                 double expectedScore, @NotNull ArrayList<String> materials) {

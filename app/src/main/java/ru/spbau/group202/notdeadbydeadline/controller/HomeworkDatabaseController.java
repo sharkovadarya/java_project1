@@ -149,7 +149,7 @@ public class HomeworkDatabaseController extends SQLiteOpenHelper {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     Homework homework = getHomeworkByCursor(cursor);
-                    if(!homework.hasPassed()) {
+                    if (!homework.hasPassed()) {
                         homeworks.add(homework);
                     }
                 } while (cursor.moveToNext());

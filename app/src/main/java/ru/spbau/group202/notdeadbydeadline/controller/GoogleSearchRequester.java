@@ -39,6 +39,7 @@ public class GoogleSearchRequester
                 String stringUrl = link.attr("href").replace("/url?q=", "").replaceAll("\\.pdf.*", ".pdf");
                 URL url = new URL(stringUrl);
                 File searchResultsFolder = new File(appDirectory + File.separator + "search");
+                //noinspection ResultOfMethodCallIgnored
                 searchResultsFolder.mkdir();
                 File foundMaterial = new File(searchResultsFolder.getAbsolutePath(), link.text());
                 FileUtils.copyURLToFile(url, foundMaterial);
