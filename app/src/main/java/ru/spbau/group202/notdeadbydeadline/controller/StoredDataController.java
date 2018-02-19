@@ -8,10 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 
 
+
 public class StoredDataController {
     private static final String APP_PREFERENCES = "Settings";
     private static final String APP_PREFERENCES_INVERSE_WEEK_PARITY = "INVERSE_WEEK_PARITY";
-    private static final String APP_PREFERENCES_GOOGLE_CALENDAR_SYNC = "GOOGLE_CALENDAR_SYNC";
+    private static final String APP_PREFERENCES_IS_GC_SYNC_HW = "IS_GC_SYNC_HW";
+    private static final String APP_PREFERENCES_IS_GC_SYNC_EXAMS = "IS_GC_SYNC_EXAMS";
+    private static final String APP_PREFERENCES_IS_GC_SYNC_CLASSES = "GC_SYNC_CLASSES";
     private static final String APP_PREFERENCES_END_TERM_DATE = "END_TERM_DATE";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_HW = "TOTAL_NUMBER_OF_HW";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES
@@ -32,15 +35,27 @@ public class StoredDataController {
         editor.apply();
     }
 
-    public void setWeekPairity(boolean isInversed) {
+    public void setWeekParity(boolean isInversed) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, isInversed);
         editor.apply();
     }
 
-    public void setGoogleCalendarSync(boolean isSync) {
+    public void setGoogleCalendarHomeworksSync(boolean isSync) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(APP_PREFERENCES_GOOGLE_CALENDAR_SYNC, isSync);
+        editor.putBoolean(APP_PREFERENCES_IS_GC_SYNC_HW, isSync);
+        editor.apply();
+    }
+
+    public void setGoogleCalendarExamsSync(boolean isSync) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(APP_PREFERENCES_IS_GC_SYNC_EXAMS, isSync);
+        editor.apply();
+    }
+
+    public void setGoogleCalendarClassesSync(boolean isSync) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(APP_PREFERENCES_IS_GC_SYNC_CLASSES, isSync);
         editor.apply();
     }
 
@@ -72,8 +87,16 @@ public class StoredDataController {
         return settings.getBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, false);
     }
 
-    public boolean getGoogleCalendarSync() {
-        return settings.getBoolean(APP_PREFERENCES_GOOGLE_CALENDAR_SYNC, false);
+    public boolean isGoogleCalendarSyncHomework() {
+        return settings.getBoolean(APP_PREFERENCES_IS_GC_SYNC_HW, false);
+    }
+
+    public boolean isGoogleCalendarSyncExams() {
+        return settings.getBoolean(APP_PREFERENCES_IS_GC_SYNC_EXAMS, false);
+    }
+
+    public boolean isGoogleCalendarSyncClasses() {
+        return settings.getBoolean(APP_PREFERENCES_IS_GC_SYNC_CLASSES, false);
     }
 
     public LocalDate getEndTermDate() {
