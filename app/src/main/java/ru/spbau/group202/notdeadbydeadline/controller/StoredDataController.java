@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class StoredDataController {
     private static final String APP_PREFERENCES = "Settings";
     private static final String APP_PREFERENCES_INVERSE_WEEK_PARITY = "INVERSE_WEEK_PARITY";
+    private static final String APP_PREFERENCES_GOOGLE_CALENDAR_SYNC = "GOOGLE_CALENDAR_SYNC";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_HW = "TOTAL_NUMBER_OF_HW";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES
             = "TOTAL_NUMBER_OF_SCHEDULE_ENTRIES";
@@ -22,38 +23,48 @@ public class StoredDataController {
                 .getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public void saveWeekPairity(boolean isInversed) {
+    public void setWeekPairity(boolean isInversed) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, isInversed);
         editor.apply();
     }
 
-    public void saveTotalNumberOfHW(int totalNumberOfHW) {
+    public void setGoogleCalendarSync(boolean isSync) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(APP_PREFERENCES_GOOGLE_CALENDAR_SYNC, isSync);
+        editor.apply();
+    }
+
+    public void setTotalNumberOfHW(int totalNumberOfHW) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_HW, totalNumberOfHW);
         editor.apply();
     }
 
-    public void saveTotalNumberOfScheduleEntries(int totalNumberOfScheduleEntries) {
+    public void setTotalNumberOfScheduleEntries(int totalNumberOfScheduleEntries) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES, totalNumberOfScheduleEntries);
         editor.apply();
     }
 
-    public void saveTotalNumberOfWorks(int totalNumberOfWorks) {
+    public void setTotalNumberOfWorks(int totalNumberOfWorks) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_EXAMS, totalNumberOfWorks);
         editor.apply();
     }
 
-    public void saveTotalNumberOfStudyMaterials(int totalNumberOfStudyMaterials) {
+    public void setTotalNumberOfStudyMaterials(int totalNumberOfStudyMaterials) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(APP_PREFERENCES_TOTAL_NUMBER_OF_STUDY_MATERIALS, totalNumberOfStudyMaterials);
         editor.apply();
     }
 
-    public boolean getParityOfWeek() {
+    public boolean getWeekParity() {
         return settings.getBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, false);
+    }
+
+    public boolean getGoogleCalendarSync() {
+        return settings.getBoolean(APP_PREFERENCES_GOOGLE_CALENDAR_SYNC, false);
     }
 
     public int getTotalNumberOfHW() {
