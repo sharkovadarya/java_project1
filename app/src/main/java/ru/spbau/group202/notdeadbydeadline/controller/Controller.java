@@ -96,12 +96,28 @@ public class Controller {
         return settingsDatabase.getWeekParity();
     }
 
-    public void setGoogleCalendarSync(boolean isSync) {
-        settingsDatabase.setGoogleCalendarSync(isSync);
+    public void setGoogleCalendarHomeworkSync(boolean isSync) {
+        settingsDatabase.setGoogleCalendarHomeworksSync(isSync);
     }
 
-    public boolean getGoogleCalendarSync() {
-        return settingsDatabase.getGoogleCalendarSync();
+    public boolean isGoogleCalendarSyncHomework() {
+        return settingsDatabase.isGoogleCalendarSyncHomework();
+    }
+
+    public void setGoogleCalendarExamsSync(boolean isSync) {
+        settingsDatabase.setGoogleCalendarExamsSync(isSync);
+    }
+
+    public boolean isGoogleCalendarSyncExams() {
+        return settingsDatabase.isGoogleCalendarSyncExams();
+    }
+
+    public void setGoogleCalendarClassesSync(boolean isSync) {
+        settingsDatabase.setGoogleCalendarClassesSync(isSync);
+    }
+
+    public boolean isGoogleCalendarSyncClasses() {
+        return settingsDatabase.isGoogleCalendarSyncClasses();
     }
 
     public void setEndTermDate(LocalDate date) {
@@ -148,21 +164,21 @@ public class Controller {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
 
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncHomework()) {
                 calendarExporter.addHomework(homework);
             }
         }
 
         public void deleteHomeworkById(int id) {
             homeworkDatabase.deleteHomeworkById(id);
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncHomework()) {
                 resetHomeworksInGoogleCalendar();
             }
         }
 
         public void setHomeworkScoreById(int id, int score) {
             homeworkDatabase.setScoreById(id, score);
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncHomework()) {
                 resetHomeworksInGoogleCalendar();
             }
         }
@@ -179,7 +195,7 @@ public class Controller {
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncHomework()) {
                 resetHomeworksInGoogleCalendar();
             }
         }
@@ -201,7 +217,7 @@ public class Controller {
                     int id = settingsDatabase.getTotalNumberOfHW();
                     homeworkDatabase.addHomework(homework.generateNewHomeworkById(id));
                     settingsDatabase.setTotalNumberOfHW(++id);
-                    if (settingsDatabase.getGoogleCalendarSync()) {
+                    if (settingsDatabase.isGoogleCalendarSyncHomework()) {
                         calendarExporter.addHomework(homework);
                     }
                 }
@@ -245,14 +261,14 @@ public class Controller {
             classEntriesDatabase.addClassEntry(aClass);
             settingsDatabase.setTotalNumberOfScheduleEntries(++id);
 
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncClasses()) {
                 resetClassEntriesInGoogleCalendar();
             }
         }
 
         public void deleteClassEntryById(int id) {
             classEntriesDatabase.deleteClassEntryById(id);
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncClasses()) {
                 resetClassEntriesInGoogleCalendar();
             }
         }
@@ -262,7 +278,7 @@ public class Controller {
                                        @NotNull String auditorium, @NotNull String teacher) {
             classEntriesDatabase.editClassEntryById(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncClasses()) {
                 resetClassEntriesInGoogleCalendar();
             }
         }
@@ -306,14 +322,14 @@ public class Controller {
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncExams()) {
                 resetExamsInGoogleCalendar();
             }
         }
 
         public void deleteExamsById(int id) {
             examDatabase.deleteExamById(id);
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncExams()) {
                 resetExamsInGoogleCalendar();
             }
         }
@@ -328,7 +344,7 @@ public class Controller {
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
-            if (settingsDatabase.getGoogleCalendarSync()) {
+            if (settingsDatabase.isGoogleCalendarSyncExams()) {
                 resetExamsInGoogleCalendar();
             }
         }
