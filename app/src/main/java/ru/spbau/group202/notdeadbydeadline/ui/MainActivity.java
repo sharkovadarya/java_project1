@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity
                     if (currentItem.equals(getResources().getString(R.string.gc_deadlines))) {
 
                         Controller.getInstance(MainActivity.this).homeworkController()
-                                .addHomeworksToGoogleCalendar(getApplicationContext());
+                                .resetHomeworksInGoogleCalendar();
                     } else if (currentItem.equals(getResources().getString(R.string.gc_schedule))) {
 
                         AlertDialog.Builder builderED = new AlertDialog.Builder(MainActivity.this);

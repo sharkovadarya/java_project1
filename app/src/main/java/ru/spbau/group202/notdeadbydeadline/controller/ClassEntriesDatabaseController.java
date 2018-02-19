@@ -15,7 +15,7 @@ import java.util.List;
 import ru.spbau.group202.notdeadbydeadline.model.ClassEntry;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 
-public class ClassDatabaseController extends SQLiteOpenHelper {
+public class ClassEntriesDatabaseController extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "Schedule";
     private static final int DATABASE_VERSION = 1;
     private static final String COLUMN_NAME_ID = "ID";
@@ -27,7 +27,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     private static final String COLUMN_NAME_AUDITORIUM = "AUDITORIUM";
     private static final String COLUMN_NAME_TEACHER = "TEACHER";
 
-    public ClassDatabaseController(@NotNull Context context) {
+    public ClassEntriesDatabaseController(@NotNull Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -52,7 +52,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private ClassEntry getClassByCursor(@NotNull Cursor cursor) {
+    private ClassEntry getClassEntryByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int dayOfWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY_OF_WEEK));
@@ -66,7 +66,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
                 WeekParityEnum.values()[weekParity], auditorium, teacher, id);
     }
 
-    public void addClass(@NotNull ClassEntry aClass) {
+    public void addClassEntry(@NotNull ClassEntry aClass) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_ID, aClass.getId());
@@ -96,7 +96,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    daySchedule.add(getClassByCursor(cursor));
+                    daySchedule.add(getClassEntryByCursor(cursor));
                 } while (cursor.moveToNext());
             }
         }
@@ -105,7 +105,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public List<ClassEntry> getAllClasses() {
+    public List<ClassEntry> getAllClassEntries() {
         String query = "SELECT * FROM " + DATABASE_NAME;
         List<ClassEntry> classes = new ArrayList<>();
 
@@ -113,7 +113,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
              Cursor cursor = database.rawQuery(query, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    classes.add(getClassByCursor(cursor));
+                    classes.add(getClassEntryByCursor(cursor));
                 } while (cursor.moveToNext());
             }
         }
@@ -121,27 +121,27 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
         return classes;
     }
 
-    public void deleteClassById(int id) {
+    public void deleteClassEntryById(int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             database.delete(DATABASE_NAME, COLUMN_NAME_ID + " = ?",
                     new String[]{String.valueOf(id)});
         }
     }
 
-    public ClassEntry getClassById(int id) {
+    public ClassEntry getClassEntryById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
             cursor.moveToFirst();
-            return getClassByCursor(cursor);
+            return getClassEntryByCursor(cursor);
         }
     }
 
-    public void editClassById(@NotNull String subject, int dayOfWeek, int hour, int minute,
-                              @NotNull WeekParityEnum weekParity, @NotNull String auditorium,
-                              @NotNull String teacher, int id) {
+    public void editClassEntryById(@NotNull String subject, int dayOfWeek, int hour, int minute,
+                                   @NotNull WeekParityEnum weekParity, @NotNull String auditorium,
+                                   @NotNull String teacher, int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, subject);

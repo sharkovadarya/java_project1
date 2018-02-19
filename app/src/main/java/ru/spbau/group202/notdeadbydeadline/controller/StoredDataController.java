@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.LocalDate;
+
 
 public class StoredDataController {
     private static final String APP_PREFERENCES = "Settings";
     private static final String APP_PREFERENCES_INVERSE_WEEK_PARITY = "INVERSE_WEEK_PARITY";
     private static final String APP_PREFERENCES_GOOGLE_CALENDAR_SYNC = "GOOGLE_CALENDAR_SYNC";
+    private static final String APP_PREFERENCES_END_TERM_DATE = "END_TERM_DATE";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_HW = "TOTAL_NUMBER_OF_HW";
     private static final String APP_PREFERENCES_TOTAL_NUMBER_OF_SCHEDULE_ENTRIES
             = "TOTAL_NUMBER_OF_SCHEDULE_ENTRIES";
@@ -21,6 +24,12 @@ public class StoredDataController {
     public StoredDataController(@NotNull Context context) {
         settings = context.getApplicationContext()
                 .getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    public void setEndTermDate(LocalDate date) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(APP_PREFERENCES_END_TERM_DATE, date.toString());
+        editor.apply();
     }
 
     public void setWeekPairity(boolean isInversed) {
@@ -65,6 +74,10 @@ public class StoredDataController {
 
     public boolean getGoogleCalendarSync() {
         return settings.getBoolean(APP_PREFERENCES_GOOGLE_CALENDAR_SYNC, false);
+    }
+
+    public LocalDate getEndTermDate() {
+        return new LocalDate(settings.getString(APP_PREFERENCES_END_TERM_DATE, ""));
     }
 
     public int getTotalNumberOfHW() {

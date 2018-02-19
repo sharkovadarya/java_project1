@@ -44,6 +44,7 @@ public class Controller {
     private HomeworkController homeworkController;
     private ScheduleController scheduleController;
     private StudyMaterialController studyMaterialController;
+    private CalendarExporter calendarExporter;
     private Set<String> subjectList;
 
     private Controller(@NotNull Context context) {
@@ -53,6 +54,7 @@ public class Controller {
         examController = new ExamController(context);
         studyMaterialController = new StudyMaterialController(context);
         settingsDatabase = new StoredDataController(context);
+        calendarExporter = new CalendarExporter(context);
         subjectList = new HashSet<>();
         subjectList.addAll(subjectDatabase.getAllSubjects());
         appDirectory = context.getApplicationContext().getFilesDir();
@@ -102,6 +104,14 @@ public class Controller {
         return settingsDatabase.getGoogleCalendarSync();
     }
 
+    public void setEndTermDate(LocalDate date) {
+        settingsDatabase.setEndTermDate(date);
+    }
+
+    public LocalDate getEndTermDate() {
+        return settingsDatabase.getEndTermDate();
+    }
+
     @NotNull
     public List<String> calculateProgress(@NotNull String subject) throws UnrecognizedCreditFormException {
         SubjectCredit subjectCredit = subjectDatabase.getSubjectCredit(subject);
@@ -121,11 +131,6 @@ public class Controller {
         }
 
         @NotNull
-        public List<Homework> getActualHomeworks() {
-            return homeworkDatabase.getActualHomeworks();
-        }
-
-        @NotNull
         public List<List<String>> getHomeworksBySubject(@NotNull String subject) {
             return ModelUtils.map(homeworkDatabase.getHomeworksBySubject(subject), ModelUtils.HW_FIELDS_TO_STRING_LIST);
         }
@@ -142,14 +147,24 @@ public class Controller {
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
+
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                calendarExporter.addHomework(homework);
+            }
         }
 
         public void deleteHomeworkById(int id) {
             homeworkDatabase.deleteHomeworkById(id);
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetHomeworksInGoogleCalendar();
+            }
         }
 
         public void setHomeworkScoreById(int id, int score) {
             homeworkDatabase.setScoreById(id, score);
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetHomeworksInGoogleCalendar();
+            }
         }
 
         public void setHomeworkDeferralById(int id, int deferral) {
@@ -163,6 +178,9 @@ public class Controller {
                     expectedScore, id, materials);
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
+            }
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetHomeworksInGoogleCalendar();
             }
         }
 
@@ -183,21 +201,23 @@ public class Controller {
                     int id = settingsDatabase.getTotalNumberOfHW();
                     homeworkDatabase.addHomework(homework.generateNewHomeworkById(id));
                     settingsDatabase.setTotalNumberOfHW(++id);
+                    if (settingsDatabase.getGoogleCalendarSync()) {
+                        calendarExporter.addHomework(homework);
+                    }
                 }
             }
         }
 
-        public void addHomeworksToGoogleCalendar(Context context) {
-            CalendarExporter calendarExporter = new CalendarExporter(context);
-            calendarExporter.addHomeworks(homeworkDatabase.getActualHomeworks());
+        public void resetHomeworksInGoogleCalendar() {
+            calendarExporter.resetHomeworks(homeworkDatabase.getActualHomeworks());
         }
     }
 
     public class ScheduleController {
-        private ClassDatabaseController classDatabase;
+        private ClassEntriesDatabaseController classEntriesDatabase;
 
         public ScheduleController(Context context) {
-            classDatabase = new ClassDatabaseController(context);
+            classEntriesDatabase = new ClassEntriesDatabaseController(context);
         }
 
         @NotNull
@@ -207,7 +227,7 @@ public class Controller {
                 weekParity = weekParity.inverse();
             }
 
-            List<ClassEntry> classes = classDatabase.getDaySchedule(day.getDayOfWeek() - 1,
+            List<ClassEntry> classes = classEntriesDatabase.getDaySchedule(day.getDayOfWeek() - 1,
                     weekParity);
             List<Exam> exams = examController.examDatabase.getExamsByDay(day);
             List<ScheduleEntry> scheduleEntries = ListUtils.union(exams, classes);
@@ -216,35 +236,45 @@ public class Controller {
             return ModelUtils.map(scheduleEntries, ModelUtils.SCHEDULE_ENTRY_TO_SCHEDULE_DESCRIPTION);
         }
 
-        public void addClass(@NotNull String subject, int dayOfWeek, int hour,
-                             int minute, @NotNull WeekParityEnum weekParity,
-                             @NotNull String auditorium, @NotNull String teacher) {
+        public void addClassEntry(@NotNull String subject, int dayOfWeek, int hour,
+                                  int minute, @NotNull WeekParityEnum weekParity,
+                                  @NotNull String auditorium, @NotNull String teacher) {
             int id = settingsDatabase.getTotalNumberOfScheduleEntries();
             ClassEntry aClass = new ClassEntry(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
-            classDatabase.addClass(aClass);
+            classEntriesDatabase.addClassEntry(aClass);
             settingsDatabase.setTotalNumberOfScheduleEntries(++id);
+
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetClassEntriesInGoogleCalendar();
+            }
         }
 
-        public void deleteClassById(int id) {
-            classDatabase.deleteClassById(id);
+        public void deleteClassEntryById(int id) {
+            classEntriesDatabase.deleteClassEntryById(id);
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetClassEntriesInGoogleCalendar();
+            }
         }
 
-        public void editClassById(int id, @NotNull String subject, int dayOfWeek,
-                                  int hour, int minute, @NotNull WeekParityEnum weekParity,
-                                  @NotNull String auditorium, @NotNull String teacher) {
-            classDatabase.editClassById(subject, dayOfWeek, hour, minute,
+        public void editClassEntryById(int id, @NotNull String subject, int dayOfWeek,
+                                       int hour, int minute, @NotNull WeekParityEnum weekParity,
+                                       @NotNull String auditorium, @NotNull String teacher) {
+            classEntriesDatabase.editClassEntryById(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetClassEntriesInGoogleCalendar();
+            }
         }
 
         @NotNull
-        public Bundle getClassById(int id) {
-            return classDatabase.getClassById(id).getDeconstructed();
+        public Bundle getClassEntryById(int id) {
+            return classEntriesDatabase.getClassEntryById(id).getDeconstructed();
         }
 
-        public void addClassEntriesToGoogleCalendar(Context context, LocalDate endTermDate) {
-            CalendarExporter calendarExporter = new CalendarExporter(context);
-            calendarExporter.addClassEntries(classDatabase.getAllClasses(), endTermDate);
+        public void resetClassEntriesInGoogleCalendar() {
+            LocalDate endTermDate = settingsDatabase.getEndTermDate();
+            calendarExporter.resetClassEntries(classEntriesDatabase.getAllClassEntries(), endTermDate);
         }
 
     }
@@ -276,10 +306,16 @@ public class Controller {
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetExamsInGoogleCalendar();
+            }
         }
 
         public void deleteExamsById(int id) {
             examDatabase.deleteExamById(id);
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetExamsInGoogleCalendar();
+            }
         }
 
         public void setExamAcceptedById(int id, boolean isAccepted) {
@@ -292,11 +328,18 @@ public class Controller {
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
             }
+            if (settingsDatabase.getGoogleCalendarSync()) {
+                resetExamsInGoogleCalendar();
+            }
         }
 
         @NotNull
         public Bundle getExamById(int id) {
             return examDatabase.getExamById(id).getDeconstructed();
+        }
+
+        public void resetExamsInGoogleCalendar() {
+            calendarExporter.resetExamEntries(examDatabase.getAllExams());
         }
     }
 

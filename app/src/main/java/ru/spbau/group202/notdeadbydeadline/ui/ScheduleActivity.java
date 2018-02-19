@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.PopupMenu;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TableLayout;
@@ -28,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
@@ -173,7 +168,7 @@ public class ScheduleActivity extends AppCompatActivity
                                 .getString(R.string.lv_entry_delete))) {
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
                             Controller.getInstance(ScheduleActivity.this).scheduleController()
-                                    .deleteClassById(Integer
+                                    .deleteClassEntryById(Integer
                                             .parseInt(detailedEntryList.get(detailedEntryList.size() - 1)));
                             outputSchedule();
                             return true;

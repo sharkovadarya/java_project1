@@ -59,7 +59,7 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         }
 
         if (id != -1) {
-            scheduleEntry = Controller.getInstance(this).scheduleController().getClassById(id);
+            scheduleEntry = Controller.getInstance(this).scheduleController().getClassEntryById(id);
             SEFA.dayOfWeek = scheduleEntry.getInt("dayOfWeek");
             LocalTime localTime = (LocalTime) scheduleEntry.getSerializable("time");
             if (localTime != null) {
@@ -317,13 +317,13 @@ public class AddScheduleEntryActivity extends AppCompatActivity {
         }
 
         public void addScheduleEntry(Context context) {
-            Controller.getInstance(context).scheduleController().addClass(subject,
+            Controller.getInstance(context).scheduleController().addClassEntry(subject,
                     WeekDayEnum.valueOf(weekDay).ordinal(), hour, minute,
                     parity, auditorium, teacher);
         }
 
         public void editScheduleEntry(int id, Context context) {
-            Controller.getInstance(context).scheduleController().editClassById(id, subject,
+            Controller.getInstance(context).scheduleController().editClassEntryById(id, subject,
                     weekDay == null ? dayOfWeek :
                             WeekDayEnum.valueOf(weekDay).ordinal(), hour, minute,
                     parity, auditorium, teacher);

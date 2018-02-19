@@ -19,7 +19,7 @@ public class CalendarExporter {
     private EventsHandler examsEventsHandler;
 
     public CalendarExporter(Context context) {
-        CalendarsHandler calendarsHandler = new CalendarsHandler(context);
+        CalendarsHandler calendarsHandler = new CalendarsHandler(context.getApplicationContext());
 
         String defaultAccountName = "NDBD";
         String defaultDisplayNameHomeworks = "NDBD homeworks";
@@ -41,14 +41,18 @@ public class CalendarExporter {
 
     }
 
-    public void addHomeworks(List<Homework> homeworks) {
+    public void resetHomeworks(List<Homework> homeworks) {
         homeworkEventsHandler.deleteAll();
         for (Homework homework : homeworks) {
             homeworkEventsHandler.addHomework(homework);
         }
     }
 
-    public void addClassEntries(List<ClassEntry> classes, LocalDate endTermDate) {
+    public void addHomework(Homework homework) {
+        homeworkEventsHandler.addHomework(homework);
+    }
+
+    public void resetClassEntries(List<ClassEntry> classes, LocalDate endTermDate) {
         //LocalDate localDate = LocalDate.now().plusDays(ce.getDayOfWeek());
         classesEventsHandler.deleteAll();
         for (ClassEntry classEntry : classes) {
@@ -77,11 +81,18 @@ public class CalendarExporter {
         }
     }
 
-    public void addExamEntries(List<Exam> exams) {
+    public void addClassEntry(ClassEntry classEntry) {
+
+    }
+
+    public void resetExamEntries(List<Exam> exams) {
         examsEventsHandler.deleteAll();
         for (Exam exam : exams) {
             // TODO add this method and call it
         }
     }
 
+    public void addExamEntry(Exam exam) {
+
+    }
 }
