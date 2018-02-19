@@ -89,7 +89,7 @@ public class Controller {
     }
 
     public void setWeekParity(boolean isInversed) {
-        settingsDatabase.setWeekPairity(isInversed);
+        settingsDatabase.setWeekParity(isInversed);
     }
 
     public boolean getWeekParity() {

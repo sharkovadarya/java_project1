@@ -201,48 +201,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_google_calendar) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            String[] options = new String[]{ getResources().getString(R.string.gc_deadlines),
-                                            getResources().getString(R.string.gc_schedule) };
-            final List<String> optionsList = Arrays.asList(options);
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String currentItem = optionsList.get(which);
-                    if (currentItem.equals(getResources().getString(R.string.gc_deadlines))) {
-
-                        Controller.getInstance(MainActivity.this).homeworkController()
-                                .resetHomeworksInGoogleCalendar();
-                    } else if (currentItem.equals(getResources().getString(R.string.gc_schedule))) {
-
-                        AlertDialog.Builder builderED = new AlertDialog.Builder(MainActivity.this);
-                        builderED.setMessage(getResources().getString(R.string.input_end_term_date))
-                                .setCancelable(false).setNeutralButton(getResources().getString(R.string.set_date), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DatePickerFragment datePickerFragment = new DatePickerFragment();
-                                datePickerFragment.setContext(MainActivity.this);
-                                datePickerFragment.show(getSupportFragmentManager(), "datePicker");
-                            }
-                        });
-
-                        builderED.show();
-                    }
-                }
-            });
-
-            builder.setCancelable(true);
-
-            // Set a title for alert dialog
-            builder.setTitle("Google Calendar Connection Options");
-            AlertDialog dialog = builder.create();
-            // Display the alert dialog on interface
-            dialog.show();
-            return true;
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
+            return true;
 
-        return super.onOptionsItemSelected(item);
+        //return super.onOptionsItemSelected(item);
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -279,22 +245,5 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         outputDeadlines();
         outputTodaySchedule();
-    }
-
-    public static class DatePickerFragment extends AbstractDatePicker {
-
-        Context context;
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            endTermDate = new LocalDate(year, month + 1, dayOfMonth);
-            Controller.getInstance(context).scheduleController()
-                    .addClassEntriesToGoogleCalendar(context, endTermDate);
-        }
-
-        public void setContext(Context context) {
-            this.context = context;
-        }
-
     }
 }

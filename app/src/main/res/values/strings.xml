@@ -73,8 +73,10 @@
     <string name="lv_entry_open_attached">Open attachment</string>
     <string name="not_specified">Not specified</string>
     <string name="action_google_calendar">Connect with Google Calendar</string>
-    <string name="gc_deadlines">Add h/w deadlines</string>
-    <string name="gc_schedule">Add schedule entries</string>
+    <string name="gc_deadlines">Add h/w deadlines to Google Calendar</string>
+    <string name="gc_schedule">Add schedule entries to Google Calendar</string>
     <string name="input_end_term_date">Input term end date</string>
+    <string name="week_parity">Current week parity is: %s</string>
+    <string name="invert_parity">Invert week parity</string>
 
 </resources>

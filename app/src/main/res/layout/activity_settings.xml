@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ru.spbau.group202.notdeadbydeadline.ui.SettingsActivity">
+
+    <Button
+        android:id="@+id/addHomeworkToGC"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:onClick="onAddHomeworksToGC"
+        android:text="@string/gc_deadlines"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/AddScheduleToGC"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:onClick="onAddClassEntriesToGC"
+        android:text="@string/gc_schedule"
+        app:layout_constraintStart_toStartOf="@+id/addHomeworkToGC"
+        app:layout_constraintTop_toBottomOf="@+id/addHomeworkToGC" />
+
+    <Button
+        android:id="@+id/setEndTermDate"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:onClick="onSetTermEndDate"
+        android:text="@string/input_end_term_date"
+        app:layout_constraintStart_toStartOf="@+id/AddScheduleToGC"
+        app:layout_constraintTop_toBottomOf="@+id/AddScheduleToGC" />
+
+    <TextView
+        android:id="@+id/currentWeekParityTV"
+        android:layout_width="143dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/week_parity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setEndTermDate" />
+
+    <Button
+        android:id="@+id/invertParityButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="232dp"
+        android:layout_marginEnd="36dp"
+        android:onClick="onInvertWeekParity"
+        android:text="@string/invert_parity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</android.support.constraint.ConstraintLayout>

@@ -32,7 +32,7 @@ public class StoredDataController {
         editor.apply();
     }
 
-    public void setWeekPairity(boolean isInversed) {
+    public void setWeekParity(boolean isInversed) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(APP_PREFERENCES_INVERSE_WEEK_PARITY, isInversed);
         editor.apply();
@@ -77,7 +77,8 @@ public class StoredDataController {
     }
 
     public LocalDate getEndTermDate() {
-        return new LocalDate(settings.getString(APP_PREFERENCES_END_TERM_DATE, ""));
+        String endTermDate = settings.getString(APP_PREFERENCES_END_TERM_DATE, "");
+        return endTermDate.isEmpty() ? null : new LocalDate(endTermDate);
     }
 
     public int getTotalNumberOfHW() {
