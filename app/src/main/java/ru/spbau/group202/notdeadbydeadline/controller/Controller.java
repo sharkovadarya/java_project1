@@ -88,11 +88,11 @@ public class Controller {
         return new ArrayList<>(subjectList);
     }
 
-    public void setWeekPairity(boolean isInversed) {
+    public void setWeekParity(boolean isInversed) {
         settingsDatabase.setWeekPairity(isInversed);
     }
 
-    public boolean getWeekPairity() {
+    public boolean getWeekParity() {
         return settingsDatabase.getWeekParity();
     }
 
