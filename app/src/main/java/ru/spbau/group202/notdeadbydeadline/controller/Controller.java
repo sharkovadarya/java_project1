@@ -87,7 +87,19 @@ public class Controller {
     }
 
     public void setWeekPairity(boolean isInversed) {
-        settingsDatabase.saveWeekPairity(isInversed);
+        settingsDatabase.setWeekPairity(isInversed);
+    }
+
+    public boolean getWeekPairity() {
+        return settingsDatabase.getWeekParity();
+    }
+
+    public void setGoogleCalendarSync(boolean isSync) {
+        settingsDatabase.setGoogleCalendarSync(isSync);
+    }
+
+    public boolean getGoogleCalendarSync() {
+        return settingsDatabase.getGoogleCalendarSync();
     }
 
     @NotNull
@@ -117,7 +129,7 @@ public class Controller {
         public List<List<String>> getHomeworksBySubject(@NotNull String subject) {
             return ModelUtils.map(homeworkDatabase.getHomeworksBySubject(subject), ModelUtils.HW_FIELDS_TO_STRING_LIST);
         }
-        
+
         public void addHomework(@NotNull LocalDateTime deadline, @NotNull String subject,
                                 int regularity, String description, String howToSend,
                                 double expectedScore, @NotNull ArrayList<String> materials) {
@@ -125,7 +137,7 @@ public class Controller {
             Homework homework = new Homework(deadline, subject, regularity, description,
                     howToSend, expectedScore, id, materials);
             homeworkDatabase.addHomework(homework);
-            settingsDatabase.saveTotalNumberOfHW(++id);
+            settingsDatabase.setTotalNumberOfHW(++id);
 
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
@@ -170,7 +182,7 @@ public class Controller {
                 if (homework.getRegularity() != 0) {
                     int id = settingsDatabase.getTotalNumberOfHW();
                     homeworkDatabase.addHomework(homework.generateNewHomeworkById(id));
-                    settingsDatabase.saveTotalNumberOfHW(++id);
+                    settingsDatabase.setTotalNumberOfHW(++id);
                 }
             }
         }
@@ -191,7 +203,7 @@ public class Controller {
         @NotNull
         public List<List<String>> getScheduleByDay(LocalDate day) {
             WeekParityEnum weekParity = WeekParityEnum.values()[day.getWeekOfWeekyear() % 2];
-            if (settingsDatabase.getParityOfWeek()) {
+            if (settingsDatabase.getWeekParity()) {
                 weekParity = weekParity.inverse();
             }
 
@@ -211,7 +223,7 @@ public class Controller {
             ClassEntry aClass = new ClassEntry(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
             classDatabase.addClass(aClass);
-            settingsDatabase.saveTotalNumberOfScheduleEntries(++id);
+            settingsDatabase.setTotalNumberOfScheduleEntries(++id);
         }
 
         public void deleteClassById(int id) {
@@ -259,7 +271,7 @@ public class Controller {
             int id = settingsDatabase.getTotalNumberOfWorks();
             Exam exam = new Exam(subject, description, date, examEnum, id);
             examDatabase.addExam(exam);
-            settingsDatabase.saveTotalNumberOfWorks(++id);
+            settingsDatabase.setTotalNumberOfWorks(++id);
 
             if (subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
@@ -308,7 +320,7 @@ public class Controller {
             }
             updateStudyMaterial(studyMaterial);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
-            settingsDatabase.saveTotalNumberOfStudyMaterials(++id);
+            settingsDatabase.setTotalNumberOfStudyMaterials(++id);
 
             if (!subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);
@@ -320,7 +332,7 @@ public class Controller {
             int id = settingsDatabase.getTotalNumberOfStudyMaterials();
             StudyMaterial studyMaterial = new StudyMaterial(name, subject, term, path, -1, id);
             studyMaterialDatabase.addStudyMaterial(studyMaterial);
-            settingsDatabase.saveTotalNumberOfStudyMaterials(++id);
+            settingsDatabase.setTotalNumberOfStudyMaterials(++id);
 
             if (!subjectList.add(subject)) {
                 subjectDatabase.addSubject(subject, CreditFormEnum.NOT_STATED, -1);

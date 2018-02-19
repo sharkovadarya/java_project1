@@ -140,8 +140,8 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     }
 
     public void editClassById(@NotNull String subject, int dayOfWeek, int hour, int minute,
-                                      @NotNull WeekParityEnum weekParity, @NotNull String auditorium,
-                                      @NotNull String teacher, int id) {
+                              @NotNull WeekParityEnum weekParity, @NotNull String auditorium,
+                              @NotNull String teacher, int id) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_SUBJECT, subject);
