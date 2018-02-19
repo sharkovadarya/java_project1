@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
+import ru.spbau.group202.notdeadbydeadline.controller.calendar.CalendarExporter;
 import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
@@ -100,12 +101,16 @@ public class Controller {
         subjectDatabase.setSubjectCreditForm(subject, credit);
     }
 
-
     public class HomeworkController {
         private HomeworkDatabaseController homeworkDatabase;
 
         public HomeworkController(Context context) {
             homeworkDatabase = new HomeworkDatabaseController(context);
+        }
+
+        @NotNull
+        public List<Homework> getActualHomeworks() {
+            return homeworkDatabase.getActualHomeworks();
         }
 
         @NotNull
@@ -168,6 +173,11 @@ public class Controller {
                     settingsDatabase.saveTotalNumberOfHW(++id);
                 }
             }
+        }
+
+        public void addHomeworksToGoogleCalendar(Context context) {
+            CalendarExporter calendarExporter = new CalendarExporter(context);
+            calendarExporter.addTasks(homeworkDatabase.getActualHomeworks());
         }
     }
 

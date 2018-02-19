@@ -1,13 +1,9 @@
 package ru.spbau.group202.notdeadbydeadline.ui;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -44,9 +40,6 @@ import ru.spbau.group202.notdeadbydeadline.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    // for Google Calendar
-    private boolean[] checkedOptions = new boolean[]{ false, false };
 
 
     private void outputCurrentDate() {
@@ -203,20 +196,14 @@ public class MainActivity extends AppCompatActivity
             String[] options = new String[]{ getResources().getString(R.string.gc_deadlines),
                                             getResources().getString(R.string.gc_schedule) };
             final List<String> optionsList = Arrays.asList(options);
-            builder.setMultiChoiceItems(options, checkedOptions, new DialogInterface.OnMultiChoiceClickListener() {
+            builder.setItems(options, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-                    // Update the current focused item's checked status
-                    checkedOptions[which] = isChecked;
-
-                    // Get the current focused item
+                public void onClick(DialogInterface dialog, int which) {
                     String currentItem = optionsList.get(which);
-
-                    // Notify the current action
                     if (currentItem.equals(getResources().getString(R.string.gc_deadlines))) {
 
-                        // TODO create events for deadlines
+                        Controller.getInstance(MainActivity.this).homeworkController()
+                                .addHomeworksToGoogleCalendar(getApplicationContext());
                     } else if (currentItem.equals(getResources().getString(R.string.gc_schedule))) {
                         // TODO create events for schedule
                     }

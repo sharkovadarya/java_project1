@@ -72,5 +72,8 @@
     <string name="attach_files">Attach files</string>
     <string name="lv_entry_open_attached">Open attachment</string>
     <string name="not_specified">Not specified</string>
+    <string name="action_google_calendar">Connect with Google Calendar</string>
+    <string name="gc_deadlines">Add h/w deadlines</string>
+    <string name="gc_schedule">Add schedule entries</string>
 
 </resources>
