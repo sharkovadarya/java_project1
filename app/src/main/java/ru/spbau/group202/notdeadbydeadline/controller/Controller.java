@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
 
 
 import ru.spbau.group202.notdeadbydeadline.controller.calendar.CalendarExporter;
+import ru.spbau.group202.notdeadbydeadline.model.ClassEntry;
 import ru.spbau.group202.notdeadbydeadline.model.CreditFormEnum;
 import ru.spbau.group202.notdeadbydeadline.model.ScheduleEntry;
 import ru.spbau.group202.notdeadbydeadline.model.Homework;
-import ru.spbau.group202.notdeadbydeadline.model.Class;
 import ru.spbau.group202.notdeadbydeadline.model.StudyMaterial;
 import ru.spbau.group202.notdeadbydeadline.model.SubjectCredit;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
@@ -177,7 +177,7 @@ public class Controller {
 
         public void addHomeworksToGoogleCalendar(Context context) {
             CalendarExporter calendarExporter = new CalendarExporter(context);
-            calendarExporter.addTasks(homeworkDatabase.getActualHomeworks());
+            calendarExporter.addHomeworks(homeworkDatabase.getActualHomeworks());
         }
     }
 
@@ -195,7 +195,7 @@ public class Controller {
                 weekParity = weekParity.inverse();
             }
 
-            List<Class> classes = classDatabase.getDaySchedule(day.getDayOfWeek() - 1,
+            List<ClassEntry> classes = classDatabase.getDaySchedule(day.getDayOfWeek() - 1,
                     weekParity);
             List<Exam> exams = examController.examDatabase.getExamsByDay(day);
             List<ScheduleEntry> scheduleEntries = ListUtils.union(exams, classes);
@@ -208,7 +208,7 @@ public class Controller {
                              int minute, @NotNull WeekParityEnum weekParity,
                              @NotNull String auditorium, @NotNull String teacher) {
             int id = settingsDatabase.getTotalNumberOfScheduleEntries();
-            Class aClass = new Class(subject, dayOfWeek, hour, minute,
+            ClassEntry aClass = new ClassEntry(subject, dayOfWeek, hour, minute,
                     weekParity, auditorium, teacher, id);
             classDatabase.addClass(aClass);
             settingsDatabase.saveTotalNumberOfScheduleEntries(++id);
@@ -229,6 +229,12 @@ public class Controller {
         public Bundle getClassById(int id) {
             return classDatabase.getClassById(id).getDeconstructed();
         }
+
+        public void addClassEntriesToGoogleCalendar(Context context, LocalDate endTermDate) {
+            CalendarExporter calendarExporter = new CalendarExporter(context);
+            calendarExporter.addClassEntries(classDatabase.getAllClasses(), endTermDate);
+        }
+
     }
 
     public class ExamController {

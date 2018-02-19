@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,11 +37,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import ru.spbau.group202.notdeadbydeadline.controller.Controller;
+import ru.spbau.group202.notdeadbydeadline.ui.utilities.AbstractDatePicker;
 import ru.spbau.group202.notdeadbydeadline.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    // used for Google Calendar connection
+    private static LocalDate endTermDate;
 
     private void outputCurrentDate() {
         LocalDateTime currentDate = LocalDateTime.now();
@@ -128,10 +132,15 @@ public class MainActivity extends AppCompatActivity
             stringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                     position, stringBuilder.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder.append(", \n");
-            stringBuilder.append(schDetails.get(2));
-            stringBuilder.append(", ");
-            stringBuilder.append(schDetails.get(3));
+            if (schDetails.get(2).trim().length() > 0
+                || schDetails.get(3).trim().length() > 0) {
+                stringBuilder.append(", \n");
+                if (schDetails.get(2).trim().length() > 0) {
+                    stringBuilder.append(schDetails.get(2));
+                    stringBuilder.append(", ");
+                }
+                stringBuilder.append(schDetails.get(3));
+            }
 
             formattedSchedule.add(stringBuilder);
         }
@@ -205,7 +214,18 @@ public class MainActivity extends AppCompatActivity
                         Controller.getInstance(MainActivity.this).homeworkController()
                                 .addHomeworksToGoogleCalendar(getApplicationContext());
                     } else if (currentItem.equals(getResources().getString(R.string.gc_schedule))) {
-                        // TODO create events for schedule
+
+                        AlertDialog.Builder builderED = new AlertDialog.Builder(MainActivity.this);
+                        builderED.setMessage(getResources().getString(R.string.input_end_term_date))
+                                .setCancelable(false).setNeutralButton(getResources().getString(R.string.set_date), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DatePickerFragment datePickerFragment = new DatePickerFragment();
+                                datePickerFragment.show(getSupportFragmentManager(), "datePicker");
+                            }
+                        });
+
+                        builderED.show();
                     }
                 }
             });
@@ -257,5 +277,19 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         outputDeadlines();
         outputTodaySchedule();
+    }
+
+    public static class DatePickerFragment extends AbstractDatePicker {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            endTermDate = new LocalDate(year, month, dayOfMonth);
+            // TODO fix this
+            /*
+            if (endTermDate != null) {
+                Controller.getInstance(MainActivity.this).scheduleController()
+                          .addClassEntriesToGoogleCalendar(getApplicationContext(),
+                           endTermDate);
+            }*/
+        }
     }
 }

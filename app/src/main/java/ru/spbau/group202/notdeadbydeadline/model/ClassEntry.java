@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Class extends ScheduleEntry {
+public class ClassEntry extends ScheduleEntry {
     private String subject;
     private String auditorium;
     private String teacher;
@@ -19,8 +19,8 @@ public class Class extends ScheduleEntry {
     private int id;
     private WeekParityEnum weekParity;
 
-    public Class(@NotNull String subject, int dayOfWeek, int hour, int minute,
-                 WeekParityEnum weekParity, String auditorium, String teacher, int id) {
+    public ClassEntry(@NotNull String subject, int dayOfWeek, int hour, int minute,
+                      WeekParityEnum weekParity, String auditorium, String teacher, int id) {
         time = new LocalTime(hour, minute);
         this.subject = subject;
         this.dayOfWeek = dayOfWeek;

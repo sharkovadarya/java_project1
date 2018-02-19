@@ -75,5 +75,6 @@
     <string name="action_google_calendar">Connect with Google Calendar</string>
     <string name="gc_deadlines">Add h/w deadlines</string>
     <string name="gc_schedule">Add schedule entries</string>
+    <string name="input_end_term_date">Input term end date</string>
 
 </resources>

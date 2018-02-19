@@ -27,7 +27,7 @@ public class CreditByPercent extends SubjectCredit {
         }
 
         double percent = totalPoints == 0 ? 1 : earnedPoints / totalPoints;
-        String result = percent >= percentForCredit ? "Class passed" : "Class failed";
+        String result = percent >= percentForCredit ? "ClassEntry passed" : "ClassEntry failed";
         double pointsForCredit = percentForCredit * totalPoints - earnedPoints;
         return Arrays.asList("by percent", Double.toString(percent), result,
                 pointsForCredit < 0 ? "0" : Double.toString(pointsForCredit));

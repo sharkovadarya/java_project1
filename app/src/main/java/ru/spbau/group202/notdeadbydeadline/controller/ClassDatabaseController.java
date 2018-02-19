@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.spbau.group202.notdeadbydeadline.model.Class;
+import ru.spbau.group202.notdeadbydeadline.model.ClassEntry;
 import ru.spbau.group202.notdeadbydeadline.model.WeekParityEnum;
 
 public class ClassDatabaseController extends SQLiteOpenHelper {
@@ -52,7 +52,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    private Class getClassByCursor(@NotNull Cursor cursor) {
+    private ClassEntry getClassByCursor(@NotNull Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_ID));
         String subject = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_SUBJECT));
         int dayOfWeek = cursor.getInt(cursor.getColumnIndex(COLUMN_NAME_DAY_OF_WEEK));
@@ -62,11 +62,11 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
         String auditorium = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_AUDITORIUM));
         String teacher = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_TEACHER));
 
-        return new Class(subject, dayOfWeek, hour, minute,
+        return new ClassEntry(subject, dayOfWeek, hour, minute,
                 WeekParityEnum.values()[weekParity], auditorium, teacher, id);
     }
 
-    public void addClass(@NotNull Class aClass) {
+    public void addClass(@NotNull ClassEntry aClass) {
         try (SQLiteDatabase database = this.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME_ID, aClass.getId());
@@ -83,14 +83,14 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public List<Class> getDaySchedule(int dayOfWeek, WeekParityEnum weekParity) {
+    public List<ClassEntry> getDaySchedule(int dayOfWeek, WeekParityEnum weekParity) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_DAY_OF_WEEK + "=? " +
                 "AND (" + COLUMN_NAME_WEEK_PARITY + "=? " + " OR " + COLUMN_NAME_WEEK_PARITY + "=?) " +
                 "ORDER BY " + COLUMN_NAME_HOUR + ", " + COLUMN_NAME_MINUTE;
 
         String[] selectionArgs = new String[]{String.valueOf(dayOfWeek),
                 String.valueOf(weekParity.ordinal()), String.valueOf(WeekParityEnum.ALWAYS.ordinal())};
-        List<Class> daySchedule = new ArrayList<>();
+        List<ClassEntry> daySchedule = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, selectionArgs)) {
@@ -105,9 +105,9 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
     }
 
     @NotNull
-    public List<Class> getAllClasses() {
+    public List<ClassEntry> getAllClasses() {
         String query = "SELECT * FROM " + DATABASE_NAME;
-        List<Class> classes = new ArrayList<>();
+        List<ClassEntry> classes = new ArrayList<>();
 
         try (SQLiteDatabase database = this.getReadableDatabase();
              Cursor cursor = database.rawQuery(query, null)) {
@@ -128,7 +128,7 @@ public class ClassDatabaseController extends SQLiteOpenHelper {
         }
     }
 
-    public Class getClassById(int id) {
+    public ClassEntry getClassById(int id) {
         String query = "SELECT * FROM " + DATABASE_NAME + " WHERE " + COLUMN_NAME_ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
 
