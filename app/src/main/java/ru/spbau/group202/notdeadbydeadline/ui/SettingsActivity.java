@@ -47,8 +47,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void outputWeekParity() {
         TextView parityTextView = findViewById(R.id.currentWeekParityTV);
-        String parity = getResources().getString(R.string.week_parity,
-                !Controller.getInstance(SettingsActivity.this).getWeekParity() ? "even" : "odd");
+        String parity;
+        if (!Controller.getInstance(SettingsActivity.this).getWeekParity()) {
+            parity = getResources().getString(R.string.week_parity,
+                    LocalDate.now().getWeekOfWeekyear() % 2 == 0 ? "even" : "odd");
+        } else {
+            parity = getResources().getString(R.string.week_parity,
+                    LocalDate.now().getWeekOfWeekyear() % 2 == 1 ? "even" : "odd");
+        }
         parityTextView.setText(parity);
     }
 

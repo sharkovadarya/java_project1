@@ -132,7 +132,6 @@ public class ScheduleActivity extends AppCompatActivity
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getTitle().toString().equals(getResources()
                                 .getString(R.string.lv_entry_edit))) {
-                            // TODO call edit (which is yet nonexistent)
                             List<String> detailedEntryList = (List<String>) parent.getItemAtPosition(position);
                             Intent intent = new Intent(ScheduleActivity.this,
                                     AddScheduleEntryActivity.class);
@@ -258,7 +257,8 @@ public class ScheduleActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
